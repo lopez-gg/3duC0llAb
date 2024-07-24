@@ -2,12 +2,13 @@
 // login.php
 
 // Include necessary configurations
-require_once __DIR__ . '/config.php'; // Load general configurations
-require_once __DIR__ . '/session_config.php'; // Start session management
+require_once __DIR__ . '/../src/config/config.php'; // Load general configurations
+require_once __DIR__ . '/../src/session_config.php'; // Start session management
+
 
 // Check if the user is already logged in
 if (isset($_SESSION['user_id'])) {
-    header('Location: dashboard.php'); // Redirect to dashboard if already logged in
+    header('Location: user/dashboard.php'); // Redirect to dashboard if already logged in
     exit;
 }
 
