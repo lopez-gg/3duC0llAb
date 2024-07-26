@@ -12,7 +12,6 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: /../login.php'); // Redirect to login page if not logged in
     exit;
 }
-
 // Handle logout request
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
     // Destroy the session
@@ -23,7 +22,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
     header('Location: ../login.php');
     exit;
 }
-
 ?>
 
 <!DOCTYPE html>

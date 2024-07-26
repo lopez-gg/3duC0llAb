@@ -51,16 +51,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 exit;
             } else {
                 // Invalid credentials
-                echo 'Invalid username or password.';
+                $_SESSION['login_error'] = 'Invalid username or password.';
+                header('Location: ../../public/login.php'); // Redirect back to the login page
+                exit;
             }
         } catch (PDOException $e) {
             // Log error and display a user-friendly message
             log_error('Login failed: ' . $e->getMessage(), 'user_errors.txt');
-            echo 'An error occurred. Please try again later.';
+            $_SESSION['login_error'] = 'An error occurred. Please try again later.';
+            header('Location: ../../public/login.php'); // Redirect back to the login page
+            exit;
         }
     } else {
         // Missing username or password
-        echo 'Please enter both username and password.';
+        $_SESSION['login_error'] = 'Please enter both username and password.';
+        header('Location: ../../public/login.php'); // Redirect back to the login page
+        exit;
     }
 } else {
     // Redirect to login page if not a POST request

@@ -2,7 +2,7 @@
 // login.php
 
 // Include necessary configurations
-require_once __DIR__ . '/../src/config/session_config.php'; // Start session management
+require_once __DIR__ . '/../src/config/session_config.php'; 
 require_once __DIR__ . '/../src/config/db_config.php'; 
 
 // Check if the user is already logged in
@@ -22,7 +22,7 @@ if (isset($_SESSION['user_id'])) {
             // Handle unexpected role
             header('Location: public/login.php'); // Redirect to login if role is unexpected
         }
-        exit;
+        exit; 
     } else {
         // Handle user not found
         header('Location: public/login.php'); // Redirect to login if user not found
@@ -37,10 +37,21 @@ if (isset($_SESSION['user_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <style>
+        .error {
+            color: red;
+        }
+    </style>
 </head>
 <body>
     <!-- Login form goes here -->
     <h1>Login</h1>
+    <?php
+    if (isset($_SESSION['login_error'])) {
+        echo '<p class="error">' . $_SESSION['login_error'] . '</p>';
+        unset($_SESSION['login_error']); // Clear the error message after displaying it
+    }
+    ?>
     <form action="../src/processes/login_process.php" method="post">
         <label for="username">Username:</label>
         <input type="text" name="username" id="username" required>
