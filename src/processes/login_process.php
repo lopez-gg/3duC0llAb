@@ -2,9 +2,9 @@
 // login_process.php
 
 // Include necessary configurations
-require_once __DIR__ . '/config.php'; // Load general configurations
-require_once __DIR__ . '/db_config.php'; // Database configuration
-require_once __DIR__ . '/session_config.php'; // Session management
+require_once __DIR__ . '/../config/config.php'; // Load general configurations
+require_once __DIR__ . '/../config/db_config.php'; // Database configuration
+require_once __DIR__ . '/../config/session_config.php'; // Session management
 
 // Check if the form was submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -15,9 +15,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($username && $password) {
         try {
             // Prepare and execute the query
-            $stmt = $pdo->prepare("SELECT id, password, status FROM users WHERE username = ?");
+            $stmt = $pdo->prepare("SELECT id, password, status, accType FROM users WHERE username = ?");
             $stmt->execute([$username]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            // Debug: Check if user data is fetched correctly
+            if ($user) {
+                echo 'User found: ';
+                print_r($user);
+            } else {
+                echo 'User not found.';
+            }
 
             if ($user && password_verify($password, $user['password'])) {
                 // Check if the user status is 'inactive'
@@ -30,9 +38,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Set session variables
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $username;
+                $_SESSION['accType'] = $user['accType']; // Store accType in session
 
-                // Redirect to the dashboard
-                header('Location: dashboard.php');
+                // Redirect to the appropriate dashboard
+                if ($user['accType'] === 'ADMIN') {
+                    header('Location: ../../public/admin/dashboard.php');
+                } elseif ($user['accType'] === 'USER') {
+                    header('Location: ../../public/user/dashboard.php');
+                } else {
+                    echo 'Invalid account type.';
+                }
                 exit;
             } else {
                 // Invalid credentials
@@ -49,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 } else {
     // Redirect to login page if not a POST request
-    header('Location: login.php');
+    header('Location: ../../public/login.php');
     exit;
 }
 ?>
