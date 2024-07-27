@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } catch (PDOException $e) {
             // Log error and display a user-friendly message
-            log_error('Login failed: ' . $e->getMessage(), 'user_errors.txt');
+            log_error('Login failed: ' . $e->getMessage(), '../../logs/user_errors.txt');
             $_SESSION['login_error'] = 'An error occurred. Please try again later.';
             header('Location: ../../public/login.php'); // Redirect back to the login page
             exit;
