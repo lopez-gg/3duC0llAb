@@ -27,7 +27,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo 'User not found.';
             }
 
+            // Track login attempt
+            $loginSuccess = 0; // Default to failure
             if ($user && password_verify($password, $user['password'])) {
+                $loginSuccess = 1; // Successful login
+                
                 // Check if the user status is 'inactive'
                 if ($user['status'] === 'inactive') {
                     // Update status to 'active'
@@ -40,6 +44,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['username'] = $username;
                 $_SESSION['accType'] = $user['accType']; // Store accType in session
 
+                // Insert login attempt into logins table
+                $logStmt = $pdo->prepare("INSERT INTO logins (user_id, success) VALUES (?, ?)");
+                $logStmt->execute([$user['id'], $loginSuccess]);
+
                 // Redirect to the appropriate dashboard
                 if ($user['accType'] === 'ADMIN') {
                     header('Location: ../../public/admin/dashboard.php');
@@ -50,6 +58,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 exit;
             } else {
+                // Insert failed login attempt into logins table
+                if ($user) {
+                    $logStmt = $pdo->prepare("INSERT INTO logins (user_id, success) VALUES (?, ?)");
+                    $logStmt->execute([$user['id'], $loginSuccess]);
+                }
+
                 // Invalid credentials
                 $_SESSION['login_error'] = 'Invalid username or password.';
                 header('Location: ../../public/login.php'); // Redirect back to the login page
