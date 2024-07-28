@@ -9,8 +9,8 @@ require_once __DIR__ . '/../config/session_config.php'; // Session management
 // Check if the form was submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve user input
-    $username = $_POST['username'] ?? '';
-    $password = $_POST['password'] ?? '';
+    $username = htmlspecialchars($_POST['username'] ?? '', ENT_QUOTES, 'UTF-8');
+    $password = htmlspecialchars($_POST['password'] ?? '', ENT_QUOTES, 'UTF-8');
 
     if ($username && $password) {
         try {

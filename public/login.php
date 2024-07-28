@@ -36,6 +36,7 @@ if (isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self';">
     <title>Login</title>
     <style>
         .error {
@@ -44,6 +45,12 @@ if (isset($_SESSION['user_id'])) {
     </style>
 </head>
 <body>
+    <!-- Header -->
+    <h1>EduCollab</h1>
+    <h2>Polangui South Central School</h2>
+    <h3>112011</h3>
+    
+
     <!-- Login form goes here -->
     <h1>Login</h1>
     <?php
@@ -61,5 +68,7 @@ if (isset($_SESSION['user_id'])) {
         <br>
         <input type="submit" value="Login">
     </form>
+
+    <footer>EduCollab 2024</footer>
 </body>
 </html>

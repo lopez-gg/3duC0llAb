@@ -10,8 +10,8 @@ check_access('ADMIN');
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-s
-    cale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Add New User</title>
 </head>
 <body>
@@ -34,19 +34,6 @@ check_access('ADMIN');
 
         <label for="password">Password:</label>
         <input type="password" id="password" name="password" required><br><br>
-
-        <label for="status">Status:</label>
-        <select id="status" name="status" required>
-            <option value="active">Active</option>
-            <option value="inactive">Inactive</option>
-            <option value="suspended">Suspended</option>
-        </select><br><br>
-
-        <label for="accType">Account Type:</label>
-        <select id="accType" name="accType" required>
-            <option value="USER">User</option>
-            <option value="ADMIN">Admin</option>
-        </select><br><br>
 
         <input type="submit" value="Add User">
     </form>
