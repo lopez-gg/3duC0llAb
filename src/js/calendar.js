@@ -16,9 +16,23 @@ $(document).ready(function() {
             }
         },
         eventRender: function(event, element) {
-            if (event.description) {
-                element.find('.fc-title').append('<br/><span class="fc-description">' + event.description + '</span>');
-            }
+            // Only display the title initially
+            element.find('.fc-title').text(event.title);
+
+            // Add hover effect to show description
+            element.hover(function() {
+                var description = event.description ? event.description : 'No description available';
+                var $tooltip = $('<div class="event-tooltip">' + description + '</div>');
+                $('body').append($tooltip);
+                $(this).mousemove(function(e) {
+                    $tooltip.css({
+                        top: e.pageY + 10,
+                        left: e.pageX + 10
+                    });
+                });
+            }, function() {
+                $('.event-tooltip').remove();
+            });
         },
         eventLimit: true
     });

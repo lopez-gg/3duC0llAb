@@ -1,0 +1,10 @@
+/* Custom tooltip for event descriptions */
+.event-tooltip {
+    position: absolute;
+    background-color: rgba(101, 214, 135, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 10001;
+    pointer-events: none;
+}
