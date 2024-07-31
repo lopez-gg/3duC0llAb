@@ -1,3 +1,12 @@
+<?php
+// Set timezone
+date_default_timezone_set('Asia/Manila'); 
+
+// Get current date and time
+$currentDateTime = date('l, d/m/Y h:i:s A'); 
+$currentMonth = date('F Y'); // e.g., July 2024
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,13 +17,23 @@
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css' rel='stylesheet' />
     <link href="../../src/css/custom-calendar.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <script src='https://fullcalendar.io/releases/fullcalendar/3.9.0/lib/jquery.min.js'></script>
     <script src='https://fullcalendar.io/releases/fullcalendar/3.9.0/lib/moment.min.js'></script>
     <script src='https://fullcalendar.io/releases/fullcalendar/3.9.0/fullcalendar.min.js'></script>
     <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
+    
 </head>
 <body>
+
+    <!-- Current date and time -->
+    <div id="datetime">
+        <?php echo $currentDateTime; ?>
+    </div>
+
+    <!-- Calendar display -->
+    <h2>PSCS Calendar</h2>
     <div id='calendar'></div>
 
     <!-- Modal for Event Details -->
