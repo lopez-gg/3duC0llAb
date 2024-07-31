@@ -4,7 +4,7 @@
 // Set up general error logging
 ini_set('log_errors', 1);
 error_reporting(E_ALL);
-ini_set('error_log', __DIR__ . '/logs/error.log');
+ini_set('error_log', __DIR__ . '../../logs/error.log');
 
 // Function to log errors to specific files
 function log_error($message, $file) {
