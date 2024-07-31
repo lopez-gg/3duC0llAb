@@ -1,10 +1,110 @@
-/* Custom tooltip for event descriptions */
+/* custom-calendar.css */
+#calendar {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
 .event-tooltip {
     position: absolute;
-    background-color: rgba(101, 214, 135, 0.8);
+    background-color: rgba(57, 57, 57, 0.8);
     color: white;
     padding: 10px;
     border-radius: 5px;
     z-index: 10001;
     pointer-events: none;
+}
+
+.fc-unthemed{
+    background-color: #dedede;
+    padding: 3rem;
+}
+
+.fc-today {
+    background: #9af0d9 !important; /* Highlight current date */
+}
+
+.fc-content{
+    background-color: #35a884;
+    padding: 2px;
+    border-radius: none;
+}
+
+.fc-day-number{
+    margin: 0.5rem;
+}
+
+.fc-sun{
+    background-color: #ececec;
+}
+
+.modal-content {
+    background-color: #e0f7fa; /* Light blue background */
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.modal-header {
+    color: rgb(54, 54, 54);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    text-align: center;
+}
+
+.modal-body {
+    background-color: #b2dfdb; /* Light green background */
+    padding: 30px;
+    border-radius: 20px;
+}
+
+.modal-footer {
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    text-align: center;
+    color: rgb(1, 223,rgb(57, 57, 57));
+}
+
+.modal-footer .btn {
+    background-color: #16e0d0; 
+    color: rgb(1, 223,rgb(0, 155, 83));
+    font-weight: bold;
+    border-radius: 50px;
+}
+
+.btn:hover {
+    background-color: #16e0d0; 
+    color: rgb(1, 223,rgb(0, 155, 83));
+}
+
+.event-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.event-icon {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.event-info h4 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.event-info p {
+    margin: 5px 0;
+    font-size: 18px;
+}
+
+/* custom-calendar.css */
+.tooltip-inner {
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+.tooltip-arrow {
+    border-top-color: rgba(0, 0, 0, 0.8);
 }

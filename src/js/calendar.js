@@ -1,9 +1,9 @@
 $(document).ready(function() {
     $('#calendar').fullCalendar({
         header: {
-            left: 'prev,next today',
+            left: 'prev,next ',
             center: 'title',
-            right: 'month,agendaWeek,agendaDay,list'
+            right: 'month,agendaWeek,agendaDay,listMonth'
         },
         editable: false,
         events: {
@@ -15,25 +15,46 @@ $(document).ready(function() {
                 console.log('There was an error while fetching events.');
             }
         },
+
+
         eventRender: function(event, element) {
             // Only display the title initially
             element.find('.fc-title').text(event.title);
 
-            // Add hover effect to show description
-            element.hover(function() {
-                var description = event.description ? event.description : 'No description available';
-                var $tooltip = $('<div class="event-tooltip">' + description + '</div>');
-                $('body').append($tooltip);
-                $(this).mousemove(function(e) {
-                    $tooltip.css({
-                        top: e.pageY + 10,
-                        left: e.pageX + 10
-                    });
-                });
-            }, function() {
-                $('.event-tooltip').remove();
-            });
+            // Add hover tooltip
+            element.attr('data-toggle', 'tooltip');
+            element.attr('title', event.description ? event.description : 'No description available');
         },
-        eventLimit: true
+
+        eventClick: function(event, jsEvent, view) {
+            // Show event details on click
+            var description = event.description ? event.description : 'No description available';
+            var start = event.start.format("MMMM-DD");
+            var end = event.end ? event.end.format("MMMM-DD") : start;
+
+            var $modal = $('#eventDetailsModal');
+            $modal.find('.modal-title').text('Event Details');
+            $modal.find('.modal-body').html(`
+                <div class="event-details">
+                    <div class="event-icon"><i class="fa fa-calendar"></i></div>
+                    <div class="event-info">
+                        <h4>${event.title}</h4>
+                        <p>${start} - ${end}</p><hr>
+                        <p>${description}</p>
+                    </div>
+                </div>
+            `);
+            $modal.modal('show');
+        },
+        dayRender: function(date, cell) {
+            if (date.isSame(new Date(), "day")) {
+                cell.css("background-color", "#ffeb3b"); // Highlight the current date
+            }
+        },
+        eventLimit: true,
+        viewRender: function(view, element) {
+            // Initialize tooltips
+            $('[data-toggle="tooltip"]').tooltip();
+        }
     });
 });
