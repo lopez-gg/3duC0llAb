@@ -15,8 +15,9 @@
 }
 
 .fc-unthemed{
-    background-color: #dedede;
+    background-color: #d6d6d6;
     padding: 3rem;
+    border-radius: 10px;
 }
 
 .fc-today {
@@ -25,7 +26,7 @@
 
 .fc-content{
     background-color: #35a884;
-    padding: 2px;
+    padding: 0.3em;
     border-radius: none;
 }
 
@@ -97,7 +98,10 @@
     font-size: 18px;
 }
 
-/* custom-calendar.css */
+.fc-view-container{
+    background-color: #efefef;
+}
+
 .tooltip-inner {
     background-color: rgba(0, 0, 0, 0.8);
     color: white;
@@ -108,3 +112,4 @@
 .tooltip-arrow {
     border-top-color: rgba(0, 0, 0, 0.8);
 }
+
