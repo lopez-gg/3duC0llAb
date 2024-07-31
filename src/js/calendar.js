@@ -36,10 +36,12 @@ $(document).ready(function() {
             $modal.find('.modal-title').text('Event Details');
             $modal.find('.modal-body').html(`
                 <div class="event-details">
-                    <div class="event-icon"><i class="fa fa-calendar"></i></div>
+                    <div class="event-icon"><i class="bi bi-calendar-range"></i></div>
                     <div class="event-info">
                         <h4>${event.title}</h4>
                         <p>${start} - ${end}</p><hr>
+                    </div>
+                    <div class="event-info">
                         <p>${description}</p>
                     </div>
                 </div>
