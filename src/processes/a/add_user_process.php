@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__ . '/../config/db_config.php'; // Include database configuration
-require_once __DIR__ . '/../config/config.php'; // Include global configuration
+require_once __DIR__ . '/../../config/db_config.php'; // Include database configuration
+require_once __DIR__ . '/../../config/config.php'; // Include global configuration
 
 // Get form data
 $username = $_POST['username'];

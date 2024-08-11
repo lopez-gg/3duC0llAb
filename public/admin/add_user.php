@@ -16,7 +16,7 @@ check_access('ADMIN');
 </head>
 <body>
     <h1>Add New User</h1>
-    <form action="../../src/processes/add_user_process.php" method="post">
+    <form action="../../src/processes/a/add_user_process.php" method="post">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required><br><br>
 

@@ -4,12 +4,15 @@
 require_once __DIR__ . '/../../src/config/access_control.php'; 
 require_once __DIR__ . '/../../src/config/session_config.php';
 
+
+$events = require_once __DIR__ . '/../../src/processes/fetch_upcoming_events.php'; 
+
 // Check if the user is user
 check_access('USER');
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: /public/login.php'); // Redirect to login page if not logged in
+    header('Location: /public/login.php'); 
     exit;
 }
 
@@ -26,11 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
     exit;
 }
 
-// Fetch events
-$events = require_once __DIR__ . '/../../src/processes/fetch_upcoming_events.php'; 
-//Fetch top tasks
-require_once __DIR__ . '/../../src/processes/fetch_tasks.php'; 
-$topTasks = getTopTasks($userId);
 
 
 // Set timezone
@@ -49,6 +47,7 @@ $currentYear = date('Y');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../../src/css/gen.css">
+    <link rel="stylesheet" href="../../src/css/task.css">
 
     <title>Dashboard</title>
 
@@ -123,24 +122,10 @@ $currentYear = date('Y');
             <li>No events for this month.</li>
         <?php endif; ?>
     </ul>
-    
-    <h2>Upcoming due tasks</h2>
-    <ul>
-        <?php foreach ($topTasks as $task): ?>
-            <li>
-                <strong><?php echo htmlspecialchars($task['title']); ?></strong><br>
-                <?php echo htmlspecialchars($task['description']); ?><br>
-                Due Date: <?php echo htmlspecialchars($task['due_date']); ?><br>
-                Urgency: 
-                <span class="urgency-circle" data-tooltip="<?php echo htmlspecialchars(getUrgencyLabel($task['tag'])); ?>" style="background-color: <?php echo getUrgencyColor($task['tag']); ?>;"></span>
-            </li>
-        <?php endforeach; ?>
-    </ul>
-
-
-    
+  
     <!-- js scripts -->
     <script src='../../src/js/datetime.js'></script>
     <script src='../../src/js/notification.js'></script>
+    <script> src='../../src/js/tasks_urgency_and_status.js'</script>
 </body>
 </html>

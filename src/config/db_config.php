@@ -1,7 +1,7 @@
 <?php
 // db_config.php
+require_once __DIR__ . '/../config/config.php'; // Includes general configuration
 
-require_once __DIR__ . '/config.php'; // Includes general configuration
 
 // Database credentials from .env
 $host = $_ENV['DB_HOST'];

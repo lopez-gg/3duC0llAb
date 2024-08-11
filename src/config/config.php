@@ -4,7 +4,8 @@
 // Set up general error logging
 ini_set('log_errors', 1);
 error_reporting(E_ALL);
-ini_set('error_log', __DIR__ . '../../logs/error.log');
+ini_set('error_log', __DIR__ . '/../logs/error.log');
+
 
 // Function to log errors to specific files
 function log_error($message, $file) {
@@ -21,5 +22,36 @@ $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
 // Other general configurations (if any)
-// ...
+
+// Utility functions for task urgency
+function getUrgencyLabel($tag) {
+    switch ($tag) {
+        case 'UI':
+            return 'Urgent & Important';
+        case 'UNI':
+            return 'Urgent but Not Important';
+        case 'NUI':
+            return 'Not Urgent but Important';
+        case 'NUNI':
+            return 'Not Urgent & Not Important';
+        default:
+            return 'Normal';
+    }
+}
+
+function getUrgencyColor($tag) {
+    switch ($tag) {
+        case 'UI':
+            return 'red';
+        case 'UNI':
+            return 'orange';
+        case 'NUI':
+            return 'yellow';
+        case 'NUNI':
+            return 'blue';
+        default:
+            return 'white';
+    }
+}
 ?>
+

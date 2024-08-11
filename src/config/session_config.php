@@ -1,7 +1,7 @@
 <?php
 // session_config.php
 
-require_once __DIR__ . '/config.php'; // Includes general configuration
+require_once __DIR__ . '/../config/config.php'; // Includes general configuration
 
 // Optional: Set session cookie parameters for enhanced security
 session_set_cookie_params([

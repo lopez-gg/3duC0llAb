@@ -70,5 +70,6 @@ if (isset($_SESSION['user_id'])) {
     </form>
 
     <footer>EduCollab 2024</footer>
+    <script src='/src/js/base.js'></script>
 </body>
 </html>

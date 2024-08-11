@@ -16,6 +16,7 @@ $currentMonth = date('F Y'); // e.g., July 2024
     <link href='https://fullcalendar.io/releases/fullcalendar/3.9.0/fullcalendar.min.css' rel='stylesheet' />
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css' rel='stylesheet' />
     <link href="../../src/css/custom-calendar.css" rel="stylesheet" />
+    <link href="../../src/css/gen.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
@@ -26,28 +27,39 @@ $currentMonth = date('F Y'); // e.g., July 2024
     
 </head>
 <body>
-
-    <!-- Current date and time -->
-    <div id="datetime">
-        <?php echo $currentDateTime; ?>
+    <div class="sidebar">
+        <div class="logo"></div> <!-- Logo box -->
+        <div class="nav-links">
+            <a href="dashboard.php">Dashboard</a>
+            <a class='active' href="calendar.php">Calendar</a>
+        </div>
     </div>
 
-    <!-- Calendar display -->
-    <h2>PSCS Calendar</h2>
-    <div id='calendar'></div>
+    <div class="content">
+        <!-- Current date and time -->
+        <div id="datetime">
+            <?php echo $currentDateTime; ?>
+        </div>
 
-    <!-- Modal for Event Details -->
-    <div class="modal fade" id="eventDetailsModal" tabindex="-1" role="dialog" aria-labelledby="eventDetailsModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="eventDetailsModalLabel">Event Details</h5>
-                </div>
-                <div class="modal-body">
-                    <!-- Event details will be populated here -->
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <!-- Calendar display -->
+        <h2>PSCS Calendar</h2>
+        <a href="handle_events.php">Manage Events</a>
+
+        <div id='calendar'></div>
+
+        <!-- Modal for Event Details -->
+        <div class="modal fade" id="eventDetailsModal" tabindex="-1" role="dialog" aria-labelledby="eventDetailsModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="eventDetailsModalLabel">Event Details</h5>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Event details will be populated here -->
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
                 </div>
             </div>
         </div>
