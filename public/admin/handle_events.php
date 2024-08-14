@@ -61,93 +61,113 @@ function formatDate($date) {
     <link href="../../src/css/gen.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="sidebar">
-        <div class="logo"></div> <!-- Logo box -->
-        <div class="nav-links">
-            <a href="#">Dashboard</a>
-            <a href="#">Calendar</a>
+    <div class="top-nav">
+        <div class="left-section">
+            <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
+            <div class="app-name">EduCollab</div>
+        </div>
+        <div class="user-profile" id="userProfile">
+            <div class="user-icon" onclick="toggleDropdown()">U</div>
+            <div class="dropdown" id="dropdown">
+                <a href="#">Settings</a>
+                <form action="../../src/processes/logout.php" method="post">
+                    <input type="submit" name="logout" value="Logout">
+                </form>
+            </div>
         </div>
     </div>
 
-    <div class="content">
 
-        <div id="datetime">
-            <?php echo $currentDateTime; ?>
+    <div class="main">
+        <div class="sidebar" id="sidebar">
+            <div class="logo"></div> 
+            <div class="nav-links">
+                <a href="dashboard.php#">Dashboard</a>
+                <a href="calendar.php">Calendar</a>
+            </div>
         </div>
 
-        <h1>SY</h1>
-        <form action="">
-        <select name="" id="">
-            <option value=""></option>
-        </select>
-        </form>
-        <h2>Manage Events</h2>
+        <div class="content" id="content">
 
-        <button type="button" class="btn btn-primary"  onclick="window.location.href='event_form.php'">Add New Event</button>
-        <button type="button" class="btn btn-success" id="addEventButton">Add Another Event</button>
-
-        <form id="bulkEventForm" action="../../src/processes/a/add_event.php" method="POST">
-            <div id="eventContainer">
-                <!-- Event forms will be added here dynamically -->
+            <div id="datetime">
+                <?php echo $currentDateTime; ?>
             </div>
-            <button type="submit" class="btn btn-primary">Submit Events</button>
-        </form>
 
-            <table class="table table-bordered mt-4">
-                <thead>
-                    <tr>
-                        <th>Title</th>
-                        <th>Description</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="eventList">
-                <?php foreach ($events as $event): ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($event['title'] ?? ''); ?></td>
-                        <td><?php echo htmlspecialchars($event['description'] ?? ''); ?></td>
-                        <td><?php echo isset($event['start']) ? formatDate($event['start']) : ''; ?></td>
-                        <td><?php echo isset($event['end']) ? formatDate($event['end']) : ''; ?></td>
-                        <td>
-                            <form action="../../src/a/processes/a/update_event.php" method="POST" style="display:inline;">
-                                <i class="bi bi-pencil-square" type="submit" onclick="window.location.href='../../src/processes/a/update_event.php?id=<?php echo $event['id']; ?>'"></i>
-                            </form>
-                            <form action="../../src/processes/a/archive_event.php" method="POST" style="display:inline;">
-                                <input type="hidden" name="id" value="<?php echo htmlspecialchars($event['id'] ?? ''); ?>">
-                                <i type="submit" class="bi bi-archive"></i>
-                            </form>
-                        </td>
-                    </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+            <h1>SY</h1>
+            <form action="">
+            <select name="" id="">
+                <option value=""></option>
+            </select>
+            </form>
+            <h2>Manage Events</h2>
 
-    
+            <button type="button" class="btn btn-primary"  onclick="window.location.href='event_form.php'">Add New Event</button>
+            <button type="button" class="btn btn-success" id="addEventButton">Add Another Event</button>
 
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-center">
-                <li class="page-item <?php if ($currentPage <= 1) echo 'disabled'; ?>">
-                    <a class="page-link" href="?page=<?php echo $currentPage - 1; ?>" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <?php for ($page = 1; $page <= $totalPages; $page++): ?>
-                    <li class="page-item <?php if ($page == $currentPage) echo 'active'; ?>">
-                        <a class="page-link" href="?page=<?php echo $page; ?>"><?php echo $page; ?></a>
+            <form id="bulkEventForm" action="../../src/processes/a/add_event.php" method="POST">
+                <div id="eventContainer">
+                    <!-- Event forms will be added here dynamically -->
+                </div>
+                <button type="submit" class="btn btn-primary">Submit Events</button>
+            </form>
+
+                <table class="table table-bordered mt-4">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Description</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="eventList">
+                    <?php foreach ($events as $event): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($event['title'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($event['description'] ?? ''); ?></td>
+                            <td><?php echo isset($event['start']) ? formatDate($event['start']) : ''; ?></td>
+                            <td><?php echo isset($event['end']) ? formatDate($event['end']) : ''; ?></td>
+                            <td>
+                                <form action="../../src/a/processes/a/update_event.php" method="POST" style="display:inline;">
+                                    <i class="bi bi-pencil-square" type="submit" onclick="window.location.href='../../src/processes/a/update_event.php?id=<?php echo $event['id']; ?>'"></i>
+                                </form>
+                                <form action="../../src/processes/a/archive_event.php" method="POST" style="display:inline;">
+                                    <input type="hidden" name="id" value="<?php echo htmlspecialchars($event['id'] ?? ''); ?>">
+                                    <i type="submit" class="bi bi-archive"></i>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+
+        
+
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item <?php if ($currentPage <= 1) echo 'disabled'; ?>">
+                        <a class="page-link" href="?page=<?php echo $currentPage - 1; ?>" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
                     </li>
-                <?php endfor; ?>
-                <li class="page-item <?php if ($currentPage >= $totalPages) echo 'disabled'; ?>">
-                    <a class="page-link" href="?page=<?php echo $currentPage + 1; ?>" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+                    <?php for ($page = 1; $page <= $totalPages; $page++): ?>
+                        <li class="page-item <?php if ($page == $currentPage) echo 'active'; ?>">
+                            <a class="page-link" href="?page=<?php echo $page; ?>"><?php echo $page; ?></a>
+                        </li>
+                    <?php endfor; ?>
+                    <li class="page-item <?php if ($currentPage >= $totalPages) echo 'disabled'; ?>">
+                        <a class="page-link" href="?page=<?php echo $currentPage + 1; ?>" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
     <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
     <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
     <script src="../../src/js/a/handle_events.js"></script>
+    <script src="../../src/js/toggleSidebar.js"></script>
 </body>
 </html>

@@ -125,7 +125,7 @@ $currentYear = date('Y');
   
     <!-- js scripts -->
     <script src='../../src/js/datetime.js'></script>
-    <script src='../../src/js/notification.js'></script>
+    <script src='../../src/js/toggleSidebar.js'></script>
     <script> src='../../src/js/tasks_urgency_and_status.js'</script>
 </body>
 </html>

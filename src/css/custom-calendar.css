@@ -1,7 +1,7 @@
 /* custom-calendar.css */
 #calendar {
     max-width: 1000px;
-    margin: 0 auto;
+    margin: 2rem;
 }
 
 .event-tooltip {

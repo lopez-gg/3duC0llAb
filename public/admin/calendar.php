@@ -27,15 +27,33 @@ $currentMonth = date('F Y'); // e.g., July 2024
     
 </head>
 <body>
-    <div class="sidebar">
-        <div class="logo"></div> <!-- Logo box -->
-        <div class="nav-links">
-            <a href="dashboard.php">Dashboard</a>
-            <a class='active' href="calendar.php">Calendar</a>
+    <div class="top-nav">
+        <div class="left-section">
+            <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
+            <div class="app-name">Educollab</div>
+        </div>
+        <div class="user-profile" id="userProfile">
+            <div class="user-icon" onclick="toggleDropdown()">U</div>
+            <div class="dropdown" id="dropdown">
+                <a href="#">Settings</a>
+                <form action="../../src/processes/logout.php" method="post">
+                    <input type="submit" name="logout" value="Logout">
+                </form>
+            </div>
         </div>
     </div>
 
-    <div class="content">
+
+    <div class="main">
+        <div class="sidebar" id="sidebar">
+            <div class="logo"></div> 
+            <div class="nav-links">
+                <a href="dashboard.php#">Dashboard</a>
+                <a href="calendar.php">Calendar</a>
+            </div>
+        </div>
+
+        <div class="content" id="content">
         <!-- Current date and time -->
         <div id="datetime">
             <?php echo $currentDateTime; ?>
@@ -67,5 +85,6 @@ $currentMonth = date('F Y'); // e.g., July 2024
 
     <script src="../../src/js/calendar.js"></script>
     <script> src='../../src/js/datetime.js'</script>
+    <script src="../../src/js/toggleSidebar.js"></script>
 </body>
 </html>
