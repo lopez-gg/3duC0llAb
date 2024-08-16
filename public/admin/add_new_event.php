@@ -6,6 +6,8 @@
     <title>Add Event</title>
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css' rel='stylesheet' />
     <link rel="stylesheet" href="../../src/css/gen.css">
+    <link rel="stylesheet" href="../../src/css/event_form.css">
+
 </head>
 <body>
     <div class="top-nav">

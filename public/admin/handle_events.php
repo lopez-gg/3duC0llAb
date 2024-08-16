@@ -57,11 +57,6 @@ function formatDate($date) {
     return $datetime->format('F j, Y');
 }
 
-echo 'Session ID in handle_events.php: ' . session_id() . '<br>';
-echo '<pre>';
-print_r($_SESSION); // Debug output to check session data
-echo '</pre>';
-
 $successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
 $verificationMessage = isset($_SESSION['verification_message']) ? $_SESSION['verification_message'] : null;
 include '../display_message.php';
