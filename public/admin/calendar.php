@@ -68,14 +68,14 @@ $currentMonth = date('F Y'); // e.g., July 2024
         <!-- Modal for Event Details -->
         <div class="modal fade" id="eventDetailsModal" tabindex="-1" role="dialog" aria-labelledby="eventDetailsModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="eventDetailsModalLabel">Event Details</h5>
+                <div class="c-modal-content">
+                    <div class="c-modal-header">
+                        <h5 class="c-modal-title" id="eventDetailsModalLabel">Event Details</h5>
                     </div>
-                    <div class="modal-body">
+                    <div class="c-modal-body">
                         <!-- Event details will be populated here -->
                     </div>
-                    <div class="modal-footer">
+                    <div class="c-modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 /* custom-calendar.css */
 #calendar {
-    max-width: 1000px;
+    max-width: 2000px;
     margin: 2rem;
 }
 
@@ -38,33 +38,33 @@
     background-color: #ececec;
 }
 
-.modal-content {
+.c-modal-content {
     background-color: #e0f7fa; /* Light blue background */
     border-radius: 20px;
     padding: 20px;
 }
 
-.modal-header {
+.c-modal-header {
     color: rgb(54, 54, 54);
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     text-align: center;
 }
 
-.modal-body {
+.c-modal-body {
     background-color: #b2dfdb; /* Light green background */
     padding: 30px;
     border-radius: 20px;
 }
 
-.modal-footer {
+.c-modal-footer {
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
     text-align: center;
     color: rgb(1, 223,rgb(57, 57, 57));
 }
 
-.modal-footer .btn {
+.c-modal-footer .btn {
     background-color: #16e0d0; 
     color: rgb(1, 223,rgb(0, 155, 83));
     font-weight: bold;

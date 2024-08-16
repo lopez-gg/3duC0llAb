@@ -1,8 +1,36 @@
-function confirmEventDeletion(id) {
-    showModal("Confirm Deletion", "Are you sure you want to delete this event?", function() {
-        // Code to delete the event
-        $.post('../../src/processes/a/delete_event.php', { id: id }, function(response) {
-            location.reload(); // Reload the page or handle the UI update
-        });
-    });
+console.log('verify.js loaded');
+
+function openVerificationModal(formId, title = 'Confirm Action', message = 'Are you sure you want to proceed?', confirmText = 'Confirm') {
+    $('#verificationModal').data('form-id', formId);
+    $('#verificationModal').find('.modal-title').text(title);
+    $('#verificationModal').find('.modal-body p').text(message);
+    $('#verificationModal').find('.btn-danger').text(confirmText);
+    $('#verificationModal').modal('show');
 }
+
+$('#verificationModal').on('hidden.bs.modal', function () {
+    $(this).removeData('form-id');
+});
+
+$('#verificationModal').on('click', '.btn-danger', function () {
+    var formId = $('#verificationModal').data('form-id');
+    if (formId) {
+        console.log('Submitting form: ', formId);  // Debugging log
+        $.ajax({
+            url: $('#' + formId).attr('action'),
+            type: 'POST',
+            data: $('#' + formId).serialize(),
+            success: function(response) {
+                console.log('Response: ', response);  // Debugging log
+                // Redirect or update the page based on success
+                window.location.href = 'handle_events.php';  // Redirect to the page after deletion
+            },
+            error: function(xhr, status, error) {
+                console.log('Error: ', error);  // Debugging log
+            }
+        });
+        $('#verificationModal').modal('hide');  // Close the modal after submitting
+    } else {
+        console.log('No form ID found.');
+    }
+});

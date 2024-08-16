@@ -1,0 +1,15 @@
+.event-form-group{
+    border: solid 1px black;
+    padding: 1rem;
+    max-width: 800px;
+    border-radius: 5px;   
+}
+
+#eventsForm{
+    margin: 1rem;
+}
+
+#eventsForm button {
+    margin: 1em;
+    margin-left: 0;
+}

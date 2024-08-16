@@ -3,17 +3,24 @@ require_once __DIR__ . '/../../config/db_config.php';
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../config/session_config.php';
 
-$id = $_POST['id'];
+$id = $_POST['id'] ?? null;
 
-$_SESSION['verification_message'] = 'Are you sure you want to delete this event?';
-header('Location: handle_events.php');
+if (empty($id)) {
+    $_SESSION['success_message'] = 'Invalid event ID.';
+    exit;
+}
 
 try {
     $stmt = $pdo->prepare("DELETE FROM events WHERE id = ?");
-    $stmt->execute([$id]);
-    header("Location: ../../../public/admin/handle_events.php");
+    if ($stmt->execute([$id])) {
+        $_SESSION['success_message'] = 'Event successfully deleted.';
+    } else {
+        $_SESSION['success_message'] = 'Failed to delete event.';
+    }
 } catch (Exception $e) {
-    log_error('Error archiving event: ' . $e->getMessage(), 'db_errors.txt');
-    echo "Error archiving event.";
+    log_error('Error deleting event: ' . $e->getMessage(), 'db_errors.txt');
+    $_SESSION['success_message'] = 'Error deleting event.';
 }
+
+exit;
 ?>

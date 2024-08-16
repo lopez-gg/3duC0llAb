@@ -4,6 +4,14 @@ require_once __DIR__ . '/../../src/config/access_control.php';
 require_once __DIR__ . '/../../src/config/db_config.php';
 require_once __DIR__ . '/../../src/config/config.php';
 
+// Check if the user is admin
+check_access('ADMIN');
+
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header('Location: /public/login.php'); 
+    exit;
+}
 
 date_default_timezone_set('Asia/Manila'); 
 $currentDateTime = date('l, d/m/Y h:i:s A'); 
@@ -58,7 +66,6 @@ $successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_messa
 $verificationMessage = isset($_SESSION['verification_message']) ? $_SESSION['verification_message'] : null;
 include '../display_message.php';
 unset($_SESSION['success_message']);
-unset($_SESSION['verification_message']);
 
 
 
@@ -73,11 +80,11 @@ unset($_SESSION['verification_message']);
     <title>Manage Events</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css' rel='stylesheet' />
-    <link href="../../src/css/custom-calendar.css" rel="stylesheet" />
+    <!-- <link href="../../src/css/custom-calendar.css" rel="stylesheet" /> -->
     <link href="../../src/css/gen.css" rel="stylesheet" />
 </head>
 <body>
-    <!-- <div class="top-nav">
+    <div class="top-nav">
         <div class="left-section">
             <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
             <div class="app-name">EduCollab</div>
@@ -100,7 +107,7 @@ unset($_SESSION['verification_message']);
                 <a href="dashboard.php">Dashboard</a>
                 <a href="calendar.php">Calendar</a>
             </div>
-        </div> -->
+        </div>
 
         <div class="content" id="content">
             <div id="datetime">
@@ -110,11 +117,6 @@ unset($_SESSION['verification_message']);
             <h2>Manage Events</h2>
 
             <button type="button" class="btn btn-primary" onclick="window.location.href='add_new_event.php'">Add New Event</button>
-
-            <!-- Test Button to Trigger Modal -->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal">
-                Test Modal
-            </button>
 
             <table class="table table-bordered mt-4">
                 <thead>
@@ -136,12 +138,14 @@ unset($_SESSION['verification_message']);
                             <td>
                                 <form action="update_event.php" method="GET" style="display:inline;">
                                     <input type="hidden" name="id" value="<?php echo htmlspecialchars($event['id'] ?? ''); ?>">
-                                    <button type="submit"><i class="bi bi-pencil-square"></i></button>
+                                    <button type="submit" class="btn btn-normal"><i class="bi bi-pencil-square"></i></button>
                                 </form>
-                                <form action="../../src/processes/a/delete_event.php" method="POST" style="display:inline;" onsubmit="return confirmEventDeletion();">
-                                    <input type="hidden" name="id" value="<?php echo htmlspecialchars($event['id'] ?? ''); ?>">
-                                    <button type="submit"><i class="bi bi-trash3"></i></button>
+                                <form id="deleteForm_<?php echo htmlspecialchars($event['id'] ?? ''); ?>" action="../../src/processes/a/delete_event.php" method="POST" style="display:none;">
+                                <input type="hidden" name="id" value="<?php echo htmlspecialchars($event['id'] ?? ''); ?>">
                                 </form>
+                                <button type="button" class="btn btn-danger" onclick="openVerificationModal('deleteForm_<?php echo htmlspecialchars($event['id'] ?? ''); ?>', 'Confirm Deletion', 'Are you sure you want to delete this event?', 'Delete')">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -176,7 +180,7 @@ unset($_SESSION['verification_message']);
     <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
     <script src="../../src/js/toggleSidebar.js"></script>
     <script src="../../src/js/verify.js"></script>
-    <script src="../../src/js/display_message.js"></script>
+
 
     <script>
         $(window).on('load', function() {
@@ -185,10 +189,6 @@ unset($_SESSION['verification_message']);
                 setTimeout(function() {
                     $('#successModal').modal('hide');
                 }, 4500);
-            <?php endif; ?>
-
-            <?php if ($verificationMessage): ?>
-                $('#verificationModal').modal('show');
             <?php endif; ?>
         });
     </script>

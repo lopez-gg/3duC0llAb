@@ -4,6 +4,18 @@ require_once __DIR__ . '/../../src/config/access_control.php';
 require_once __DIR__ . '/../../src/config/db_config.php';
 require_once __DIR__ . '/../../src/config/config.php';
 
+// Check if the user is admin
+check_access('ADMIN');
+
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header('Location: /public/login.php'); 
+    exit;
+}
+
+date_default_timezone_set('Asia/Manila'); 
+$currentDateTime = date('l, d/m/Y h:i:s A'); 
+
 $id = isset($_GET['id']) ? $_GET['id'] : null;
 $event = [
     'title' => '',
@@ -23,7 +35,6 @@ if ($id) {
     exit;
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,6 +43,7 @@ if ($id) {
     <title>Edit Event</title>
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css' rel='stylesheet' />
     <link rel="stylesheet" href="../../src/css/gen.css">
+    <link rel="stylesheet" href="../../src/css/event_form.css">
 </head>
 <body>
     <div class="top-nav">
@@ -60,6 +72,10 @@ if ($id) {
         </div>
 
         <div class="content" id="content">
+            <div id="datetime">
+                <?php echo $currentDateTime; ?>
+            </div>
+
             <h2>Edit Event</h2>
 
             <form id="eventsForm" action="../../src/processes/a/update_event.php" method="POST">
@@ -85,13 +101,26 @@ if ($id) {
                 </div>
 
                 <button type="submit" class="btn btn-primary">Update Event</button>
+                <button type="button" class="btn btn-secondary" onclick="openDiscardChangesModal()">Cancel</button>
             </form>
         </div>
+
+        <?php include '../display_message.php'; ?>
 
         <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
         <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
         <script src="../../src/js/toggleSidebar.js"></script>
         <script src="../../src/js/verify.js"></script>
+
+        <script>
+            function openDiscardChangesModal() {
+                $('#discardChangesModal').modal('show');
+            }
+
+            $('#confirmDiscardButton').on('click', function() {
+                window.location.href = 'handle_events.php'; // Redirect to handle_events.php
+            });
+        </script>
     </div>
 </body>
 </html>

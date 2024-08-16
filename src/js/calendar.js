@@ -33,8 +33,8 @@ $(document).ready(function() {
             var end = event.end ? event.end.format("MMMM-DD") : start;
 
             var $modal = $('#eventDetailsModal');
-            $modal.find('.modal-title').text('Event Details');
-            $modal.find('.modal-body').html(`
+            $modal.find('.c-modal-title').text('Event Details');
+            $modal.find('.c-modal-body').html(`
                 <div class="event-details">
                     <div class="event-icon"><i class="bi bi-calendar-range"></i></div>
                     <div class="event-info">
