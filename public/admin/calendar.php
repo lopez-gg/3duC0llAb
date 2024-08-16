@@ -61,7 +61,7 @@ $currentMonth = date('F Y'); // e.g., July 2024
 
         <!-- Calendar display -->
         <h2>PSCS Calendar</h2>
-        <a href="handle_events.php">Manage Events</a>
+        <button><a href="handle_events.php">Manage Events</a></button>
 
         <div id='calendar'></div>
 

@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../src/config/access_control.php';
 require_once __DIR__ . '/../../src/config/session_config.php';
 
 
+
 $events = require_once __DIR__ . '/../../src/processes/fetch_upcoming_events.php'; 
 
 // Check if the user is admin
@@ -132,6 +133,7 @@ $currentYear = date('Y');
         </div>
 
     </div>
+
 
     <!-- js scripts -->
     <script src='../../src/js/datetime.js'></script>

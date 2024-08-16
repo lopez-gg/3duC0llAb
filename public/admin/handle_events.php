@@ -4,6 +4,7 @@ require_once __DIR__ . '/../../src/config/access_control.php';
 require_once __DIR__ . '/../../src/config/db_config.php';
 require_once __DIR__ . '/../../src/config/config.php';
 
+
 date_default_timezone_set('Asia/Manila'); 
 $currentDateTime = date('l, d/m/Y h:i:s A'); 
 
@@ -17,7 +18,7 @@ $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVE
 $host = $_SERVER['HTTP_HOST'];
 $baseURL = $protocol . $host . '/EduCollab/src/processes/a/fetch_manage_events.php';
 
-// Fetch paginated events using curl
+// Fetch paginated events
 $url = $baseURL . '?page=' . $currentPage;
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $url);
@@ -47,6 +48,21 @@ function formatDate($date) {
     $datetime = new DateTime($date);
     return $datetime->format('F j, Y');
 }
+
+echo 'Session ID in handle_events.php: ' . session_id() . '<br>';
+echo '<pre>';
+print_r($_SESSION); // Debug output to check session data
+echo '</pre>';
+
+$successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
+$verificationMessage = isset($_SESSION['verification_message']) ? $_SESSION['verification_message'] : null;
+include '../display_message.php';
+unset($_SESSION['success_message']);
+unset($_SESSION['verification_message']);
+
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -61,7 +77,7 @@ function formatDate($date) {
     <link href="../../src/css/gen.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="top-nav">
+    <!-- <div class="top-nav">
         <div class="left-section">
             <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
             <div class="app-name">EduCollab</div>
@@ -77,51 +93,40 @@ function formatDate($date) {
         </div>
     </div>
 
-
     <div class="main">
         <div class="sidebar" id="sidebar">
             <div class="logo"></div> 
             <div class="nav-links">
-                <a href="dashboard.php#">Dashboard</a>
+                <a href="dashboard.php">Dashboard</a>
                 <a href="calendar.php">Calendar</a>
             </div>
-        </div>
+        </div> -->
 
         <div class="content" id="content">
-
             <div id="datetime">
                 <?php echo $currentDateTime; ?>
             </div>
 
-            <h1>SY</h1>
-            <form action="">
-            <select name="" id="">
-                <option value=""></option>
-            </select>
-            </form>
             <h2>Manage Events</h2>
 
-            <button type="button" class="btn btn-primary"  onclick="window.location.href='event_form.php'">Add New Event</button>
-            <button type="button" class="btn btn-success" id="addEventButton">Add Another Event</button>
+            <button type="button" class="btn btn-primary" onclick="window.location.href='add_new_event.php'">Add New Event</button>
 
-            <form id="bulkEventForm" action="../../src/processes/a/add_event.php" method="POST">
-                <div id="eventContainer">
-                    <!-- Event forms will be added here dynamically -->
-                </div>
-                <button type="submit" class="btn btn-primary">Submit Events</button>
-            </form>
+            <!-- Test Button to Trigger Modal -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#successModal">
+                Test Modal
+            </button>
 
-                <table class="table table-bordered mt-4">
-                    <thead>
-                        <tr>
-                            <th>Title</th>
-                            <th>Description</th>
-                            <th>Start Date</th>
-                            <th>End Date</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody id="eventList">
+            <table class="table table-bordered mt-4">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="eventList">
                     <?php foreach ($events as $event): ?>
                         <tr>
                             <td><?php echo htmlspecialchars($event['title'] ?? ''); ?></td>
@@ -129,20 +134,19 @@ function formatDate($date) {
                             <td><?php echo isset($event['start']) ? formatDate($event['start']) : ''; ?></td>
                             <td><?php echo isset($event['end']) ? formatDate($event['end']) : ''; ?></td>
                             <td>
-                                <form action="../../src/a/processes/a/update_event.php" method="POST" style="display:inline;">
-                                    <i class="bi bi-pencil-square" type="submit" onclick="window.location.href='../../src/processes/a/update_event.php?id=<?php echo $event['id']; ?>'"></i>
-                                </form>
-                                <form action="../../src/processes/a/archive_event.php" method="POST" style="display:inline;">
+                                <form action="update_event.php" method="GET" style="display:inline;">
                                     <input type="hidden" name="id" value="<?php echo htmlspecialchars($event['id'] ?? ''); ?>">
-                                    <i type="submit" class="bi bi-archive"></i>
+                                    <button type="submit"><i class="bi bi-pencil-square"></i></button>
+                                </form>
+                                <form action="../../src/processes/a/delete_event.php" method="POST" style="display:inline;" onsubmit="return confirmEventDeletion();">
+                                    <input type="hidden" name="id" value="<?php echo htmlspecialchars($event['id'] ?? ''); ?>">
+                                    <button type="submit"><i class="bi bi-trash3"></i></button>
                                 </form>
                             </td>
                         </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-
-        
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
 
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
@@ -165,9 +169,31 @@ function formatDate($date) {
             </nav>
         </div>
     </div>
+
+    
+
     <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
     <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
-    <script src="../../src/js/a/handle_events.js"></script>
     <script src="../../src/js/toggleSidebar.js"></script>
+    <script src="../../src/js/verify.js"></script>
+    <script src="../../src/js/display_message.js"></script>
+
+    <script>
+        $(window).on('load', function() {
+            <?php if ($successMessage): ?>
+                $('#successModal').modal('show');
+                setTimeout(function() {
+                    $('#successModal').modal('hide');
+                }, 4500);
+            <?php endif; ?>
+
+            <?php if ($verificationMessage): ?>
+                $('#verificationModal').modal('show');
+            <?php endif; ?>
+        });
+    </script>
+
+
 </body>
 </html>
+

@@ -1,7 +1,5 @@
 <?php
-// login.php
 
-// Include necessary configurations
 require_once __DIR__ . '/../src/config/session_config.php'; 
 require_once __DIR__ . '/../src/config/db_config.php'; 
 

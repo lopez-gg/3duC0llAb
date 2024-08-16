@@ -1,23 +1,45 @@
 <?php
 require_once __DIR__ . '/../../config/db_config.php';
 require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../config/session_config.php';
 
-$titles = $_POST['title'];
-$descriptions = $_POST['description'];
-$starts = $_POST['start'];
-$ends = $_POST['end'];
+$events = isset($_POST['events']) ? $_POST['events'] : [];
 
 try {
     $pdo->beginTransaction();
     $stmt = $pdo->prepare("INSERT INTO events (title, description, event_date, end_date) VALUES (?, ?, ?, ?)");
-    for ($i = 0; $i < count($titles); $i++) {
-        $stmt->execute([$titles[$i], $descriptions[$i], $starts[$i], $ends[$i]]);
+
+    foreach ($events as $event) {
+        $title = isset($event['title']) ? $event['title'] : null;
+        $description = isset($event['description']) ? $event['description'] : null;
+        $start = isset($event['start']) ? $event['start'] : null;
+        $end = isset($event['end']) ? $event['end'] : null;
+
+        // Check if all necessary values are provided
+        if ($title && $description && $start) {
+            if (!$stmt->execute([$title, $description, $start, $end])) {
+                throw new Exception("Failed to execute statement for event: " . json_encode($event));
+            }
+        } else {
+            throw new Exception("Missing data for event: " . json_encode($event));
+        }
     }
+
+    // Commit the transaction
     $pdo->commit();
-    header("Location: ../../public/admin/handle_events.php");
+
+    // Set success message and redirect
+    $_SESSION['success_message'] = "Events added successfully!";
+    header("Location: ../../../public/admin/handle_events.php");
+    exit();
 } catch (Exception $e) {
+    // Rollback the transaction on error
     $pdo->rollBack();
-    log_error('Error adding bulk events: ' . $e->getMessage(), 'db_errors.txt');
-    echo "Error adding bulk events.";
+    // Log the error
+    log_error('Error adding events: ' . $e->getMessage(), 'db_errors.txt');
+
+    // Set error message and redirect
+    $_SESSION['error_message'] = "Failed to add events. Please try again later.";
+    header("Location: ../../../public/admin/handle_events.php");
+    exit();
 }
-?>

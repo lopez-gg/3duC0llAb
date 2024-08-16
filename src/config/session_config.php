@@ -14,7 +14,8 @@ session_set_cookie_params([
 ]);
 
 // Start the session if it hasn't been started yet
-if (session_status() == PHP_SESSION_NONE) {
+if (session_status() == PHP_SESSION_NONE) { 
+    ini_set('session.cookie_path', '/');
     session_start();
 }
 
@@ -29,4 +30,5 @@ if (isset($_SESSION['last_regeneration']) && time() - $_SESSION['last_regenerati
     session_regenerate_id(true);
     $_SESSION['last_regeneration'] = time();
 }
+
 ?>
