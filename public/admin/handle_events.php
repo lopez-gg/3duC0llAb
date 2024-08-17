@@ -130,6 +130,7 @@ unset($_SESSION['success_message']);
             <table class="table table-bordered mt-4">
                 <thead>
                     <tr>
+                        <th>#</th>
                         <th>Title</th>
                         <th>Description</th>
                         <th>Start Date</th>
@@ -138,8 +139,13 @@ unset($_SESSION['success_message']);
                     </tr>
                 </thead>
                 <tbody id="eventList">
-                    <?php foreach ($events as $event): ?>
+                    <?php 
+                        $itemsPerPage = $data['itemsPerPage'] ?? 10; 
+                        $index = ($currentPage - 1) * $itemsPerPage + 1; 
+                        foreach ($events as $event): 
+                    ?>
                         <tr>
+                            <td><?php echo $index++; ?></td> <!-- Display the index and increment it -->
                             <td><?php echo htmlspecialchars($event['title'] ?? ''); ?></td>
                             <td><?php echo htmlspecialchars($event['description'] ?? ''); ?></td>
                             <td><?php echo isset($event['start']) ? formatDate($event['start']) : ''; ?></td>

@@ -25,7 +25,8 @@ try {
     echo json_encode([
         'events' => $events,
         'totalPages' => $totalPages,
-        'currentPage' => $currentPage
+        'currentPage' => $currentPage,
+        'itemsPerPage' => $itemsPerPage
     ]);
 } catch (Exception $e) {
     log_error('Error fetching events: ' . $e->getMessage(), 'db_errors.txt');
