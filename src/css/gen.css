@@ -131,8 +131,8 @@ body {
     display: flex;
     flex: 1;
     width: 100%;
-    margin-top: 60px; /* Adjusted based on the height of the top nav */
-    overflow: hidden; /* Ensure the main container can handle overflow elements */
+    margin-top: 60px;  
+    overflow: hidden; 
 }
 
 .sidebar {
@@ -199,7 +199,11 @@ body {
     width: 100%;
 }
 
-/* message modal */
-.modal-content.success { border-color: green; }
-.modal-content.error { border-color: red; }
-.modal-content.info { border-color: blue; }
+.sort-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.sort-dropdown .dropdown-menu {
+    left: -50px; /* Adjust this value to align the dropdown */
+}

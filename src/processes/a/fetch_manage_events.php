@@ -14,7 +14,9 @@ try {
     $totalPages = ceil($totalItems / $itemsPerPage);
 
     // Fetch paginated events
-    $stmt = $pdo->prepare("SELECT id, title, description, event_date as start, end_date as end FROM events LIMIT :offset, :itemsPerPage");
+    $order = isset($_GET['order']) && $_GET['order'] === 'desc' ? 'DESC' : 'ASC';
+
+    $stmt = $pdo->prepare("SELECT id, title, description, event_date as start, end_date as end FROM events ORDER BY event_date $order LIMIT :offset, :itemsPerPage");
     $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
     $stmt->bindParam(':itemsPerPage', $itemsPerPage, PDO::PARAM_INT);
     $stmt->execute();

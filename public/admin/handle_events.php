@@ -26,8 +26,10 @@ $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVE
 $host = $_SERVER['HTTP_HOST'];
 $baseURL = $protocol . $host . '/EduCollab/src/processes/a/fetch_manage_events.php';
 
+$order = isset($_GET['order']) && $_GET['order'] === 'desc' ? 'desc' : 'asc';
+
 // Fetch paginated events
-$url = $baseURL . '?page=' . $currentPage;
+$url = $baseURL . '?page=' . $currentPage . '&order=' . $order;
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -112,6 +114,18 @@ unset($_SESSION['success_message']);
             <h2>Manage Events</h2>
 
             <button type="button" class="btn btn-primary" onclick="window.location.href='add_new_event.php'">Add New Event</button>
+            <div class="dropdown sort-dropdown">
+                <button class="btn btn-secondary dropdown-toggle" id="sortIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Sort order">
+                    <i class="bi bi-funnel"></i>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="sortIcon">
+                    <a class="dropdown-item" href="?page=<?php echo $currentPage; ?>&order=asc">Ascending</a>
+                    <a class="dropdown-item" href="?page=<?php echo $currentPage; ?>&order=desc">Descending</a>
+                </div>
+            </div>
+
+
+
 
             <table class="table table-bordered mt-4">
                 <thead>
@@ -150,27 +164,28 @@ unset($_SESSION['success_message']);
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
                     <li class="page-item <?php if ($currentPage <= 1) echo 'disabled'; ?>">
-                        <a class="page-link" href="?page=<?php echo $currentPage - 1; ?>" aria-label="Previous">
+                        <a class="page-link" href="?page=<?php echo $currentPage - 1; ?>&order=<?php echo $order; ?>" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
                     <?php for ($page = 1; $page <= $totalPages; $page++): ?>
                         <li class="page-item <?php if ($page == $currentPage) echo 'active'; ?>">
-                            <a class="page-link" href="?page=<?php echo $page; ?>"><?php echo $page; ?></a>
+                            <a class="page-link" href="?page=<?php echo $page; ?>&order=<?php echo $order; ?>"><?php echo $page; ?></a>
                         </li>
                     <?php endfor; ?>
                     <li class="page-item <?php if ($currentPage >= $totalPages) echo 'disabled'; ?>">
-                        <a class="page-link" href="?page=<?php echo $currentPage + 1; ?>" aria-label="Next">
+                        <a class="page-link" href="?page=<?php echo $currentPage + 1; ?>&order=<?php echo $order; ?>" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
+
                 </ul>
             </nav>
         </div>
     </div>
 
     
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
     <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
     <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
     <script src="../../src/js/toggleSidebar.js"></script>

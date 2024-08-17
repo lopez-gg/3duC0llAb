@@ -5,15 +5,16 @@ require_once __DIR__ . '/../src/config/access_control.php';
 require_once __DIR__ . '/../src/config/db_config.php';
 require_once __DIR__ . '/../src/config/config.php';
 
+
 $successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
 unset($_SESSION['success_message']);
 
 $verificationMessage = isset($_SESSION['verification_message']) ? $_SESSION['verification_message'] : null;
 $modalTitle = isset($_SESSION['modal_title']) ? $_SESSION['modal_title'] : 'Confirm Action';
 $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confirm_button_text'] : 'Confirm';
-
-
 ?>
+
+
 <!-- Success Modal -->
     <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
