@@ -20,3 +20,4 @@ Error adding events: SQLSTATE[HY093]: Invalid parameter number: number of bound 
 Error adding events: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'event_type' cannot be null
 Error adding events: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'event_type' cannot be null
 Error adding events: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'event_type' cannot be null
+Error adding events: Missing data for event: {"title":"event 4","description":"test","start":"2024-08-01","end":"2024-08-08"}

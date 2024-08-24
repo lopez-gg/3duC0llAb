@@ -23,7 +23,7 @@ try {
 
         // Log event data for debugging
         // Uncomment the following line to see what is being processed
-        // error_log("Processing event: " . json_encode($event));
+        error_log("Processing event: " . json_encode($event));
 
         if (!$stmt->execute([$title, $description, $start, $end, $type])) {
             throw new Exception("Failed to execute statement for event: " . json_encode($event));

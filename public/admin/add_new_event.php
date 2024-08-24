@@ -147,7 +147,7 @@ try {
                             </div>
                             <div class="form-group">
                                 <label for="type">Type:</label>
-                                <select class="form-control" name="events[0][type]" required>
+                                <select class="form-control" name="events[${eventCount}][type]" required>
                                     <option value="" disabled selected>Select an option</option>
                                     <?php foreach ($eventTypes as $eventType): ?>
                                         <option value="<?= htmlspecialchars($eventType['type'], ENT_QUOTES, 'UTF-8') ?>">
