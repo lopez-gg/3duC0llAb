@@ -4,6 +4,10 @@ require_once __DIR__ . '/../../src/config/session_config.php';
 
 //Check if the user is an admin
 check_access('ADMIN');
+
+$successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
+include '../display_message.php';
+unset($_SESSION['success_message']);
 ?>
 
 <!DOCTYPE html>
@@ -68,5 +72,20 @@ check_access('ADMIN');
             <input type="submit" value="Add User">
         </form>
     </div>
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
+    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
+    <script>
+        $(window).on('load', function() {
+            <?php if ($successMessage): ?>
+                $('#successModal').modal('show');
+                setTimeout(function() {
+                    $('#successModal').modal('hide');
+                }, 4500);
+            <?php endif; ?>
+        });
+    </script>
 </body>
 </html>

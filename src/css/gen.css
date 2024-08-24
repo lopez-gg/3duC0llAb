@@ -205,5 +205,12 @@ body {
 }
 
 .sort-dropdown .dropdown-menu {
-    left: -50px; /* Adjust this value to align the dropdown */
+    left: -50px; 
+}
+
+.filter-main-container{
+    border: 1px solid lightgray;
+    border-radius: 10px;
+    padding: 0.5rem;
+    width: fit-content;
 }

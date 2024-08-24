@@ -26,13 +26,23 @@ $event = [
 
 if ($id) {
     // Fetch event details for editing
-    $stmt = $pdo->prepare("SELECT id, title, description, event_date as start, end_date as end FROM events WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT id, title, description, event_date as start, end_date as end, event_type FROM events WHERE id = ?");
     $stmt->execute([$id]);
     $event = $stmt->fetch(PDO::FETCH_ASSOC);
 } else {
     // Redirect or handle the case where no ID is provided
     header('Location: handle_events.php');
     exit;
+}
+
+// Fetch event types from the database
+try {
+    $stmt = $pdo->query("SELECT type FROM event_types");
+    $eventTypes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    // Handle the error (you can log it or display a message)
+    log_error('Error fetching event types: ' . $e->getMessage(), '../../../logs/error.log');
+    $eventTypes = []; // Set to an empty array in case of an error
 }
 ?>
 <!DOCTYPE html>
@@ -96,7 +106,18 @@ if ($id) {
                     </div>
                     <div class="form-group">
                         <label for="end">End Date:</label>
-                        <input type="date" class="form-control" name="end" value="<?php echo htmlspecialchars($event['end']); ?>">
+                        <input type="date" class="form-control" name="end" value="<?php echo htmlspecialchars($event['end']); ?>" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="type">Type:</label>
+                        <select class="form-control" name="events[0][type]" required>
+                            <option value="" disabled selected>Select an option</option>
+                            <?php foreach ($eventTypes as $eventType): ?>
+                                <option value="<?= htmlspecialchars($eventType['type'], ENT_QUOTES, 'UTF-8') ?>">
+                                    <?= htmlspecialchars($eventType['type'], ENT_QUOTES, 'UTF-8') ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </div>
 

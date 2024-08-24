@@ -1,3 +1,32 @@
+<?php
+require_once __DIR__ . '/../../src/config/session_config.php';
+require_once __DIR__ . '/../../src/config/access_control.php';
+require_once __DIR__ . '/../../src/config/db_config.php';
+require_once __DIR__ . '/../../src/config/config.php';
+
+// Check if the user is admin
+check_access('ADMIN');
+
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header('Location: /public/login.php'); 
+    exit;
+}
+
+date_default_timezone_set('Asia/Manila'); 
+$currentDateTime = date('l, d/m/Y h:i:s A'); 
+
+// Fetch event types from the database
+try {
+    $stmt = $pdo->query("SELECT type FROM event_types");
+    $eventTypes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    // Handle the error (you can log it or display a message)
+    log_error('Error fetching event types: ' . $e->getMessage(), '../../../logs/error.log');
+    $eventTypes = []; // Set to an empty array in case of an error
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,7 +35,7 @@
     <title>Add Event</title>
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css' rel='stylesheet' />
     <link rel="stylesheet" href="../../src/css/gen.css">
-    <link rel="stylesheet" href="../../src/css/event_form.css">
+    <!-- <link rel="stylesheet" href="../../src/css/event_form.css"> -->
 
 </head>
 <body>
@@ -35,8 +64,18 @@
             </div>
         </div>
 
+       
+        
+
         <div class="content" id="content">
+
+        <!-- date and time -->
+        <div id="datetime">
+            <?php echo $currentDateTime; ?>
+        </div>
+
             <h2>Add Event</h2>
+        
 
             <form id="eventsForm" action="../../src/processes/a/add_event.php" method="POST">
                 <div id="form-container">
@@ -55,7 +94,18 @@
                         </div>
                         <div class="form-group">
                             <label for="end">End Date:</label>
-                            <input type="date" class="form-control" name="events[0][end]">
+                            <input type="date" class="form-control" name="events[0][end]" reuired>
+                        </div>
+                        <div class="form-group">
+                        <label for="type">Type:</label>
+                            <select class="form-control" name="events[0][type]" required>
+                                <option value="" disabled selected>Select an option</option>
+                                <?php foreach ($eventTypes as $eventType): ?>
+                                    <option value="<?= htmlspecialchars($eventType['type'], ENT_QUOTES, 'UTF-8') ?>">
+                                        <?= htmlspecialchars($eventType['type'], ENT_QUOTES, 'UTF-8') ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <hr>
                     </div>
@@ -93,7 +143,18 @@
                             </div>
                             <div class="form-group">
                                 <label for="end">End Date:</label>
-                                <input type="date" class="form-control" name="events[${eventCount}][end]">
+                                <input type="date" class="form-control" name="events[${eventCount}][end]" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="type">Type:</label>
+                                <select class="form-control" name="events[0][type]" required>
+                                    <option value="" disabled selected>Select an option</option>
+                                    <?php foreach ($eventTypes as $eventType): ?>
+                                        <option value="<?= htmlspecialchars($eventType['type'], ENT_QUOTES, 'UTF-8') ?>">
+                                            <?= htmlspecialchars($eventType['type'], ENT_QUOTES, 'UTF-8') ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
                             </div>
                             <hr>
                         </div>

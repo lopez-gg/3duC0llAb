@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 26, 2024 at 11:56 AM
+-- Generation Time: Aug 24, 2024 at 09:11 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -39,6 +39,34 @@ CREATE TABLE `comments` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `events`
+--
+
+CREATE TABLE `events` (
+  `id` int(11) NOT NULL,
+  `title` varchar(500) NOT NULL,
+  `description` int(11) NOT NULL,
+  `event_date` date NOT NULL,
+  `end_date` date NOT NULL,
+  `added_at` date NOT NULL DEFAULT current_timestamp(),
+  `event_type` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `event_types`
+--
+
+CREATE TABLE `event_types` (
+  `id` int(11) NOT NULL,
+  `type` varchar(100) NOT NULL,
+  `color_id` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `logins`
 --
 
@@ -48,6 +76,14 @@ CREATE TABLE `logins` (
   `login_time` timestamp NOT NULL DEFAULT current_timestamp(),
   `success` tinyint(1) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `logins`
+--
+
+INSERT INTO `logins` (`id`, `user_id`, `login_time`, `success`) VALUES
+(1, 4, '2024-08-23 11:45:21', 1),
+(2, 4, '2024-08-24 06:48:05', 1);
 
 -- --------------------------------------------------------
 
@@ -124,7 +160,8 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `username`, `firstname`, `lastname`, `gradeLevel`, `section`, `password`, `status`, `accType`, `created_at`) VALUES
 (4, 'admintest', 'admin', 'test', 'test', 'test', '$2y$10$AejWqKaXEPWFsJEa0YYEq./SBDNG3htMmHM4NPGw48R5zfvoHOmJ.', 'active', 'ADMIN', '2024-07-26 08:58:37'),
 (5, 'usertest', 'user', 'test', 'test', 'test', '$2y$10$LDw4kSr6WkVv1jZhFFYPvuqqI/c6E4kopojrW/W6YAnYiBVn.mupK', 'active', 'USER', '2024-07-26 09:25:29'),
-(6, 'newuser', 'new', 'user', 'test', 'test', '$2y$10$N75cH127LXgKVYhJQpKo5.aXTUSnRLLgTC8Mo7HRqy.L0dAVsgl5y', 'active', 'USER', '2024-07-26 09:34:28');
+(6, 'newuser', 'new', 'user', 'test', 'test', '$2y$10$N75cH127LXgKVYhJQpKo5.aXTUSnRLLgTC8Mo7HRqy.L0dAVsgl5y', 'active', 'USER', '2024-07-26 09:34:28'),
+(7, 'an', 'an', 'an', '1', 'jhgv', '$2y$10$tPAqP5ETQ.F.nCxK8XR2lOIcrFNe/hiTyW9aazNs66zKUIY5/IfNi', 'inactive', 'USER', '2024-08-24 07:10:44');
 
 --
 -- Indexes for dumped tables
@@ -138,6 +175,18 @@ ALTER TABLE `comments`
   ADD KEY `post_id` (`post_id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `parent_id` (`parent_id`);
+
+--
+-- Indexes for table `events`
+--
+ALTER TABLE `events`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `event_types`
+--
+ALTER TABLE `event_types`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `logins`
@@ -185,10 +234,22 @@ ALTER TABLE `comments`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `events`
+--
+ALTER TABLE `events`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `event_types`
+--
+ALTER TABLE `event_types`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `logins`
 --
 ALTER TABLE `logins`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `notifications`
@@ -212,7 +273,7 @@ ALTER TABLE `tasks`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables

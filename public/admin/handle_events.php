@@ -18,8 +18,11 @@ $currentDateTime = date('l, d/m/Y h:i:s A');
 
 // Default values
 $events = [];
+$month = isset($_GET['month']) ? (int)$_GET['month'] : null;
 $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $totalPages = 1;
+$startYear = 2024;
+$endYear = $startYear + 3; 
 
 // Generate the base URL dynamically
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
@@ -30,6 +33,11 @@ $order = isset($_GET['order']) && $_GET['order'] === 'desc' ? 'desc' : 'asc';
 
 // Fetch paginated events
 $url = $baseURL . '?page=' . $currentPage . '&order=' . $order;
+
+if ($month !== null) {
+    $url .= '&month=' . $month;
+}
+
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -81,6 +89,7 @@ unset($_SESSION['success_message']);
     <link href="../../src/css/gen.css" rel="stylesheet" />
 </head>
 <body>
+    <!-- top navigation -->
     <div class="top-nav">
         <div class="left-section">
             <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
@@ -97,6 +106,7 @@ unset($_SESSION['success_message']);
         </div>
     </div>
 
+    <!-- sidebar -->
     <div class="main">
         <div class="sidebar" id="sidebar">
             <div class="logo"></div> 
@@ -105,7 +115,7 @@ unset($_SESSION['success_message']);
                 <a href="calendar.php">Calendar</a>
             </div>
         </div>
-
+        <!-- date and time -->
         <div class="content" id="content">
             <div id="datetime">
                 <?php echo $currentDateTime; ?>
@@ -121,6 +131,32 @@ unset($_SESSION['success_message']);
                 <div class="dropdown-menu" aria-labelledby="sortIcon">
                     <a class="dropdown-item" href="?page=<?php echo $currentPage; ?>&order=asc">Ascending</a>
                     <a class="dropdown-item" href="?page=<?php echo $currentPage; ?>&order=desc">Descending</a>
+                </div>
+            </div>
+            
+            
+            <div class="filter-main-container">
+                Filter by
+                <div class="dropdown filter-dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Month
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="monthDropdown">
+                        <a class="dropdown-item" href="?page=<?php echo $currentPage; ?>&order=<?php echo $order; ?>&month=1">January</a>
+                        <a class="dropdown-item" href="?page=<?php echo $currentPage; ?>&order=<?php echo $order; ?>&month=2">February</a>
+                        <a class="dropdown-item" href="?page=<?php echo $currentPage; ?>&order=<?php echo $order; ?>&month=3">March</a>
+                        <!-- Add more months as needed -->
+                    </div>
+                </div>
+                <div class="dropdown filter-dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Year
+                    </button>
+                    <div class="dropdown-menu">
+                        <?php for ($year = $startYear; $year <= $endYear; $year++): ?>
+                            <a class="dropdown-item" href="?year=<?php echo $year; ?>&page=<?php echo $currentPage; ?>"><?php echo $year; ?></a>
+                        <?php endfor; ?>
+                    </div>
                 </div>
             </div>
 
@@ -170,13 +206,13 @@ unset($_SESSION['success_message']);
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
                     <li class="page-item <?php if ($currentPage <= 1) echo 'disabled'; ?>">
-                        <a class="page-link" href="?page=<?php echo $currentPage - 1; ?>&order=<?php echo $order; ?>" aria-label="Previous">
+                        <a class="page-link" href="?page=<?php echo $currentPage - 1; ?>&order=<?php echo $order; ?><?php echo $month !== null ? '&month=' . $month : ''; ?>" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
                     <?php for ($page = 1; $page <= $totalPages; $page++): ?>
                         <li class="page-item <?php if ($page == $currentPage) echo 'active'; ?>">
-                            <a class="page-link" href="?page=<?php echo $page; ?>&order=<?php echo $order; ?>"><?php echo $page; ?></a>
+                            <a class="page-link" href="?page=<?php echo $page; ?>&order=<?php echo $order; ?><?php echo $month !== null ? '&month=' . $month : ''; ?>"><?php echo $page; ?></a>
                         </li>
                     <?php endfor; ?>
                     <li class="page-item <?php if ($currentPage >= $totalPages) echo 'disabled'; ?>">
