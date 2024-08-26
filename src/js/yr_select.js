@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function() {
     const yearRangeDropdown = document.getElementById('yearRangeDropdown');
     const currentYearRangeSpan = document.getElementById('currentYearRange');
@@ -21,6 +22,45 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    const sortOptions = document.querySelectorAll('.sort-option');
+
+    sortOptions.forEach(option => {
+        option.addEventListener('click', function (e) {
+            e.preventDefault();
+            const order = this.getAttribute('data-order');
+            handleSort(order);
+        });
+    });
+});
+
+
+
+function handleSort(order) {
+    const selectedYearRange = document.getElementById('currentYearRange').textContent.trim();
+    const page = 1; // Reset to first page when sorting
+
+    fetchSortedEvents(selectedYearRange, order, page);
+}
+
+function fetchSortedEvents(yearRange, order, page) {
+    fetch('../../src/processes/a/fetch_sy_selection.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+            year_range: yearRange,
+            order: order,
+            page: page 
+        })
+    })
+    .then(response => response.json())
+    .then(data => updateEventTable(data.events))
+    .catch(error => console.error('Error fetching sorted events:', error));
+}
+
 
 function fetchEvents(yearRange) {
     fetch('../../src/processes/a/fetch_sy_selection.php', {
@@ -76,3 +116,5 @@ function updateEventTable(events) {
         tableBody.appendChild(row);
     });
 }
+
+

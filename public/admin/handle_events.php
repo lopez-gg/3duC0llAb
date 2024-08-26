@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../src/config/db_config.php';
 require_once __DIR__ . '/../../src/config/config.php';
 
 include '../../src/processes/fetch_sy.php';
+
 // Check if the user is admin
 check_access('ADMIN');
 
@@ -129,6 +130,7 @@ unset($_SESSION['success_message']);
                 <a href="calendar.php">Calendar</a>
             </div>
         </div> -->
+
         <!-- date and time -->
         <div class="content" id="content">
             <div id="datetime">
@@ -138,34 +140,37 @@ unset($_SESSION['success_message']);
             <h2>Manage Events</h2>
            
             <div class="dropdown">
-    <div class="d-flex align-items-center" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-        <h3>SY <span id="currentYearRange"><?php echo htmlspecialchars($yearRange); ?></span></h3>
-        <i class="bi bi-caret-down-fill ms-2"></i>
-    </div>
-    <ul class="dropdown-menu" id="yearRangeDropdown" aria-labelledby="dropdownMenuButton">
-        <?php foreach ($yearRanges as $range): ?>
-            <li>
-                <span class="dropdown-item" data-year-range="<?= htmlspecialchars($range['year_range'], ENT_QUOTES, 'UTF-8') ?>">
-                    <?= htmlspecialchars($range['year_range'], ENT_QUOTES, 'UTF-8') ?>
-                </span>
-            </li>
-        <?php endforeach; ?>
-    </ul>
-</div>
+            <div class="d-flex align-items-center" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <h3>SY <span id="currentYearRange"><?php echo htmlspecialchars($yearRange); ?></span></h3>
+                <i class="bi bi-caret-down-fill ms-2"></i>
+            </div>
+            <ul class="dropdown-menu" id="yearRangeDropdown" aria-labelledby="dropdownMenuButton">
+                <?php foreach ($yearRanges as $range): ?>
+                    <li>
+                        <span class="dropdown-item" data-year-range="<?= htmlspecialchars($range['year_range'], ENT_QUOTES, 'UTF-8') ?>">
+                            <?= htmlspecialchars($range['year_range'], ENT_QUOTES, 'UTF-8') ?>
+                        </span>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
 
 
 
     
-            <button type="button" class="btn btn-primary" onclick="window.location.href='add_new_event.php'">Add New Event</button>
-            <div class="dropdown sort-dropdown">
-                <button class="btn btn-secondary dropdown-toggle" id="sortIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Sort order">
-                    <i class="bi bi-funnel"></i>
-                </button>
-                <div class="dropdown-menu" aria-labelledby="sortIcon">
-                    <a class="dropdown-item" href="?page=<?php echo $currentPage; ?>&order=asc">Ascending</a>
-                    <a class="dropdown-item" href="?page=<?php echo $currentPage; ?>&order=desc">Descending</a>
-                </div>
+        <button type="button" class="btn btn-primary" onclick="window.location.href='add_new_event.php'">Add New Event</button>
+     
+        <div class="dropdown sort-dropdown">
+            <button class="btn btn-secondary dropdown-toggle" id="sortIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Sort order">
+                <i class="bi bi-funnel"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="sortIcon">
+                <a class="dropdown-item sort-option" data-order="asc" >Ascending</a>
+                <a class="dropdown-item sort-option" data-order="desc" >Descending</a>
             </div>
+        </div>
+
+
 
             <!-- Filter Button -->
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#filterModal">Filter</button>
