@@ -22,7 +22,6 @@ try {
         }
 
         // Log event data for debugging
-        // Uncomment the following line to see what is being processed
         error_log("Processing event: " . json_encode($event));
 
         if (!$stmt->execute([$title, $description, $start, $end, $type])) {
@@ -30,24 +29,16 @@ try {
         }
     }
 
-    // Commit the transaction
     $pdo->commit();
 
-    // Set success message and redirect
     $_SESSION['success_message'] = "Events added successfully!";
-    // header("Location: ../../../public/admin/handle_events.php");
-    echo 'event added';
+    header("Location: ../../../public/admin/handle_events.php");
     exit();
 } catch (Exception $e) {
-    // Rollback the transaction on error
     $pdo->rollBack();
-    // Log the error
     log_error('Error adding events: ' . $e->getMessage(), 'db_errors.txt');
-
-    // Set error message and redirect
     $_SESSION['error_message'] = "Failed to add events. Please try again later.";
-    // header("Location: ../../../public/admin/handle_events.php");
-    echo 'failed adding event lol';
+    header("Location: ../../../public/admin/handle_events.php");
     exit();
 }
 

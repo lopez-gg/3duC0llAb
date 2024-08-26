@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 24, 2024 at 09:11 AM
+-- Generation Time: Aug 24, 2024 at 05:46 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -45,12 +45,25 @@ CREATE TABLE `comments` (
 CREATE TABLE `events` (
   `id` int(11) NOT NULL,
   `title` varchar(500) NOT NULL,
-  `description` int(11) NOT NULL,
+  `description` varchar(1000) NOT NULL,
   `event_date` date NOT NULL,
   `end_date` date NOT NULL,
   `added_at` date NOT NULL DEFAULT current_timestamp(),
-  `event_type` varchar(100) NOT NULL
+  `event_type` varchar(100) NOT NULL,
+  `year_range` varchar(9) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `events`
+--
+
+INSERT INTO `events` (`id`, `title`, `description`, `event_date`, `end_date`, `added_at`, `event_type`, `year_range`) VALUES
+(1, 'event 0', 'test\r\nedit 1', '2024-08-25', '2024-08-25', '2024-08-24', 'type2', '2024-2025'),
+(2, 'event 2', 'test', '2024-08-26', '2024-08-26', '2024-08-24', 'Holiday', '2024-2025'),
+(7, 'event 3', 'test', '2024-08-26', '2024-08-26', '2024-08-24', 'Holiday', '2023-2024'),
+(8, 'event 4', 'test', '2024-08-01', '2024-08-09', '2024-08-24', 'School', '2023-2024'),
+(9, 'event 5', 'test', '2024-07-18', '2024-07-31', '2024-08-24', 'Holiday', '2025-2026'),
+(11, 'New Year', 'test', '2025-01-01', '2025-01-03', '2024-08-24', 'Holiday', '2025-2026');
 
 -- --------------------------------------------------------
 
@@ -63,6 +76,14 @@ CREATE TABLE `event_types` (
   `type` varchar(100) NOT NULL,
   `color_id` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `event_types`
+--
+
+INSERT INTO `event_types` (`id`, `type`, `color_id`) VALUES
+(1, 'Holiday', 'Orange'),
+(2, 'School', 'Green');
 
 -- --------------------------------------------------------
 
@@ -117,6 +138,28 @@ CREATE TABLE `posts` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `sy`
+--
+
+CREATE TABLE `sy` (
+  `sy_id` int(11) NOT NULL,
+  `sy_start` year(4) NOT NULL,
+  `sy_end` year(4) NOT NULL,
+  `year_range` varchar(9) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `sy`
+--
+
+INSERT INTO `sy` (`sy_id`, `sy_start`, `sy_end`, `year_range`) VALUES
+(1, '2024', '2025', '2024-2025'),
+(2, '2025', '2026', '2025-2026'),
+(3, '2023', '2024', '2023-2024');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `tasks`
 --
 
@@ -161,7 +204,13 @@ INSERT INTO `users` (`id`, `username`, `firstname`, `lastname`, `gradeLevel`, `s
 (4, 'admintest', 'admin', 'test', 'test', 'test', '$2y$10$AejWqKaXEPWFsJEa0YYEq./SBDNG3htMmHM4NPGw48R5zfvoHOmJ.', 'active', 'ADMIN', '2024-07-26 08:58:37'),
 (5, 'usertest', 'user', 'test', 'test', 'test', '$2y$10$LDw4kSr6WkVv1jZhFFYPvuqqI/c6E4kopojrW/W6YAnYiBVn.mupK', 'active', 'USER', '2024-07-26 09:25:29'),
 (6, 'newuser', 'new', 'user', 'test', 'test', '$2y$10$N75cH127LXgKVYhJQpKo5.aXTUSnRLLgTC8Mo7HRqy.L0dAVsgl5y', 'active', 'USER', '2024-07-26 09:34:28'),
-(7, 'an', 'an', 'an', '1', 'jhgv', '$2y$10$tPAqP5ETQ.F.nCxK8XR2lOIcrFNe/hiTyW9aazNs66zKUIY5/IfNi', 'inactive', 'USER', '2024-08-24 07:10:44');
+(7, 'an', 'an', 'an', '1', 'jhgv', '$2y$10$tPAqP5ETQ.F.nCxK8XR2lOIcrFNe/hiTyW9aazNs66zKUIY5/IfNi', 'inactive', 'USER', '2024-08-24 07:10:44'),
+(8, 'andg', 'an', 'an', '1', 'jhgv', '$2y$10$xUzBHzu8otBA7LnUnigWcugqCCf5eW3eC2HRgAwhywrNfgrVUXnIi', 'inactive', 'USER', '2024-08-24 07:19:54'),
+(9, 'andg', 'an', 'an', '1', 'jhgv', '$2y$10$d7yAU2LteGGIXa7nv5bEYeGBMQIotJmir0QnfLklHm2NboCJuTl3u', 'inactive', 'USER', '2024-08-24 07:20:18'),
+(10, 'user', 'fname', 'lname', 'grlvl', 'sec', '$2y$10$OLTI4QId2YXVq8KJUVhJmOeJPm2Du.vWzK9COl4VNyVihAuDMWi9W', 'inactive', 'USER', '2024-08-24 07:20:53'),
+(11, 'one', 'one', 'one', 'one', 'one', '$2y$10$rBxlKb0aeb5LbO5JSV1.AuDc5EQcv.3CqOlCpZuRFzoft9pdw47we', 'inactive', 'USER', '2024-08-24 07:22:12'),
+(12, 'two', 'two', 'two', 'two', 'two', '$2y$10$s6IG5/bDo1/leNTkyKXtZ.aUWyKsBBxhRnYZfjkBiHHsnItbhsWTm', 'inactive', 'USER', '2024-08-24 07:35:44'),
+(13, 'three', 'three', 'three', 'three', 'three', '$2y$10$Sc.6vo5LpLIPPsWmP.WoEuuYxNH0Gb1YgkjGUxaSsh3EVNVeABpNW', 'inactive', 'USER', '2024-08-24 07:39:11');
 
 --
 -- Indexes for dumped tables
@@ -180,7 +229,8 @@ ALTER TABLE `comments`
 -- Indexes for table `events`
 --
 ALTER TABLE `events`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_sy` (`year_range`);
 
 --
 -- Indexes for table `event_types`
@@ -210,6 +260,12 @@ ALTER TABLE `posts`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `sy`
+--
+ALTER TABLE `sy`
+  ADD PRIMARY KEY (`sy_id`);
+
+--
 -- Indexes for table `tasks`
 --
 ALTER TABLE `tasks`
@@ -237,13 +293,13 @@ ALTER TABLE `comments`
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `event_types`
 --
 ALTER TABLE `event_types`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `logins`
@@ -264,6 +320,12 @@ ALTER TABLE `posts`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `sy`
+--
+ALTER TABLE `sy`
+  MODIFY `sy_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
 -- AUTO_INCREMENT for table `tasks`
 --
 ALTER TABLE `tasks`
@@ -273,7 +335,7 @@ ALTER TABLE `tasks`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Constraints for dumped tables

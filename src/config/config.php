@@ -53,5 +53,12 @@ function getUrgencyColor($tag) {
             return 'white';
     }
 }
+
+function getCurrentYearRange() {
+    $currentYear = date('Y');
+    $nextYear = $currentYear + 1;
+    return "$currentYear-$nextYear";
+}
+
 ?>
 

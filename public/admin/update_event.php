@@ -4,6 +4,8 @@ require_once __DIR__ . '/../../src/config/access_control.php';
 require_once __DIR__ . '/../../src/config/db_config.php';
 require_once __DIR__ . '/../../src/config/config.php';
 
+include '../../src/processes/fetch_sy.php';
+
 // Check if the user is admin
 check_access('ADMIN');
 
@@ -90,6 +92,17 @@ try {
 
             <form id="eventsForm" action="../../src/processes/a/update_event.php" method="POST">
                 <input type="hidden" name="id" value="<?php echo htmlspecialchars($event['id']); ?>">
+                <div class="form-group">
+                    <label for="sy">School Year:</label>
+                    <select class="form-control" name="sy" required>
+                        <option value="" disabled selected>Select a school year</option>
+                        <?php foreach ($schoolYears as $schoolYear): ?>
+                            <option value="<?= htmlspecialchars($schoolYear['sy_id'], ENT_QUOTES, 'UTF-8') ?>">
+                                <?= htmlspecialchars($schoolYear['sy_start']) ?> - <?= htmlspecialchars($schoolYear['sy_end']) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
 
                 <div class="event-form-group">
                     <div class="form-group">
@@ -110,7 +123,7 @@ try {
                     </div>
                     <div class="form-group">
                         <label for="type">Type:</label>
-                        <select class="form-control" name="events[0][type]" required>
+                        <select class="form-control" name="type" required>
                             <option value="" disabled selected>Select an option</option>
                             <?php foreach ($eventTypes as $eventType): ?>
                                 <option value="<?= htmlspecialchars($eventType['type'], ENT_QUOTES, 'UTF-8') ?>">

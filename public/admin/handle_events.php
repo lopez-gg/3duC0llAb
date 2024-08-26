@@ -4,40 +4,44 @@ require_once __DIR__ . '/../../src/config/access_control.php';
 require_once __DIR__ . '/../../src/config/db_config.php';
 require_once __DIR__ . '/../../src/config/config.php';
 
+include '../../src/processes/fetch_sy.php';
 // Check if the user is admin
 check_access('ADMIN');
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: /public/login.php'); 
+    header('Location: /public/login.php');
     exit;
 }
 
-date_default_timezone_set('Asia/Manila'); 
+// Set default values for the variables
 $currentDateTime = date('l, d/m/Y h:i:s A'); 
-
-// Default values
-$events = [];
 $month = isset($_GET['month']) ? (int)$_GET['month'] : null;
+$order = isset($_GET['order']) && $_GET['order'] === 'desc' ? 'desc' : 'asc';
 $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$totalPages = 1;
-$startYear = 2024;
-$endYear = $startYear + 3; 
+$yearRange = isset($_GET['year_range']) ? $_GET['year_range'] : getCurrentYearRange();
+
 
 // Generate the base URL dynamically
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 $host = $_SERVER['HTTP_HOST'];
 $baseURL = $protocol . $host . '/EduCollab/src/processes/a/fetch_manage_events.php';
 
-$order = isset($_GET['order']) && $_GET['order'] === 'desc' ? 'desc' : 'asc';
+// Capture current parameters
+$params = [
+    'page' => $currentPage,
+    'order' => $order,
+    'month' => $month,
+    'year_range' => $currentYearRange
+];
+
+// Build URL with current parameters
+$url = $baseURL . '?' . http_build_query(array_filter($params));
+
+// Debugging: Print URL to ensure it's built correctly
+// echo "Constructed URL: " . htmlspecialchars($url) . "<br>";
 
 // Fetch paginated events
-$url = $baseURL . '?page=' . $currentPage . '&order=' . $order;
-
-if ($month !== null) {
-    $url .= '&month=' . $month;
-}
-
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -51,11 +55,19 @@ if ($response === false) {
 
 curl_close($ch);
 
-$data = json_decode($response, true);
+//Output the raw JSON response for debugging
+// header('Content-Type: application/json');
+// echo $response; // Check what this outputs
 
+$data = json_decode($response, true);
 if ($data === null) {
     die('Error decoding JSON: ' . json_last_error_msg());
 }
+
+// default sy
+$currentYear = date('Y');
+$nextYear = $currentYear + 1;
+$defaultYearRange = "$currentYear-$nextYear";
 
 $events = $data['events'] ?? [];
 $totalPages = $data['totalPages'] ?? 1;
@@ -85,12 +97,14 @@ unset($_SESSION['success_message']);
     <title>Manage Events</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css' rel='stylesheet' />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+
     <!-- <link href="../../src/css/custom-calendar.css" rel="stylesheet" /> -->
     <link href="../../src/css/gen.css" rel="stylesheet" />
 </head>
 <body>
     <!-- top navigation -->
-    <div class="top-nav">
+    <!-- <div class="top-nav">
         <div class="left-section">
             <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
             <div class="app-name">EduCollab</div>
@@ -104,17 +118,17 @@ unset($_SESSION['success_message']);
                 </form>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <!-- sidebar -->
-    <div class="main">
+    <!-- <div class="main">
         <div class="sidebar" id="sidebar">
             <div class="logo"></div> 
             <div class="nav-links">
                 <a href="dashboard.php">Dashboard</a>
                 <a href="calendar.php">Calendar</a>
             </div>
-        </div>
+        </div> -->
         <!-- date and time -->
         <div class="content" id="content">
             <div id="datetime">
@@ -122,7 +136,26 @@ unset($_SESSION['success_message']);
             </div>
 
             <h2>Manage Events</h2>
+           
+            <div class="dropdown">
+    <div class="d-flex align-items-center" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+        <h3>SY <span id="currentYearRange"><?php echo htmlspecialchars($yearRange); ?></span></h3>
+        <i class="bi bi-caret-down-fill ms-2"></i>
+    </div>
+    <ul class="dropdown-menu" id="yearRangeDropdown" aria-labelledby="dropdownMenuButton">
+        <?php foreach ($yearRanges as $range): ?>
+            <li>
+                <span class="dropdown-item" data-year-range="<?= htmlspecialchars($range['year_range'], ENT_QUOTES, 'UTF-8') ?>">
+                    <?= htmlspecialchars($range['year_range'], ENT_QUOTES, 'UTF-8') ?>
+                </span>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+</div>
 
+
+
+    
             <button type="button" class="btn btn-primary" onclick="window.location.href='add_new_event.php'">Add New Event</button>
             <div class="dropdown sort-dropdown">
                 <button class="btn btn-secondary dropdown-toggle" id="sortIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Sort order">
@@ -133,32 +166,12 @@ unset($_SESSION['success_message']);
                     <a class="dropdown-item" href="?page=<?php echo $currentPage; ?>&order=desc">Descending</a>
                 </div>
             </div>
+
+            <!-- Filter Button -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#filterModal">Filter</button>
+
             
             
-            <div class="filter-main-container">
-                Filter by
-                <div class="dropdown filter-dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Month
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="monthDropdown">
-                        <a class="dropdown-item" href="?page=<?php echo $currentPage; ?>&order=<?php echo $order; ?>&month=1">January</a>
-                        <a class="dropdown-item" href="?page=<?php echo $currentPage; ?>&order=<?php echo $order; ?>&month=2">February</a>
-                        <a class="dropdown-item" href="?page=<?php echo $currentPage; ?>&order=<?php echo $order; ?>&month=3">March</a>
-                        <!-- Add more months as needed -->
-                    </div>
-                </div>
-                <div class="dropdown filter-dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="filterDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Year
-                    </button>
-                    <div class="dropdown-menu">
-                        <?php for ($year = $startYear; $year <= $endYear; $year++): ?>
-                            <a class="dropdown-item" href="?year=<?php echo $year; ?>&page=<?php echo $currentPage; ?>"><?php echo $year; ?></a>
-                        <?php endfor; ?>
-                    </div>
-                </div>
-            </div>
 
 
 
@@ -184,11 +197,15 @@ unset($_SESSION['success_message']);
                             <td><?php echo $index++; ?></td> <!-- Display the index and increment it -->
                             <td><?php echo htmlspecialchars($event['title'] ?? ''); ?></td>
                             <td><?php echo htmlspecialchars($event['description'] ?? ''); ?></td>
-                            <td><?php echo isset($event['start']) ? formatDate($event['start']) : ''; ?></td>
-                            <td><?php echo isset($event['end']) ? formatDate($event['end']) : ''; ?></td>
+                            <td><?php echo isset($event['event_date']) ? formatDate($event['event_date']) : ''; ?></td>
+                            <td><?php echo isset($event['end_date']) ? formatDate($event['end_date']) : ''; ?></td>
+
                             <td>
                                 <form action="update_event.php" method="GET" style="display:inline;">
                                     <input type="hidden" name="id" value="<?php echo htmlspecialchars($event['id'] ?? ''); ?>">
+                                    <input type="hidden" name="type" value="<?php echo htmlspecialchars($event['event_type'] ?? ''); ?>">
+                                    <input type="hidden" name="type" value="<?php echo htmlspecialchars($event['year_range'] ?? ''); ?>">
+
                                     <button type="submit" class="btn btn-normal"><i class="bi bi-pencil-square"></i></button>
                                 </form>
                                 <form id="deleteForm_<?php echo htmlspecialchars($event['id'] ?? ''); ?>" action="../../src/processes/a/delete_event.php" method="POST" style="display:none;">
@@ -230,8 +247,12 @@ unset($_SESSION['success_message']);
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
     <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
     <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
-    <script src="../../src/js/toggleSidebar.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    <!-- <script src="../../src/js/toggleSidebar.js"></script> -->
     <script src="../../src/js/verify.js"></script>
+    <script src="../../src/js/e-filter-mod.js"></script>
+    <script src="../../src/js/yr_select.js"></script>
 
 
     <script>
@@ -243,6 +264,9 @@ unset($_SESSION['success_message']);
                 }, 4500);
             <?php endif; ?>
         });
+
+      
+
     </script>
 
 

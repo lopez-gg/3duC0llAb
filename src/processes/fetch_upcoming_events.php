@@ -20,4 +20,3 @@ try {
 // Return the events array
 return $events;
 ?>
-
