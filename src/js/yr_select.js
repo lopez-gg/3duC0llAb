@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function() {
     const yearRangeDropdown = document.getElementById('yearRangeDropdown');
     const currentYearRangeSpan = document.getElementById('currentYearRange');
@@ -21,9 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-});
 
-document.addEventListener('DOMContentLoaded', function () {
     const sortOptions = document.querySelectorAll('.sort-option');
 
     sortOptions.forEach(option => {
@@ -35,52 +32,27 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-
-
 function handleSort(order) {
     const selectedYearRange = document.getElementById('currentYearRange').textContent.trim();
     const page = 1; // Reset to first page when sorting
-
-    fetchSortedEvents(selectedYearRange, order, page);
+    fetchEvents(selectedYearRange, order, page);
 }
 
-function fetchSortedEvents(yearRange, order, page) {
-    fetch('../../src/processes/a/fetch_sy_selection.php', {
+function fetchEvents(yearRange = '', order = 'ASC', page = 1) {
+    fetch('../../src/processes/a/fetch_events.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
             year_range: yearRange,
             order: order,
-            page: page 
+            page: page
         })
     })
     .then(response => response.json())
     .then(data => updateEventTable(data.events))
-    .catch(error => console.error('Error fetching sorted events:', error));
-}
-
-
-function fetchEvents(yearRange) {
-    fetch('../../src/processes/a/fetch_sy_selection.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ year_range: yearRange })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.error) {
-            console.error('Error fetching events:', data.error);
-        } else {
-            updateEventTable(data.events);
-        }
-    })
-    .catch(error => {
-        console.error('Error fetching events:', error);
-    });
+    .catch(error => console.error('Error fetching events:', error));
 }
 
 function updateEventTable(events) {
@@ -117,4 +89,20 @@ function updateEventTable(events) {
     });
 }
 
+$(document).ready(function() {
+    $('#yearRangeDropdown .dropdown-item').click(function() {
+        var selectedYearRange = $(this).data('year-range');
+        window.location.href = updateURLParameter(window.location.href, 'year_range', selectedYearRange);
+    });
 
+    $('.sort-option').click(function() {
+        var selectedOrder = $(this).data('order');
+        window.location.href = updateURLParameter(window.location.href, 'order', selectedOrder);
+    });
+});
+
+function updateURLParameter(url, param, paramVal) {
+    var newUrl = new URL(url);
+    newUrl.searchParams.set(param, paramVal);
+    return newUrl.toString();
+}

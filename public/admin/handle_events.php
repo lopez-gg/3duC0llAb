@@ -33,7 +33,7 @@ $params = [
     'page' => $currentPage,
     'order' => $order,
     'month' => $month,
-    'year_range' => $currentYearRange
+    'year_range' => $yearRange
 ];
 
 // Build URL with current parameters
@@ -173,7 +173,7 @@ unset($_SESSION['success_message']);
 
 
             <!-- Filter Button -->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#filterModal">Filter</button>
+            <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#filterModal">Filter</button>-->
 
             
             
@@ -277,4 +277,3 @@ unset($_SESSION['success_message']);
 
 </body>
 </html>
-
