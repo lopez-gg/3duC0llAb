@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../../src/config/session_config.php';
 require_once __DIR__ . '/../../src/config/access_control.php';
 require_once __DIR__ . '/../../src/config/db_config.php';
@@ -23,12 +24,14 @@ $event = [
     'title' => '',
     'description' => '',
     'start' => '',
-    'end' => ''
+    'end' => '',
+    'type' => '',
+    'year_range' => ''
 ];
 
 if ($id) {
     // Fetch event details for editing
-    $stmt = $pdo->prepare("SELECT id, title, description, event_date as start, end_date as end, event_type FROM events WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT id, title, description, event_date as start, end_date as end, event_type as type, year_range FROM events WHERE id = ?");
     $stmt->execute([$id]);
     $event = $stmt->fetch(PDO::FETCH_ASSOC);
 } else {
@@ -44,7 +47,7 @@ try {
 } catch (PDOException $e) {
     // Handle the error (you can log it or display a message)
     log_error('Error fetching event types: ' . $e->getMessage(), '../../../logs/error.log');
-    $eventTypes = []; // Set to an empty array in case of an error
+    $eventTypes = []; 
 }
 ?>
 <!DOCTYPE html>
@@ -92,19 +95,21 @@ try {
 
             <form id="eventsForm" action="../../src/processes/a/update_event.php" method="POST">
                 <input type="hidden" name="id" value="<?php echo htmlspecialchars($event['id']); ?>">
-                <div class="form-group">
-                    <label for="sy">School Year:</label>
-                    <select class="form-control" name="sy" required>
-                        <option value="" disabled selected>Select a school year</option>
-                        <?php foreach ($schoolYears as $schoolYear): ?>
-                            <option value="<?= htmlspecialchars($schoolYear['sy_id'], ENT_QUOTES, 'UTF-8') ?>">
-                                <?= htmlspecialchars($schoolYear['sy_start']) ?> - <?= htmlspecialchars($schoolYear['sy_end']) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
 
                 <div class="event-form-group">
+                    <div class="form-group">
+                        <label for="year_range">School Year:</label>
+                        <select class="form-control" name="year_range" required>
+                            <option value="<?= htmlspecialchars($event['year_range'], ENT_QUOTES, 'UTF-8') ?>" selected>
+                                <?= htmlspecialchars($event['year_range'], ENT_QUOTES, 'UTF-8') ?>
+                            </option>
+                            <?php foreach ($yearRanges as $range): ?>
+                                <option value="<?= htmlspecialchars($range['year_range'], ENT_QUOTES, 'UTF-8') ?>">
+                                    <?= htmlspecialchars($range['year_range'], ENT_QUOTES, 'UTF-8') ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                     <div class="form-group">
                         <label for="title">Title:</label>
                         <input type="text" class="form-control" name="title" value="<?php echo htmlspecialchars($event['title']); ?>" required>
@@ -124,7 +129,9 @@ try {
                     <div class="form-group">
                         <label for="type">Type:</label>
                         <select class="form-control" name="type" required>
-                            <option value="" disabled selected>Select an option</option>
+                            <option value="<?= htmlspecialchars($event['type'], ENT_QUOTES, 'UTF-8') ?>" selected>
+                                <?= htmlspecialchars($event['type'], ENT_QUOTES, 'UTF-8') ?>
+                            </option>
                             <?php foreach ($eventTypes as $eventType): ?>
                                 <option value="<?= htmlspecialchars($eventType['type'], ENT_QUOTES, 'UTF-8') ?>">
                                     <?= htmlspecialchars($eventType['type'], ENT_QUOTES, 'UTF-8') ?>
@@ -137,14 +144,17 @@ try {
                 <button type="submit" class="btn btn-primary">Update Event</button>
                 <button type="button" class="btn btn-secondary" onclick="openDiscardChangesModal()">Cancel</button>
             </form>
+
+
         </div>
 
-        <?php include '../display_message.php'; ?>
+        <?php include '../display_mod.php'; ?>
 
         <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
         <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
         <script src="../../src/js/toggleSidebar.js"></script>
         <script src="../../src/js/verify.js"></script>
+        <script src="../../src/js/e_actions.js"></script>
 
         <script>
             function openDiscardChangesModal() {

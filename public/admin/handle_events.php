@@ -82,7 +82,7 @@ function formatDate($date) {
 
 $successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
 $verificationMessage = isset($_SESSION['verification_message']) ? $_SESSION['verification_message'] : null;
-include '../display_message.php';
+include '../display_mod.php';
 unset($_SESSION['success_message']);
 
 
@@ -157,8 +157,11 @@ unset($_SESSION['success_message']);
 
 
 
-    
-        <button type="button" class="btn btn-primary" onclick="window.location.href='add_new_event.php'">Add New Event</button>
+        
+        <button type="button" class="btn btn-primary" onclick="window.location.href='add_new_event.php?sy=<?= htmlspecialchars($yearRange, ENT_QUOTES, 'UTF-8') ?>'">
+            Add New Event
+        </button>
+
      
         <div class="dropdown sort-dropdown">
             <button class="btn btn-secondary dropdown-toggle" id="sortIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Sort order">
@@ -209,7 +212,7 @@ unset($_SESSION['success_message']);
                                 <form action="update_event.php" method="GET" style="display:inline;">
                                     <input type="hidden" name="id" value="<?php echo htmlspecialchars($event['id'] ?? ''); ?>">
                                     <input type="hidden" name="type" value="<?php echo htmlspecialchars($event['event_type'] ?? ''); ?>">
-                                    <input type="hidden" name="type" value="<?php echo htmlspecialchars($event['year_range'] ?? ''); ?>">
+                                    <input type="hidden" name="year_range" value="<?php echo htmlspecialchars($event['year_range'] ?? ''); ?>">
 
                                     <button type="submit" class="btn btn-normal"><i class="bi bi-pencil-square"></i></button>
                                 </form>
@@ -219,6 +222,7 @@ unset($_SESSION['success_message']);
                                 <button type="button" class="btn btn-danger" onclick="openVerificationModal('deleteForm_<?php echo htmlspecialchars($event['id'] ?? ''); ?>', 'Confirm Deletion', 'Are you sure you want to delete this event?', 'Delete')">
                                     <i class="bi bi-trash3"></i>
                                 </button>
+
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -258,6 +262,7 @@ unset($_SESSION['success_message']);
     <script src="../../src/js/verify.js"></script>
     <script src="../../src/js/e-filter-mod.js"></script>
     <script src="../../src/js/yr_select.js"></script>
+    <script src="../../src/js/e_actions.js"></script>
 
 
     <script>

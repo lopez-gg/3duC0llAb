@@ -18,6 +18,7 @@ try {
         $_SESSION['success_message'] = 'Failed to delete event.';
     }
 } catch (Exception $e) {
+    echo json_encode(['status' => 'error', 'message' => 'Failed deleting event.']);
     log_error('Error deleting event: ' . $e->getMessage(), 'db_errors.txt');
     $_SESSION['success_message'] = 'Error deleting event.';
 }

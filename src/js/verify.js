@@ -1,6 +1,6 @@
-console.log('verify.js loaded');
 
-function openVerificationModal(formId, title = 'Confirm Action', message = 'Are you sure you want to proceed?', confirmText = 'Confirm') {
+
+function openVerificationModal(formId, title = '', message = '', confirmText = '') {
     $('#verificationModal').data('form-id', formId);
     $('#verificationModal').find('.modal-title').text(title);
     $('#verificationModal').find('.modal-body p').text(message);

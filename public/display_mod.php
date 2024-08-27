@@ -45,18 +45,16 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
                 </button>
             </div>
             <div class="modal-body">
-                <p>Are you sure you want to proceed?</p>
+                <p id="verificationMessage">Are you sure you want to proceed?</p>
             </div>
             <div class="modal-footer">
-                <form id="verificationForm" action="" method="POST">
-                    <input type="hidden" name="confirm" value="yes">
-                    <button type="submit" class="btn btn-danger">Confirm</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                </form>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmActionButton">Confirm</button>
             </div>
         </div>
     </div>
 </div>
+
 
 <!-- Discard Changes Modal -->
 <div class="modal fade" id="discardChangesModal" tabindex="-1" role="dialog" aria-labelledby="discardChangesModalLabel" aria-hidden="true">
@@ -79,35 +77,4 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
     </div>
 </div>
 
-<!-- Filter Modal
-<div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="filterModalLabel">Filter Events</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="filterForm">
-                    <div class="mb-3">
-                        <label for="syStart" class="form-label">School Year Start (optional)</label>
-                        <input type="number" class="form-control" id="syStart" placeholder="YYYY" min="2000">
-                    </div>
-                    <div class="mb-3">
-                        <label for="syEnd" class="form-label">School Year End (optional)</label>
-                        <input type="number" class="form-control" id="syEnd" placeholder="YYYY" min="2000">
-                    </div>
-                    <div class="mb-3">
-                        <label for="monthStart" class="form-label">Month Start (optional)</label>
-                        <input type="number" class="form-control" id="monthStart" placeholder="1-12" min="1" max="12">
-                    </div>
-                    <div class="mb-3">
-                        <label for="monthEnd" class="form-label">Month End (optional)</label>
-                        <input type="number" class="form-control" id="monthEnd" placeholder="1-12" min="1" max="12">
-                    </div>
-                    <button type="button" class="btn btn-primary" id="applyFilters">Apply Filters</button>
-                </form>
-            </div>
-        </div>
-    </div> 
-</div>-->
+ 

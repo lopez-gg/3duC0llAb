@@ -15,6 +15,8 @@ if (!isset($_SESSION['user_id'])) {
 
 date_default_timezone_set('Asia/Manila'); 
 $currentDateTime = date('l, d/m/Y h:i:s A'); 
+$sy = $_GET['sy'] ?? null;
+
 
 // Fetch event types from the database
 try {
@@ -73,33 +75,83 @@ try {
         <div id="datetime">
             <?php echo $currentDateTime; ?>
         </div>
-
+            <h3>SY <?php echo $sy?></h3>
             <h2>Add Event</h2>
         
+        <form id="eventsForm" action="../../src/processes/a/add_event.php" method="POST">
+            <div id="form-container">
+                <div class="event-form-group">
+                    <input type="hidden" name="events[0][year_range]" value="<?= htmlspecialchars($sy, ENT_QUOTES, 'UTF-8') ?>">
+                    <div class="form-group">
+                        <label for="title">Title:</label>
+                        <input type="text" class="form-control" name="events[0][title]" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description:</label>
+                        <textarea class="form-control" name="events[0][description]" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="start">Start Date:</label>
+                        <input type="date" class="form-control" name="events[0][start]" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="end">End Date:</label>
+                        <input type="date" class="form-control" name="events[0][end]" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="type">Type:</label>
+                        <select class="form-control" name="events[0][type]" required>
+                            <option value="" disabled selected>Set event type</option>
+                            <?php foreach ($eventTypes as $eventType): ?>
+                                <option value="<?= htmlspecialchars($eventType['type'], ENT_QUOTES, 'UTF-8') ?>">
+                                    <?= htmlspecialchars($eventType['type'], ENT_QUOTES, 'UTF-8') ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <hr>
+                </div>
+            </div>
 
-            <form id="eventsForm" action="../../src/processes/a/add_event.php" method="POST">
-                <div id="form-container">
+            <button type="submit" class="btn btn-primary">Submit All Events</button>
+        </form>
+
+        <button type="button" class="btn btn-secondary" id="addNewEvent">Add New Event</button>
+
+
+        <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
+        <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
+        <script src="../../src/js/toggleSidebar.js"></script>
+        <script src="../../src/js/verify.js"></script>
+        
+        <script>
+            $(document).ready(function() {
+            var eventCount = 1;
+
+            $('#addNewEvent').click(function() {
+                var newForm = `
                     <div class="event-form-group">
+                        <input type="hidden" name="events[${eventCount}][year_range]" value="<?= htmlspecialchars($sy, ENT_QUOTES, 'UTF-8') ?>">
                         <div class="form-group">
                             <label for="title">Title:</label>
-                            <input type="text" class="form-control" name="events[0][title]" required>
+                            <input type="text" class="form-control" name="events[${eventCount}][title]" required>
                         </div>
                         <div class="form-group">
                             <label for="description">Description:</label>
-                            <textarea class="form-control" name="events[0][description]" required></textarea>
+                            <textarea class="form-control" name="events[${eventCount}][description]" required></textarea>
                         </div>
                         <div class="form-group">
                             <label for="start">Start Date:</label>
-                            <input type="date" class="form-control" name="events[0][start]" required>
+                            <input type="date" class="form-control" name="events[${eventCount}][start]" required>
                         </div>
                         <div class="form-group">
                             <label for="end">End Date:</label>
-                            <input type="date" class="form-control" name="events[0][end]" reuired>
+                            <input type="date" class="form-control" name="events[${eventCount}][end]" required>
                         </div>
                         <div class="form-group">
-                        <label for="type">Type:</label>
-                            <select class="form-control" name="events[0][type]" required>
-                                <option value="" disabled selected>Select an option</option>
+                            <label for="type">Type:</label>
+                            <select class="form-control" name="events[${eventCount}][type]" required>
+                                <option value="" disabled selected>Set event type</option>
                                 <?php foreach ($eventTypes as $eventType): ?>
                                     <option value="<?= htmlspecialchars($eventType['type'], ENT_QUOTES, 'UTF-8') ?>">
                                         <?= htmlspecialchars($eventType['type'], ENT_QUOTES, 'UTF-8') ?>
@@ -109,60 +161,12 @@ try {
                         </div>
                         <hr>
                     </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Submit All Events</button>
-            </form>
-
-            <button type="button" class="btn btn-secondary" id="addNewEvent">Add New Event</button>
-        </div>
-
-        <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
-        <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
-        <script src="../../src/js/toggleSidebar.js"></script>
-        <script src="../../src/js/verify.js"></script>
-        
-        <script>
-            $(document).ready(function() {
-                var eventCount = 1; // Start from 1 since the initial form is already present
-
-                $('#addNewEvent').click(function() {
-                    var newForm = `
-                        <div class="event-form-group">
-                            <div class="form-group">
-                                <label for="title">Title:</label>
-                                <input type="text" class="form-control" name="events[${eventCount}][title]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="description">Description:</label>
-                                <textarea class="form-control" name="events[${eventCount}][description]" required></textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="start">Start Date:</label>
-                                <input type="date" class="form-control" name="events[${eventCount}][start]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="end">End Date:</label>
-                                <input type="date" class="form-control" name="events[${eventCount}][end]" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="type">Type:</label>
-                                <select class="form-control" name="events[${eventCount}][type]" required>
-                                    <option value="" disabled selected>Select an option</option>
-                                    <?php foreach ($eventTypes as $eventType): ?>
-                                        <option value="<?= htmlspecialchars($eventType['type'], ENT_QUOTES, 'UTF-8') ?>">
-                                            <?= htmlspecialchars($eventType['type'], ENT_QUOTES, 'UTF-8') ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                            <hr>
-                        </div>
-                    `;
-                    $('#form-container').append(newForm);
-                    eventCount++;
+                `;
+                $('#form-container').append(newForm);
+                eventCount++;
                 });
             });
+        </script>
         </script>
     </div>
 </body>

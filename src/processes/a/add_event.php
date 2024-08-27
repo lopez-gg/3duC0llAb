@@ -7,9 +7,10 @@ $events = isset($_POST['events']) ? $_POST['events'] : [];
 
 try {
     $pdo->beginTransaction();
-    $stmt = $pdo->prepare("INSERT INTO events (title, description, event_date, end_date, event_type ) VALUES (?, ?, ?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT INTO events (title, description, event_date, end_date, event_type, year_range) VALUES (?, ?, ?, ?, ?, ?)");
 
     foreach ($events as $event) {
+        $sy = isset($event['year_range']) ? $event['year_range'] : null;
         $title = isset($event['title']) ? $event['title'] : null;
         $description = isset($event['description']) ? $event['description'] : null;
         $start = isset($event['start']) ? $event['start'] : null;
@@ -17,14 +18,11 @@ try {
         $type = isset($event['type']) ? $event['type'] : null;
 
         // Validate required fields
-        if (!$title || !$description || !$start || !$type) {
+        if (!$sy || !$title || !$description || !$start || !$end || !$type) {
             throw new Exception("Missing data for event: " . json_encode($event));
         }
 
-        // Log event data for debugging
-        error_log("Processing event: " . json_encode($event));
-
-        if (!$stmt->execute([$title, $description, $start, $end, $type])) {
+        if (!$stmt->execute([$title, $description, $start, $end, $type, $sy])) {
             throw new Exception("Failed to execute statement for event: " . json_encode($event));
         }
     }
@@ -41,5 +39,4 @@ try {
     header("Location: ../../../public/admin/handle_events.php");
     exit();
 }
-
 ?>
