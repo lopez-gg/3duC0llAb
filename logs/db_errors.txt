@@ -28,3 +28,6 @@ Error adding events: Missing data for event: {"title":"add 2 a","description":"s
 Error adding events: Missing data for event: {"title":"d","description":"d","start":"2024-08-29","end":"2024-08-30","type":"Holiday"}
 Error adding events: Missing data for event: {"title":"as","description":"e","start":"2024-08-29","end":"2024-09-04","type":"Holiday"}
 Error adding events: Missing data for event: {"title":"sgd","description":"sdg","start":"2024-09-02","end":"2024-09-04","type":"Holiday"}
+Error updating event: Missing data for event: {"id":"15","year_range":"2024-2025","title":"RAMEN","description":"hdsfh","start":"2024-08-30","end":"2024-08-31","type":"Holiday"}
+Error updating event: Missing data for event: {"id":"15","year_range":"2024-2025","title":"ARMEN","description":"hdsfh","start":"2024-08-30","end":"2024-08-31","type":"Holiday"}
+Error updating event: Missing data for event: {"id":"15","year_range":"2024-2025","title":"LEVI","description":"hdsfh","start":"2024-08-30","end":"2024-08-31","type":"Holiday"}

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 24, 2024 at 05:46 PM
+-- Generation Time: Aug 27, 2024 at 05:12 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -58,12 +58,12 @@ CREATE TABLE `events` (
 --
 
 INSERT INTO `events` (`id`, `title`, `description`, `event_date`, `end_date`, `added_at`, `event_type`, `year_range`) VALUES
-(1, 'event 0', 'test\r\nedit 1', '2024-08-25', '2024-08-25', '2024-08-24', 'type2', '2024-2025'),
-(2, 'event 2', 'test', '2024-08-26', '2024-08-26', '2024-08-24', 'Holiday', '2024-2025'),
-(7, 'event 3', 'test', '2024-08-26', '2024-08-26', '2024-08-24', 'Holiday', '2023-2024'),
-(8, 'event 4', 'test', '2024-08-01', '2024-08-09', '2024-08-24', 'School', '2023-2024'),
-(9, 'event 5', 'test', '2024-07-18', '2024-07-31', '2024-08-24', 'Holiday', '2025-2026'),
-(11, 'New Year', 'test', '2025-01-01', '2025-01-03', '2024-08-24', 'Holiday', '2025-2026');
+(1, 'event 0', 'test\r\nedit 1\r\nedit 2', '2025-08-25', '2026-08-25', '2024-08-24', 'Holiday', '2025-2026'),
+(2, 'event 2', 'test edit', '2024-08-26', '2024-08-26', '2024-08-24', 'Holiday', '2025-2026'),
+(11, 'New Year', 'test', '2025-01-01', '2025-01-03', '2024-08-24', 'Holiday', '2025-2026'),
+(13, 'sdgv', 'sdg', '2024-08-29', '2024-08-31', '2024-08-27', 'School', '2024-2025'),
+(14, 'add 2 a', 'sy24-25', '2024-10-02', '2024-10-28', '2024-08-27', 'School', '2025-2026'),
+(15, 'sdfs', 'hdsfh', '2024-08-30', '2024-08-31', '2024-08-27', 'Holiday', '2024-2025');
 
 -- --------------------------------------------------------
 
@@ -104,7 +104,18 @@ CREATE TABLE `logins` (
 
 INSERT INTO `logins` (`id`, `user_id`, `login_time`, `success`) VALUES
 (1, 4, '2024-08-23 11:45:21', 1),
-(2, 4, '2024-08-24 06:48:05', 1);
+(2, 4, '2024-08-24 06:48:05', 1),
+(3, 4, '2024-08-25 01:50:12', 1),
+(4, 4, '2024-08-25 08:37:49', 1),
+(5, 4, '2024-08-25 17:17:57', 1),
+(6, 4, '2024-08-26 01:45:43', 1),
+(7, 4, '2024-08-27 05:13:37', 0),
+(8, 4, '2024-08-27 05:13:48', 1),
+(9, 4, '2024-08-27 06:42:16', 1),
+(10, 4, '2024-08-27 07:06:02', 1),
+(11, 4, '2024-08-27 07:07:29', 1),
+(12, 4, '2024-08-27 07:12:43', 1),
+(13, 4, '2024-08-27 14:45:48', 1);
 
 -- --------------------------------------------------------
 
@@ -143,8 +154,6 @@ CREATE TABLE `posts` (
 
 CREATE TABLE `sy` (
   `sy_id` int(11) NOT NULL,
-  `sy_start` year(4) NOT NULL,
-  `sy_end` year(4) NOT NULL,
   `year_range` varchar(9) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -152,10 +161,10 @@ CREATE TABLE `sy` (
 -- Dumping data for table `sy`
 --
 
-INSERT INTO `sy` (`sy_id`, `sy_start`, `sy_end`, `year_range`) VALUES
-(1, '2024', '2025', '2024-2025'),
-(2, '2025', '2026', '2025-2026'),
-(3, '2023', '2024', '2023-2024');
+INSERT INTO `sy` (`sy_id`, `year_range`) VALUES
+(1, '2024-2025'),
+(2, '2025-2026'),
+(3, '2023-2024');
 
 -- --------------------------------------------------------
 
@@ -293,7 +302,7 @@ ALTER TABLE `comments`
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `event_types`
@@ -305,7 +314,7 @@ ALTER TABLE `event_types`
 -- AUTO_INCREMENT for table `logins`
 --
 ALTER TABLE `logins`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `notifications`

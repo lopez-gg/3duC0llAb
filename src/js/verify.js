@@ -12,6 +12,7 @@ $('#verificationModal').on('hidden.bs.modal', function () {
     $(this).removeData('form-id');
 });
 
+
 $('#verificationModal').on('click', '.btn-danger', function () {
     var formId = $('#verificationModal').data('form-id');
     if (formId) {

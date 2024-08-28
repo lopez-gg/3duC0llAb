@@ -3,40 +3,56 @@ require_once __DIR__ . '/../../config/db_config.php';
 require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../config/session_config.php';
 
-$events = isset($_POST['events']) ? $_POST['events'] : [];
+// Fetch the event data from the POST request
+$event_id = isset($_POST['id']) ? $_POST['id'] : null;
+$sy = isset($_POST['year_range']) ? $_POST['year_range'] : null;
+$title = isset($_POST['title']) ? $_POST['title'] : null;
+$description = isset($_POST['description']) ? $_POST['description'] : null;
+$start = isset($_POST['start']) ? $_POST['start'] : null;
+$end = isset($_POST['end']) ? $_POST['end'] : null;
+$type = isset($_POST['type']) ? $_POST['type'] : null;
 
 try {
-    $pdo->beginTransaction();
-    $stmt = $pdo->prepare("INSERT INTO events (title, description, event_date, end_date, event_type, year_range) VALUES (?, ?, ?, ?, ?, ?)");
-
-    foreach ($events as $event) {
-        $sy = isset($event['year_range']) ? $event['year_range'] : null;
-        $title = isset($event['title']) ? $event['title'] : null;
-        $description = isset($event['description']) ? $event['description'] : null;
-        $start = isset($event['start']) ? $event['start'] : null;
-        $end = isset($event['end']) ? $event['end'] : null;
-        $type = isset($event['type']) ? $event['type'] : null;
-
-        // Validate required fields
-        if (!$sy || !$title || !$description || !$start || !$end || !$type) {
-            throw new Exception("Missing data for event: " . json_encode($event));
-        }
-
-        if (!$stmt->execute([$title, $description, $start, $end, $type, $sy])) {
-            throw new Exception("Failed to execute statement for event: " . json_encode($event));
-        }
+    // Validate required fields
+    if (!$event_id || !$sy || !$title || !$description || !$start || !$end || !$type) {
+        throw new Exception("Missing data for event: " . json_encode($_POST));
     }
 
+    // Begin transaction
+    $pdo->beginTransaction();
+
+    // Prepare the SQL update statement
+    $stmt = $pdo->prepare("
+        UPDATE events
+        SET title = ?, description = ?, event_date = ?, end_date = ?, event_type = ?, year_range = ?
+        WHERE id = ?
+    ");
+
+    // Execute the statement with the correct parameters
+    if (!$stmt->execute([$title, $description, $start, $end, $type, $sy, $event_id])) {
+        throw new Exception("Failed to execute statement for event: " . json_encode($_POST));
+    }
+
+    // Commit the transaction
     $pdo->commit();
 
-    $_SESSION['success_message'] = "Events added successfully!";
-    header("Location: ../../../public/admin/handle_events.php");
+    // Set success message and redirect
+    $_SESSION['success_message'] = "Event updated successfully!";
+    var_dump($event_id, $title, $description, $start, $end, $type, $sy);
+
+    // header("Location: ../../../public/admin/handle_events.php");
     exit();
+
 } catch (Exception $e) {
-    $pdo->rollBack();
-    log_error('Error adding events: ' . $e->getMessage(), 'db_errors.txt');
-    $_SESSION['error_message'] = "Failed to add events. Please try again later.";
-    header("Location: ../../../public/admin/handle_events.php");
+    // Roll back transaction if active
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+    log_error('Error updating event: ' . $e->getMessage(), 'db_errors.txt');
+    $_SESSION['error_message'] = "Failed to update event. Please try again later.";
+    var_dump($event_id, $title, $description, $start, $end, $type, $sy);
+
+    // header("Location: ../../../public/admin/handle_events.php");
     exit();
 }
 ?>
