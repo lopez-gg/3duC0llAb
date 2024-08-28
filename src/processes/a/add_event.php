@@ -30,7 +30,7 @@ try {
     $pdo->commit();
 
     $_SESSION['success_message'] = "Events added successfully!";
-    header("Location: ../../../public/admin/handle_events.php");
+    header("Location: ../../../public/admin/handle_events.php?");
     exit();
 } catch (Exception $e) {
     $pdo->rollBack();

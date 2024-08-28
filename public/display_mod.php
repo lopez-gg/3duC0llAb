@@ -5,7 +5,7 @@ require_once __DIR__ . '/../src/config/access_control.php';
 require_once __DIR__ . '/../src/config/db_config.php';
 require_once __DIR__ . '/../src/config/config.php';
 
-
+$successTitle = isset($_SESSION['success_title']) ? $_SESSION['success_title'] : null;
 $successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
 unset($_SESSION['success_message']);
 
@@ -21,7 +21,11 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <!-- <h5 class="modal-title" id="successModalLabel"></h5> -->
+                    <h5 class="modal-title" id="successModalLabel">
+                    <?php if ($successTitle): ?>
+                        <?php echo htmlspecialchars($successTitle, ENT_QUOTES, 'UTF-8'); ?>
+                    <?php endif; ?>
+                    </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -73,6 +77,33 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-danger" id="confirmDiscardButton">Discard Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- new sy calendar modal -->
+<div class="modal fade" id="yearRangeModal" tabindex="-1" role="dialog" aria-labelledby="yearRangeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="yearRangeModalLabel">Enter New School Year</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="yearRangeForm">
+                    <div class="form-group">
+                        <label for="startYear">Start Year:</label>
+                        <input type="number" class="form-control" id="startYear" name="startYear" min="1900" max="2099" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endYear">End Year:</label>
+                        <input type="number" class="form-control" id="endYear" name="endYear" min="1900" max="2099" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save and Proceed</button>
+                </form>
             </div>
         </div>
     </div>

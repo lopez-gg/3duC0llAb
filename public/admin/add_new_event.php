@@ -116,7 +116,7 @@ try {
                 </div>
             </div>
 
-            <button type="submit" class="btn btn-primary">Submit All Events</button>
+            <button type="submit" class="btn btn-primary">Save Events</button>
         </form>
 
         <button type="button" class="btn btn-secondary" id="addNewEvent">Add New Event</button>

@@ -80,6 +80,7 @@ function formatDate($date) {
     return $datetime->format('F j, Y');
 }
 
+$successTitle = isset($_SESSION['success_title']) ? $_SESSION['success_title'] : null;
 $successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
 $verificationMessage = isset($_SESSION['verification_message']) ? $_SESSION['verification_message'] : null;
 include '../display_mod.php';
@@ -160,6 +161,9 @@ unset($_SESSION['success_message']);
         
         <button type="button" class="btn btn-primary" onclick="window.location.href='add_new_event.php?sy=<?= htmlspecialchars($yearRange, ENT_QUOTES, 'UTF-8') ?>'">
             Add New Event
+        </button>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#yearRangeModal">
+            New SY Calendar
         </button>
 
      
@@ -260,6 +264,7 @@ unset($_SESSION['success_message']);
     <!-- <script src="../../src/js/toggleSidebar.js"></script> -->
     <script src="../../src/js/verify.js"></script>
     <script src="../../src/js/yr_select.js"></script>
+    <script src="../../src/js/new_sy.js"></script>
 
 
     <script>
