@@ -143,7 +143,7 @@ unset($_SESSION['success_message']);
             <div class="dropdown">
             <div class="d-flex align-items-center" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                 <h3>SY <span id="currentYearRange"><?php echo htmlspecialchars($yearRange); ?></span></h3>
-                <i class="bi bi-caret-down-fill ms-2"></i>
+                <i class="bi bi-caret-down-fill ms-2" title="Filter by School Year"></i>
             </div>
             <ul class="dropdown-menu" id="yearRangeDropdown" aria-labelledby="dropdownMenuButton">
                 <?php foreach ($yearRanges as $range): ?>
@@ -218,12 +218,12 @@ unset($_SESSION['success_message']);
                                     <input type="hidden" name="type" value="<?php echo htmlspecialchars($event['event_type'] ?? ''); ?>">
                                     <input type="hidden" name="year_range" value="<?php echo htmlspecialchars($event['year_range'] ?? ''); ?>">
 
-                                    <button type="submit" class="btn btn-normal"><i class="bi bi-pencil-square"></i></button>
+                                    <button type="submit" class="btn btn-normal" title="Edit event"><i class="bi bi-pencil-square"></i></button>
                                 </form>
                                 <form id="deleteForm_<?php echo htmlspecialchars($event['id'] ?? ''); ?>" action="../../src/processes/a/delete_event.php" method="POST" style="display:none;">
                                 <input type="hidden" name="id" value="<?php echo htmlspecialchars($event['id'] ?? ''); ?>">
                                 </form>
-                                <button type="button" class="btn btn-danger" onclick="openVerificationModal('deleteForm_<?php echo htmlspecialchars($event['id'] ?? ''); ?>', 'Confirm Deletion', 'Are you sure you want to delete this event?', 'Delete')">
+                                <button type="button" class="btn btn-danger" title="Delete event" onclick="openVerificationModal('deleteForm_<?php echo htmlspecialchars($event['id'] ?? ''); ?>', 'Confirm Deletion', 'Are you sure you want to delete this event?', 'Delete')">
                                     <i class="bi bi-trash3"></i>
                                 </button>
 
