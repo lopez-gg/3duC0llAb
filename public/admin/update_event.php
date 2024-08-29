@@ -4,7 +4,9 @@ require_once __DIR__ . '/../../src/config/session_config.php';
 require_once __DIR__ . '/../../src/config/access_control.php';
 require_once __DIR__ . '/../../src/config/db_config.php';
 require_once __DIR__ . '/../../src/config/config.php';
+require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
 
+$events = require_once __DIR__ . '/../../src/processes/fetch_upcoming_events.php'; 
 include '../../src/processes/fetch_sy.php';
 
 // Check if the user is admin
@@ -57,6 +59,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Event</title>
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../../src/css/gen.css">
     <link rel="stylesheet" href="../../src/css/event_form.css">
 </head>
@@ -79,7 +82,7 @@ try {
                 <!-- Notifications will be appended here by JavaScript -->
             </ul>
         </div>
-        
+
         <div class="user-profile" id="userProfile">
             <div class="user-icon" onclick="toggleDropdown()">U</div>
             <div class="dropdown" id="dropdown">
@@ -168,6 +171,7 @@ try {
         <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
         <script src="../../src/js/toggleSidebar.js"></script>
         <script src="../../src/js/verify.js"></script>
+        <script src='../../src/js/notification.js'></script>
 
         <script>
             function openDiscardChangesModal() {

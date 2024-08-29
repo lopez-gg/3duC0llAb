@@ -3,7 +3,9 @@ require_once __DIR__ . '/../../src/config/session_config.php';
 require_once __DIR__ . '/../../src/config/access_control.php';
 require_once __DIR__ . '/../../src/config/db_config.php';
 require_once __DIR__ . '/../../src/config/config.php';
+require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
 
+$events = require_once __DIR__ . '/../../src/processes/fetch_upcoming_events.php'; 
 include '../../src/processes/fetch_sy.php';
 include '../../src/processes/fetch_e_type.php';
 
@@ -288,6 +290,7 @@ unset($_SESSION['success_message']);
     <script src="../../src/js/verify.js"></script>
     <script src="../../src/js/yr_select.js"></script>
     <script src="../../src/js/new_sy.js"></script>
+    <script src='../../src/js/notification.js'></script>
 
 
     <script>

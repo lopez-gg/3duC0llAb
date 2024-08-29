@@ -3,6 +3,11 @@ require_once __DIR__ . '/../../src/config/session_config.php';
 require_once __DIR__ . '/../../src/config/access_control.php';
 require_once __DIR__ . '/../../src/config/db_config.php';
 require_once __DIR__ . '/../../src/config/config.php';
+require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
+
+
+$events = require_once __DIR__ . '/../../src/processes/fetch_upcoming_events.php'; 
+
 
 // Check if the user is admin
 check_access('ADMIN');
@@ -143,6 +148,7 @@ try {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
         <script src="../../src/js/toggleSidebar.js"></script>
         <script src="../../src/js/verify.js"></script>
+        <script src='../../src/js/notification.js'></script>
         
         <script>
             $(document).ready(function() {

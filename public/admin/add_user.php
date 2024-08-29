@@ -1,12 +1,16 @@
 <?php
 require_once __DIR__ . '/../../src/config/access_control.php'; // Include access control script
 require_once __DIR__ . '/../../src/config/session_config.php';
+require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
+
+$events = require_once __DIR__ . '/../../src/processes/fetch_upcoming_events.php'; 
+
 
 //Check if the user is an admin
 check_access('ADMIN');
 
 $successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
-include '../display_message.php';
+include '../display_mod.php';
 unset($_SESSION['success_message']);
 ?>
 
@@ -16,6 +20,7 @@ unset($_SESSION['success_message']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../../src/css/gen.css">
     <link rel="stylesheet" href="../../src/css/event_form.css">
 
@@ -90,6 +95,10 @@ unset($_SESSION['success_message']);
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
     <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
     <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
+
+    
+    <script src='../../src/js/notification.js'></script>
+    <script src='../../src/js/toggleSidebar.js'></script>
     <script>
         $(window).on('load', function() {
             <?php if ($successMessage): ?>

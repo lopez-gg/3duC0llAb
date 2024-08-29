@@ -1,4 +1,23 @@
 <?php
+require_once __DIR__ . '/../../src/config/config.php';
+require_once __DIR__ . '/../../src/config/access_control.php'; 
+require_once __DIR__ . '/../../src/config/session_config.php';
+require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
+
+
+$events = require_once __DIR__ . '/../../src/processes/fetch_upcoming_events.php'; 
+
+// Check if the user is user
+check_access('ADMIN');
+
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header('Location: /public/login.php'); 
+    exit;
+}
+
+$userId = ($_SESSION['user_id']);
+
 // Set timezone
 date_default_timezone_set('Asia/Manila'); 
 
@@ -48,7 +67,7 @@ $currentMonth = date('F Y'); // e.g., July 2024
                 <!-- Notifications will be appended here by JavaScript -->
             </ul>
         </div>
-        
+
         <div class="user-profile" id="userProfile">
             <div class="user-icon" onclick="toggleDropdown()">U</div>
             <div class="dropdown" id="dropdown">
@@ -105,5 +124,6 @@ $currentMonth = date('F Y'); // e.g., July 2024
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
     <script> src='../../src/js/datetime.js'</script>
     <script src="../../src/js/toggleSidebar.js"></script>
+    <script src='../../src/js/notification.js'></script>
 </body>
 </html>
