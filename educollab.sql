@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 27, 2024 at 05:12 PM
+-- Generation Time: Aug 29, 2024 at 08:05 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -61,9 +61,16 @@ INSERT INTO `events` (`id`, `title`, `description`, `event_date`, `end_date`, `a
 (1, 'event 0', 'test\r\nedit 1\r\nedit 2', '2025-08-25', '2026-08-25', '2024-08-24', 'Holiday', '2025-2026'),
 (2, 'event 2', 'test edit', '2024-08-26', '2024-08-26', '2024-08-24', 'Holiday', '2025-2026'),
 (11, 'New Year', 'test', '2025-01-01', '2025-01-03', '2024-08-24', 'Holiday', '2025-2026'),
-(13, 'sdgv', 'sdg', '2024-08-29', '2024-08-31', '2024-08-27', 'School', '2024-2025'),
+(13, 'ARMIN ', 'edited from 24-25\r\n29/31 to 30-1', '2025-08-30', '2025-09-01', '2024-08-27', 'School', '2024-2025'),
 (14, 'add 2 a', 'sy24-25', '2024-10-02', '2024-10-28', '2024-08-27', 'School', '2025-2026'),
-(15, 'sdfs', 'hdsfh', '2024-08-30', '2024-08-31', '2024-08-27', 'Holiday', '2024-2025');
+(15, 'LEVI', 'edited', '2024-08-30', '2024-08-31', '2024-08-27', 'Holiday', '2024-2025'),
+(17, 'EREH', 'ajdnfkajdnf', '2024-10-14', '2024-10-16', '2024-08-28', 'Holiday', '2023-2024'),
+(18, 'ETHYL ALCOHOL', 'TEAFESFBH', '2026-08-03', '2026-08-03', '2024-08-28', 'School', '2026-2027'),
+(20, 'kfdnkds', 'lollo', '2024-07-09', '2024-08-01', '2024-08-28', 'Holiday', '2027-2028'),
+(21, 'sdkgme', 'erge', '2024-08-29', '2024-08-31', '2024-08-28', 'School', '2027-2028'),
+(22, '27', 'wiefh', '2024-08-30', '2024-08-31', '2024-08-29', 'Holiday', '2027-2028'),
+(23, 'siefjowe', 'wiejewo', '2024-09-04', '2024-09-05', '2024-08-29', 'School', '2023-2024'),
+(25, 'Test Event', 'Default Description', '2024-08-31', '2024-09-01', '2024-08-30', 'Meeting', '2024');
 
 -- --------------------------------------------------------
 
@@ -74,16 +81,17 @@ INSERT INTO `events` (`id`, `title`, `description`, `event_date`, `end_date`, `a
 CREATE TABLE `event_types` (
   `id` int(11) NOT NULL,
   `type` varchar(100) NOT NULL,
-  `color_id` varchar(100) NOT NULL
+  `color` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `event_types`
 --
 
-INSERT INTO `event_types` (`id`, `type`, `color_id`) VALUES
+INSERT INTO `event_types` (`id`, `type`, `color`) VALUES
 (1, 'Holiday', 'Orange'),
-(2, 'School', 'Green');
+(2, 'School', '#07e328'),
+(3, 'Others', '#a6a6a6');
 
 -- --------------------------------------------------------
 
@@ -115,7 +123,20 @@ INSERT INTO `logins` (`id`, `user_id`, `login_time`, `success`) VALUES
 (10, 4, '2024-08-27 07:06:02', 1),
 (11, 4, '2024-08-27 07:07:29', 1),
 (12, 4, '2024-08-27 07:12:43', 1),
-(13, 4, '2024-08-27 14:45:48', 1);
+(13, 4, '2024-08-27 14:45:48', 1),
+(14, 4, '2024-08-28 05:16:42', 1),
+(15, 6, '2024-08-28 11:09:18', 0),
+(16, 10, '2024-08-28 11:09:27', 0),
+(17, 7, '2024-08-28 11:09:36', 1),
+(18, 7, '2024-08-28 12:13:38', 1),
+(19, 7, '2024-08-28 13:51:54', 1),
+(20, 4, '2024-08-28 13:52:19', 1),
+(21, 4, '2024-08-29 10:33:41', 1),
+(22, 4, '2024-08-29 16:40:25', 1),
+(23, 7, '2024-08-29 16:54:25', 1),
+(24, 7, '2024-08-29 17:11:29', 1),
+(25, 4, '2024-08-29 17:11:47', 1),
+(26, 7, '2024-08-29 17:18:57', 1);
 
 -- --------------------------------------------------------
 
@@ -125,12 +146,20 @@ INSERT INTO `logins` (`id`, `user_id`, `login_time`, `success`) VALUES
 
 CREATE TABLE `notifications` (
   `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `type` enum('info','warning','error') NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
+  `type` enum('info','warning','error','calendar_event') NOT NULL,
   `notif_content` text NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `read_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `notifications`
+--
+
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `notif_content`, `created_at`, `read_at`) VALUES
+(1, NULL, 'calendar_event', 'Tomorrow\'s event: \'LEVI\'.', '2024-08-29 17:57:34', NULL),
+(2, NULL, 'calendar_event', 'Tomorrow\'s event: \'27\'.', '2024-08-29 17:57:34', NULL);
 
 -- --------------------------------------------------------
 
@@ -164,7 +193,9 @@ CREATE TABLE `sy` (
 INSERT INTO `sy` (`sy_id`, `year_range`) VALUES
 (1, '2024-2025'),
 (2, '2025-2026'),
-(3, '2023-2024');
+(3, '2023-2024'),
+(4, '2026-2027'),
+(5, '2027-2028');
 
 -- --------------------------------------------------------
 
@@ -213,7 +244,7 @@ INSERT INTO `users` (`id`, `username`, `firstname`, `lastname`, `gradeLevel`, `s
 (4, 'admintest', 'admin', 'test', 'test', 'test', '$2y$10$AejWqKaXEPWFsJEa0YYEq./SBDNG3htMmHM4NPGw48R5zfvoHOmJ.', 'active', 'ADMIN', '2024-07-26 08:58:37'),
 (5, 'usertest', 'user', 'test', 'test', 'test', '$2y$10$LDw4kSr6WkVv1jZhFFYPvuqqI/c6E4kopojrW/W6YAnYiBVn.mupK', 'active', 'USER', '2024-07-26 09:25:29'),
 (6, 'newuser', 'new', 'user', 'test', 'test', '$2y$10$N75cH127LXgKVYhJQpKo5.aXTUSnRLLgTC8Mo7HRqy.L0dAVsgl5y', 'active', 'USER', '2024-07-26 09:34:28'),
-(7, 'an', 'an', 'an', '1', 'jhgv', '$2y$10$tPAqP5ETQ.F.nCxK8XR2lOIcrFNe/hiTyW9aazNs66zKUIY5/IfNi', 'inactive', 'USER', '2024-08-24 07:10:44'),
+(7, 'an', 'an', 'an', '1', 'jhgv', '$2y$10$tPAqP5ETQ.F.nCxK8XR2lOIcrFNe/hiTyW9aazNs66zKUIY5/IfNi', 'active', 'USER', '2024-08-24 07:10:44'),
 (8, 'andg', 'an', 'an', '1', 'jhgv', '$2y$10$xUzBHzu8otBA7LnUnigWcugqCCf5eW3eC2HRgAwhywrNfgrVUXnIi', 'inactive', 'USER', '2024-08-24 07:19:54'),
 (9, 'andg', 'an', 'an', '1', 'jhgv', '$2y$10$d7yAU2LteGGIXa7nv5bEYeGBMQIotJmir0QnfLklHm2NboCJuTl3u', 'inactive', 'USER', '2024-08-24 07:20:18'),
 (10, 'user', 'fname', 'lname', 'grlvl', 'sec', '$2y$10$OLTI4QId2YXVq8KJUVhJmOeJPm2Du.vWzK9COl4VNyVihAuDMWi9W', 'inactive', 'USER', '2024-08-24 07:20:53'),
@@ -302,25 +333,25 @@ ALTER TABLE `comments`
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `event_types`
 --
 ALTER TABLE `event_types`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `logins`
 --
 ALTER TABLE `logins`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `posts`
@@ -332,7 +363,7 @@ ALTER TABLE `posts`
 -- AUTO_INCREMENT for table `sy`
 --
 ALTER TABLE `sy`
-  MODIFY `sy_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `sy_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `tasks`
