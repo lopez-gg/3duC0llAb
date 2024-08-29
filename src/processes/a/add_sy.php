@@ -7,11 +7,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if ($yearRange) {
         try {
-            // Insert the year range into the `sy` table
-            $stmt = $pdo->prepare("INSERT INTO sy (year_range) VALUES (?)");
+            // Check if the year range already exists in the `sy` table
+            $stmt = $pdo->prepare("SELECT id FROM sy WHERE year_range = ?");
             $stmt->execute([$yearRange]);
+            $existingRecord = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            echo "Year range saved successfully!";
+            if ($existingRecord) {
+                // If the record exists, use the existing record
+                echo "Year range already exists. Using the existing record.";
+            } else {
+                // If the record does not exist, insert the new year range
+                $stmt = $pdo->prepare("INSERT INTO sy (year_range) VALUES (?)");
+                $stmt->execute([$yearRange]);
+
+                echo "Year range saved successfully!";
+            }
         } catch (PDOException $e) {
             // Handle error
             error_log('Error saving year range: ' . $e->getMessage());
