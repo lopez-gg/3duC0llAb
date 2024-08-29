@@ -3,7 +3,7 @@
 
 require_once __DIR__ . '/../../src/config/access_control.php'; 
 require_once __DIR__ . '/../../src/config/session_config.php';
-
+require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
 
 
 $events = require_once __DIR__ . '/../../src/processes/fetch_upcoming_events.php'; 
@@ -51,6 +51,20 @@ $currentYear = date('Y');
             <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
             <div class="app-name">EduCollab</div>
         </div>
+
+        <!-- Bell icon with notification count -->
+        <div class="notification-bell">
+            <i class="bi bi-bell-fill"></i>
+            <span class="notification-count">0</span>
+        </div>
+        
+        <!-- Notification dropdown -->
+        <div class="notification-dropdown">
+            <ul class="notification-list">
+                <!-- Notifications will be appended here by JavaScript -->
+            </ul>
+        </div>
+
         <div class="user-profile" id="userProfile">
             <div class="user-icon" onclick="toggleDropdown()">U</div>
             <div class="dropdown" id="dropdown">
@@ -141,6 +155,7 @@ $currentYear = date('Y');
 
     <!-- js scripts -->
     <script src='../../src/js/datetime.js'></script>
+    <script src='../../src/js/notification.js'></script>
     <script src='../../src/js/toggleSidebar.js'></script>
     
 

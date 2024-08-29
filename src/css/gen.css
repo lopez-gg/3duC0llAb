@@ -41,6 +41,10 @@
 .notification-list li {
     padding: 10px;
     border-bottom: 1px solid #ddd;
+    color: #333;
+}
+.notification-list li:last-child {
+    border-bottom: none; /* Remove border for last item */
 }
 
 /* sidebarnavigation */

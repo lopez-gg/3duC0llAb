@@ -35,6 +35,20 @@ $currentMonth = date('F Y'); // e.g., July 2024
             <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
             <div class="app-name">Educollab</div>
         </div>
+
+        <!-- Bell icon with notification count -->
+        <div class="notification-bell">
+            <i class="bi bi-bell-fill"></i>
+            <span class="notification-count">0</span>
+        </div>
+        
+        <!-- Notification dropdown -->
+        <div class="notification-dropdown">
+            <ul class="notification-list">
+                <!-- Notifications will be appended here by JavaScript -->
+            </ul>
+        </div>
+        
         <div class="user-profile" id="userProfile">
             <div class="user-icon" onclick="toggleDropdown()">U</div>
             <div class="dropdown" id="dropdown">

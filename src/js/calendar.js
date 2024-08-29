@@ -50,7 +50,7 @@ $(document).ready(function() {
         },
         dayRender: function(date, cell) {
             if (date.isSame(new Date(), "day")) {
-                cell.css("background-color", "#ffeb3b"); // Highlight the current date
+                cell.css("background-color", "#e8e7e3"); // Highlight the current date
             }
         },
         eventLimit: true,

@@ -1,8 +1,10 @@
 <?php
 // dashboard.php
 
+require_once __DIR__ . '/../../src/config/config.php';
 require_once __DIR__ . '/../../src/config/access_control.php'; 
 require_once __DIR__ . '/../../src/config/session_config.php';
+require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
 
 
 $events = require_once __DIR__ . '/../../src/processes/fetch_upcoming_events.php'; 
@@ -17,19 +19,6 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $userId = ($_SESSION['user_id']);
-
-// Handle logout request
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
-    // Destroy the session
-    session_unset();
-    session_destroy();
-    
-    // Redirect to the login page
-    header('Location: ../login.php');
-    exit;
-}
-
-
 
 // Set timezone
 date_default_timezone_set('Asia/Manila'); 
@@ -53,79 +42,104 @@ $currentYear = date('Y');
 
 </head>
 <body>
-    <h1>Welcome back, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h1>
+    <div class="top-nav">
+        <div class="left-section">
+            <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
+            <div class="app-name">EduCollab</div>
+        </div>
 
-    <!-- Logout Form -->
-    <form action="" method="post">
-        <input type="submit" name="logout" value="Logout">
-    </form>
+        <!-- Bell icon with notification count -->
+        <div class="notification-bell">
+            <i class="bi bi-bell-fill"></i>
+            <span class="notification-count">0</span>
+        </div>
+        
+        <!-- Notification dropdown -->
+        <div class="notification-dropdown">
+            <ul class="notification-list">
+                <!-- Notifications will be appended here by JavaScript -->
+            </ul>
+        </div>
 
-    <!-- Bell icon with notification count -->
-    <div class="notification-bell">
-        <i class="bi bi-bell-fill"></i>
-        <span class="notification-count">0</span>
+        <div class="user-profile" id="userProfile">
+            <div class="user-icon" onclick="toggleDropdown()">U</div>
+            <div class="dropdown" id="dropdown">
+                <a href="#">Settings</a>
+                <form action="../../src/processes/logout.php" method="post">
+                    <input type="submit" name="logout" value="Logout">
+                </form>
+            </div>
+        </div>
     </div>
-    <!-- Notification dropdown -->
-    <div class="notification-dropdown">
-        <ul class="notification-list">
-            <!-- Notifications will be appended here by JavaScript -->
-        </ul>
+
+    <div class="main">
+            <div class="sidebar" id="sidebar">
+                <div class="logo"></div> 
+                <div class="nav-links">
+                    <a href="dashboard.php">Dashboard</a>
+                    <a href="calendar.php">Calendar</a>
+                </div>
+            </div>
+   
+    
+        <div class="content" id="content">
+            <h1>Welcome back, <?php echo htmlspecialchars($_SESSION['username']); ?>!</h1>
+
+            <!-- Current date and time -->
+            <div id="datetime">
+                <?php echo $currentDateTime; ?>
+            </div>
+
+            <!-- events -->
+            <?php
+            // Filter events to only include those in the current month
+            $filteredEvents = array_filter($events, function($event) use ($currentMonth, $currentYear) {
+                $eventStartDate = new DateTime($event['event_date']);
+                return $eventStartDate->format('F') === $currentMonth && $eventStartDate->format('Y') === $currentYear;
+            });
+            ?>
+
+            <h1 id="events-heading"><?php echo $currentMonth; ?> Events</h1>
+            <ul id="upcoming-events">
+                <?php if (!empty($filteredEvents)): ?>
+                    <?php foreach ($filteredEvents as $event): ?>
+                        <a href='calendar.php'><div class=''><li>
+                            <?php
+                            $eventStartDate = new DateTime($event['event_date']);
+                            $eventEndDate = new DateTime($event['end_date']);
+                            $currentDate = new DateTime();
+                            $startDateFormatted = $eventStartDate->format('F d');
+
+                            if ($eventStartDate > $currentDate) {
+                                echo "<strong>{$startDateFormatted}</strong><br>";
+                                echo "Upcoming<br>";
+                                echo "{$event['title']}<br>";
+                                echo "{$event['description']}<br>";
+                            } elseif ($eventEndDate < $currentDate) {
+                                $interval = $eventEndDate->diff($currentDate);
+                                $daysPassed = $interval->format('%a');
+                                echo "<strong>{$startDateFormatted}</strong><br>";
+                                echo "{$event['title']}<br>";
+                                echo "{$daysPassed} days ago<br>";
+                            } else {
+                                echo "<strong>{$startDateFormatted}</strong><br>";
+                                echo "{$event['title']}<br>";
+                                echo "{$event['description']}<br>";
+                            }
+                            ?>
+                        </div></a></li>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <li>No events for this month.</li>
+                <?php endif; ?>
+            </ul>
+        </div>
     </div>
 
-
-    <!-- Current date and time -->
-    <div id="datetime">
-        <?php echo $currentDateTime; ?>
-    </div>
-
-
-    <!-- events -->
-        <?php
-    // Filter events to only include those in the current month
-    $filteredEvents = array_filter($events, function($event) use ($currentMonth, $currentYear) {
-        $eventStartDate = new DateTime($event['event_date']);
-        return $eventStartDate->format('F') === $currentMonth && $eventStartDate->format('Y') === $currentYear;
-    });
-    ?>
-
-    <h1 id="events-heading"><?php echo $currentMonth; ?> Events</h1>
-    <ul id="upcoming-events">
-        <?php if (!empty($filteredEvents)): ?>
-            <?php foreach ($filteredEvents as $event): ?>
-                <a href='calendar.php'><div class=''><li>
-                    <?php
-                    $eventStartDate = new DateTime($event['event_date']);
-                    $eventEndDate = new DateTime($event['end_date']);
-                    $currentDate = new DateTime();
-                    $startDateFormatted = $eventStartDate->format('F d');
-
-                    if ($eventStartDate > $currentDate) {
-                        echo "<strong>{$startDateFormatted}</strong><br>";
-                        echo "Upcoming<br>";
-                        echo "{$event['title']}<br>";
-                        echo "{$event['description']}<br>";
-                    } elseif ($eventEndDate < $currentDate) {
-                        $interval = $eventEndDate->diff($currentDate);
-                        $daysPassed = $interval->format('%a');
-                        echo "<strong>{$startDateFormatted}</strong><br>";
-                        echo "{$event['title']}<br>";
-                        echo "{$daysPassed} days ago<br>";
-                    } else {
-                        echo "<strong>{$startDateFormatted}</strong><br>";
-                        echo "{$event['title']}<br>";
-                        echo "{$event['description']}<br>";
-                    }
-                    ?>
-                </div></a></li>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <li>No events for this month.</li>
-        <?php endif; ?>
-    </ul>
-  
     <!-- js scripts -->
+    <script src='../../src/js/notification.js'></script>
     <script src='../../src/js/datetime.js'></script>
     <script src='../../src/js/toggleSidebar.js'></script>
-    <script> src='../../src/js/tasks_urgency_and_status.js'</script>
+
 </body>
 </html>
