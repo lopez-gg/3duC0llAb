@@ -52,9 +52,14 @@ if (empty($yearRange)) {
     $yearRange = $currentYearRange;
 }
 
-// Build the query to fetch events
-$query = "SELECT * FROM events WHERE year_range = :year_range";
-$query .= " ORDER BY event_date $order LIMIT :offset, :itemsPerPage";
+// Build the query to fetch events and their associated colors
+$query = "
+    SELECT events.*, event_types.color 
+    FROM events 
+    JOIN event_types ON events.event_type = event_types.type
+    WHERE events.year_range = :year_range 
+    ORDER BY event_date $order 
+    LIMIT :offset, :itemsPerPage";
 $stmt = $pdo->prepare($query);
 $stmt->bindParam(':year_range', $yearRange, PDO::PARAM_STR);
 $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);

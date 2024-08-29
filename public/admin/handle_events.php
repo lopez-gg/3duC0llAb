@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../src/config/db_config.php';
 require_once __DIR__ . '/../../src/config/config.php';
 
 include '../../src/processes/fetch_sy.php';
+include '../../src/processes/fetch_e_type.php';
 
 // Check if the user is admin
 check_access('ADMIN');
@@ -191,6 +192,7 @@ unset($_SESSION['success_message']);
             <table class="table table-bordered mt-4">
                 <thead>
                     <tr>
+                        <th></th>
                         <th>#</th>
                         <th>Title</th>
                         <th>Description</th>
@@ -206,7 +208,14 @@ unset($_SESSION['success_message']);
                         foreach ($events as $event): 
                     ?>
                         <tr>
-                            <td><?php echo $index++; ?></td> <!-- Display the index and increment it -->
+                            <td>
+                                <div 
+                                    class="event_type" 
+                                    title="<?php echo htmlspecialchars($event['event_type']); ?>" 
+                                    style="height:25px; width:25px; background-color:<?php echo htmlspecialchars($event['color']); ?>; border-radius: 50%;">
+                                </div>
+                            </td>
+                            <td><?php echo $index++; ?></td> 
                             <td><?php echo htmlspecialchars($event['title'] ?? ''); ?></td>
                             <td><?php echo htmlspecialchars($event['description'] ?? ''); ?></td>
                             <td><?php echo isset($event['event_date']) ? formatDate($event['event_date']) : ''; ?></td>

@@ -214,3 +214,10 @@ body {
     padding: 0.5rem;
     width: fit-content;
 }
+
+.event_type{
+    display: block;
+    height: 5px;
+    width: 5px;
+    background-color: #333;
+}
