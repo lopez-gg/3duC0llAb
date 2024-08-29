@@ -1,0 +1,8 @@
+RewriteEngine Off
+RewriteBase /EduCollab/
+
+# Rewrite rule to handle requests to simplified URLs
+RewriteRule ^resource$ src/processes/resource.php [L]
+RewriteRule ^another-resource$ src/processes/another_resource.php [L]
+
+# Add more rewrite rules as needed
