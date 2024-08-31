@@ -66,6 +66,7 @@ $currentMonth = date('F Y'); // e.g., July 2024
             <ul class="notification-list">
                 <!-- Notifications will be appended here by JavaScript -->
             </ul>
+            <button class="see-more" style="display: none;">See More...</button>
         </div>
 
         <div class="user-profile" id="userProfile">

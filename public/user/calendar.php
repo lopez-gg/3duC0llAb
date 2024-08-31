@@ -66,6 +66,7 @@ $currentMonth = date('F Y'); // e.g., July 2024
             <ul class="notification-list">
                 <!-- Notifications will be appended here by JavaScript -->
             </ul>
+            <button class="see-more" style="display: none;">See More...</button>
         </div>
 
         <div class="user-profile" id="userProfile">
@@ -120,9 +121,9 @@ $currentMonth = date('F Y'); // e.g., July 2024
     </div>
 
 
-    <script src='../../src/js/notification.js'></script>
     <script src="../../src/js/calendar.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
     <script src="../../src/js/toggleSidebar.js"></script>
+    <script src='../../src/js/notification.js'></script>
 </body>
 </html>
