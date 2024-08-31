@@ -5,19 +5,15 @@ require_once __DIR__ . '/../config/db_config.php'; // Include database configura
 require_once __DIR__ . '/../config/config.php'; // Include global configuration
 
 try {
-    // Get tomorrow's date
     $today = new DateTime();
     $tomorrow = clone $today;
     $tomorrow->modify('+1 day');
     $tomorrow_date = $tomorrow->format('Y-m-d');
 
-    // echo "Checking events for: " . $tomorrow_date . "<br>";
-
     // Prepare and execute the query to fetch events happening tomorrow
     $stmt = $pdo->prepare("SELECT title FROM events WHERE event_date = :tomorrow_date");
     $stmt->execute(['tomorrow_date' => $tomorrow_date]);
 
-    // Fetch all events happening tomorrow
     $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (empty($events)) {
@@ -27,14 +23,16 @@ try {
             $title = $event['title'];
             $message = "Tomorrow's event: '{$title}'.";
 
-            // Check if a notification with the same title and date already exists
+            // Check if a notification with the same title and date already exists (ignoring time)
             $stmt = $pdo->prepare("
                 SELECT COUNT(*) FROM notifications 
-                WHERE notif_content = :message AND type = 'calendar_event' AND DATE(created_at) = :tomorrow_date
+                WHERE notif_content = :message 
+                AND type = 'calendar_event' 
+                AND DATE(created_at) = :today_date
             ");
             $stmt->execute([
                 'message' => $message,
-                'tomorrow_date' => $tomorrow_date
+                'today_date' => $today->format('Y-m-d')
             ]);
             
             $notificationExists = $stmt->fetchColumn() > 0;
@@ -52,8 +50,22 @@ try {
             }
         }
     }
+
+    // Mark notifications for past events as read
+    $stmt = $pdo->prepare("
+        UPDATE notifications 
+        SET read_at = NOW() 
+        WHERE type = 'calendar_event' 
+          AND notif_content LIKE '%event:%'
+          AND EXISTS (
+              SELECT 1 FROM events 
+              WHERE events.title = SUBSTRING_INDEX(notif_content, ':', -1) 
+                AND events.event_date < CURDATE()
+          )
+    ");
+    $stmt->execute();
+
 } catch (PDOException $e) {
-    // echo "Error: " . $e->getMessage() . "<br>";
     log_error('Database query failed: ' . $e->getMessage(), 'db_errors.txt');
 }
 ?>

@@ -126,6 +126,7 @@ unset($_SESSION['success_message']);
             <ul class="notification-list">
                 <!-- Notifications will be appended here by JavaScript -->
             </ul>
+            <button class="see-more" style="display: none;">See More...</button>
         </div>
 
         <div class="user-profile" id="userProfile">
@@ -140,14 +141,14 @@ unset($_SESSION['success_message']);
     </div> 
 
     <!-- sidebar -->
-    <!-- <div class="main">
-        <div class="sidebar" id="sidebar">
+     <div class="main">
+     <div class="sidebar" id="sidebar">
             <div class="logo"></div> 
             <div class="nav-links">
                 <a href="dashboard.php">Dashboard</a>
                 <a href="calendar.php">Calendar</a>
             </div>
-        </div> -->
+        </div>
 
         <!-- date and time -->
         <div class="content" id="content">
@@ -199,11 +200,6 @@ unset($_SESSION['success_message']);
             <!-- Filter Button -->
             <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#filterModal">Filter</button>-->
 
-            
-            
-
-
-
 
             <table class="table table-bordered mt-4">
                 <thead>
@@ -245,7 +241,7 @@ unset($_SESSION['success_message']);
 
                                     <button type="submit" class="btn btn-normal" title="Edit event"><i class="bi bi-pencil-square"></i></button>
                                 </form>
-                                <form id="deleteForm_<?php echo htmlspecialchars($event['id'] ?? ''); ?>" action="../../src/processes/a/delete_event.php" method="POST" style="display:none;">
+                                <form id="deleteForm_<?php echo htmlspecialchars($event['id'] ?? ''); ?>" action="../../src/processes/a/delete_event.php" method="POST" >
                                 <input type="hidden" name="id" value="<?php echo htmlspecialchars($event['id'] ?? ''); ?>">
                                 </form>
                                 <button type="button" class="btn btn-danger" title="Delete event" onclick="openVerificationModal('deleteForm_<?php echo htmlspecialchars($event['id'] ?? ''); ?>', 'Confirm Deletion', 'Are you sure you want to delete this event?', 'Delete')">
@@ -286,7 +282,7 @@ unset($_SESSION['success_message']);
     <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
-    <!-- <script src="../../src/js/toggleSidebar.js"></script> -->
+    <script src="../../src/js/toggleSidebar.js"></script>
     <script src="../../src/js/verify.js"></script>
     <script src="../../src/js/yr_select.js"></script>
     <script src="../../src/js/new_sy.js"></script>
@@ -302,8 +298,6 @@ unset($_SESSION['success_message']);
                 }, 4500);
             <?php endif; ?>
         });
-
-      
 
     </script>
 

@@ -45,7 +45,9 @@ unset($_SESSION['success_message']);
             <ul class="notification-list">
                 <!-- Notifications will be appended here by JavaScript -->
             </ul>
+            <button class="see-more" style="display: none;">See More...</button>
         </div>
+
         <div class="user-profile" id="userProfile">
             <div class="user-icon" onclick="toggleDropdown()">U</div>
             <div class="dropdown" id="dropdown">
@@ -88,7 +90,10 @@ unset($_SESSION['success_message']);
             <input type="password" id="password" name="password" required><br><br>
 
             <input type="submit" value="Add User">
+            
         </form>
+        
+        <button type="button" class="btn btn-danger" onclick="openVerificationModal('cancel_form_', 'Cancel', 'All entries will be discarded. Are you sure you want to cancel?  ', 'Yes')">Cancel</button>
     </div>
 
 
@@ -98,6 +103,7 @@ unset($_SESSION['success_message']);
 
     
     <script src='../../src/js/notification.js'></script>
+    <script src='../../src/js/verify.js'></script>
     <script src='../../src/js/toggleSidebar.js'></script>
     <script>
         $(window).on('load', function() {

@@ -59,6 +59,7 @@ $currentYear = date('Y');
             <ul class="notification-list">
                 <!-- Notifications will be appended here by JavaScript -->
             </ul>
+            <button class="see-more" style="display: none;">See More...</button>
         </div>
 
         <div class="user-profile" id="userProfile">
@@ -137,9 +138,9 @@ $currentYear = date('Y');
     </div>
 
     <!-- js scripts -->
-    <script src='../../src/js/notification.js'></script>
     <script src='../../src/js/datetime.js'></script>
     <script src='../../src/js/toggleSidebar.js'></script>
+    <script src='../../src/js/notification.js'></script>
 
 </body>
 </html>
