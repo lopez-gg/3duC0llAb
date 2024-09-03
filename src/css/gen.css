@@ -10,6 +10,7 @@
 .notification-bell {
     position: relative;
     cursor: pointer;
+    font-size: 1.5rem;
 }
 .notification-count {
     position: absolute;
@@ -33,19 +34,77 @@
     max-height: 400px;
     overflow-y: auto;
 }
+
 .notification-list {
     list-style: none;
     padding: 0;
     margin: 0;
 }
+
 .notification-list li {
+    display: flex;
+    align-items: flex-start;
     padding: 10px;
     border-bottom: 1px solid #ddd;
     color: #333;
 }
+
 .notification-list li:last-child {
     border-bottom: none; /* Remove border for last item */
 }
+
+.notification-list li.unread {
+    font-weight: bold;
+    background-color: #e9f7ef; /* Light green background for unread */
+}
+
+.notification-list li.read {
+    font-weight: normal;
+    background-color: #ffffff; /* White background for read notifications */
+}
+
+.notification-list li.past {
+    color: #808080; /* Grey text for past notifications */
+    background-color: #f8f9fa; /* Light grey background for past events */
+}
+
+/* Notification item structure */
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.notification-item i {
+    margin-right: 10px;
+    font-size: 1rem; /* Icon size */
+}
+
+/* Notification content styles */
+.notification-content {
+    flex: 1;
+}
+
+.notification-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.notification-time {
+    color: #888; /* Lighter color for the time */
+    font-size: 0.9rem;
+    display: block;
+}
+
+/* Styles for icon */
+.notification-list i {
+    cursor: pointer;
+}
+
+
+
+
 
 /* sidebarnavigation */
 body {
@@ -225,3 +284,4 @@ body {
     width: 5px;
     background-color: #333;
 }
+

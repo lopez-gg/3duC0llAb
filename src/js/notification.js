@@ -24,57 +24,115 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function fetchNotifications(isLoadMore = false) {
         fetch(`../../src/processes/fetch_notifications.php?limit=${limit}&page=${currentPage}`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+            .then(response => response.json())
+            .then(data => {
+                const notifications = data.notifications;
+                const notificationList = document.querySelector('.notification-list');
+    
+                console.log(notifications); // Debug: Check notification data
+    
+                if (!isLoadMore) {
+                    notificationList.innerHTML = ''; // Clear notifications if not loading more
                 }
-                return response.text(); // Get response as text first
-            })
-            .then(text => {
-                console.log('Raw response text:', text); // Log the raw response text
-                try {
-                    const data = JSON.parse(text); // Attempt to parse JSON
-                    const notifications = data.notifications;
-                    const notificationList = document.querySelector('.notification-list');
     
-                    if (!isLoadMore) {
-                        notificationList.innerHTML = ''; // Clear notifications if not loading more
-                    }
+                if (Array.isArray(notifications)) {
+                    notifications.forEach(notification => {
+                        console.log(`Processing notification ID: ${notification.id}, Status: ${notification.status}`); // Debug: Check status
     
-                    if (Array.isArray(notifications)) {
-                        notifications.forEach(notification => {
-                            const li = document.createElement('li');
-                            li.textContent = notification.notif_content;
-                            notificationList.appendChild(li);
-                        });
+                        const li = document.createElement('li');
+                        li.classList.add('notification-item');
     
-                        // Show or hide the "See More..." button based on the number of notifications returned
-                        if (notifications.length === limit) {
-                            document.querySelector('.see-more').style.display = 'block';
-                        } else {
-                            document.querySelector('.see-more').style.display = 'none';
+                        // Apply status-based class
+                        switch(notification.status) {
+                            case 'unread':
+                                li.classList.add('unread');
+                                break;
+                            case 'read':
+                                li.classList.add('read');
+                                break;
+                            case 'past':
+                                li.classList.add('past');
+                                break;
                         }
     
-                        // Update notification count
-                        const notificationCount = notificationList.querySelectorAll('li').length;
-                        document.querySelector('.notification-count').textContent = notificationCount;
+                        // Create the mark as read icon
+                        const markAsReadIcon = document.createElement('i');
+                        markAsReadIcon.classList.add('bi', notification.status === 'read' ? 'bi-check-square-fill' : 'bi-check-square');
+                        markAsReadIcon.style.cursor = 'pointer';
     
-                    } else if (notifications.message) {
-                        document.querySelector('.notification-count').textContent = '0';
-                        const li = document.createElement('li');
-                        li.textContent = notifications.message;
+                        markAsReadIcon.addEventListener('click', function() {
+                            if (notification.status !== 'read') {
+                                markNotificationAsRead(notification.id, markAsReadIcon, li);
+                            }
+                        });
+    
+                        // Create a div for the notification content
+                        const notificationContent = document.createElement('div');
+                        notificationContent.classList.add('notification-content');
+    
+                        // Create the title and time ago
+                        const title = document.createElement('div');
+                        title.classList.add('notification-title');
+                        title.textContent = notification.notif_content;
+    
+                        const timeAgo = document.createElement('small');
+                        timeAgo.classList.add('notification-time');
+                        timeAgo.textContent = `(${notification.time_ago})`;
+    
+                        // Append elements to the content div
+                        notificationContent.appendChild(title);
+                        notificationContent.appendChild(timeAgo);
+    
+                        // Append the icon and content to the list item
+                        li.appendChild(markAsReadIcon);
+                        li.appendChild(notificationContent);
+    
                         notificationList.appendChild(li);
-                        document.querySelector('.see-more').style.display = 'none';
-                    }
-                } catch (error) {
-                    console.error('Error parsing JSON:', error);
+                    });
+    
+                    // Show or hide the "See More..." button based on the number of notifications returned
+                    seeMoreButton.style.display = notifications.length === limit ? 'block' : 'none';
+    
+                    // Update notification count
+                    const notificationCount = notificationList.querySelectorAll('li').length;
+                    document.querySelector('.notification-count').textContent = notificationCount;
+    
+                } else if (notifications.message) {
+                    // Display the "No recent notifications" message
+                    document.querySelector('.notification-count').textContent = '0';
+                    const li = document.createElement('li');
+                    li.textContent = notifications.message;
+                    notificationList.appendChild(li);
+                    seeMoreButton.style.display = 'none';
                 }
             })
             .catch(error => console.error('Error fetching notifications:', error));
     }
     
-    
 
-    // Initial fetch to display the count
+    function markNotificationAsRead(notificationId, icon, li) {
+        fetch('../../src/processes/mark_notifications_read.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id: notificationId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update the icon and styles
+                icon.classList.remove('bi-check-square');
+                icon.classList.add('bi-check-square-fill');
+                li.classList.remove('unread');
+                li.classList.add('read');
+            } else {
+                console.error('Failed to mark notification as read');
+            }
+        })
+        .catch(error => console.error('Error marking notification as read:', error));
+    }
+
+    // Initial fetch to display the notifications
     fetchNotifications();
 });
