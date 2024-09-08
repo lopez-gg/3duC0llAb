@@ -58,30 +58,31 @@ $currentYear = date('Y');
         </div>
 
        
-
-        <!-- Bell icon with notification count -->
-        <!-- <div class="notification-bell">
-            <i class="bi bi-bell-fill"></i>
-            <span class="notification-count">0</span>
-        </div> -->
-        
-        <!-- Notification dropdown
-        <div class="notification-dropdown">
-            <ul class="notification-list"> -->
-                <!-- Notifications will be appended here by JavaScript -->
-            <!-- </ul>
-            <button class="see-more" style="display: none;">See More...</button>
-        </div>
-
-        <div class="user-profile" id="userProfile">
-            <div class="user-icon" onclick="toggleDropdown()">U</div>
-            <div class="dropdown" id="dropdown">
-                <a href="#">Settings</a>
-                <form action="../../src/processes/logout.php" method="post">
-                    <input type="submit" name="logout" value="Logout">
-                </form>
+        <div class="right-section">
+            <!-- Bell icon with notification count -->
+            <div class="notification-bell">
+                <i class="bi bi-bell-fill"></i>
+                <span class="notification-count">0</span>
             </div>
-        </div> -->
+            
+            <!-- Notification dropdown-->
+            <div class="notification-dropdown">
+                <ul class="notification-list"> 
+                    <!-- Notifications will be appended here by JavaScript -->
+                </ul>
+                <button class="see-more" style="display: none;">See More...</button>
+            </div>
+
+            <div class="user-profile" id="userProfile">
+                <div class="user-icon" onclick="toggleDropdown()">U</div>
+                <div class="dropdown" id="dropdown">
+                    <a href="#">Settings</a>
+                    <form action="../../src/processes/logout.php" method="post">
+                        <input type="submit" name="logout" value="Logout">
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
 
