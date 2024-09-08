@@ -33,12 +33,14 @@
     width: 300px;
     max-height: 400px;
     overflow-y: auto;
+    margin-top: 20px;
 }
 
 .notification-list {
     list-style: none;
     padding: 0;
     margin: 0;
+    
 }
 
 .notification-list li {
@@ -285,122 +287,55 @@ body {
     background-color: #333;
 }
 
-
-
-
-
-/* custom-calendar.css */
-#calendar {
-    max-width: 2000px;
-    margin: 2rem;
-}
-
-.event-tooltip {
-    position: absolute;
-    background-color: rgba(57, 57, 57, 0.8);
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    z-index: 10001;
-    pointer-events: none;
-}
-
-.fc-unthemed{
-    background-color: #d6d6d6;
-    padding: 3rem;
-    border-radius: 10px;
-}
-
-.fc-today {
-    background: #9af0d9 !important; 
-}
-
-.fc-content{
-    background-color: #35a884;
-    padding: 0.3em;
-    border-radius: none;
-}
-
-.fc-day-number{
-    margin: 0.5rem;
-}
-
-.fc-sun{
-    background-color: #ececec;
-}
-
-.c-modal-content {
-    background-color: #e0f7fa; /* Light blue background */
-    border-radius: 20px;
-    padding: 20px;
-}
-
-.c-modal-header {
-    color: rgb(54, 54, 54);
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-    text-align: center;
-}
-
-.c-modal-body {
-    background-color: #b2dfdb; /* Light green background */
-    padding: 30px;
-    border-radius: 20px;
-}
-
-.c-modal-footer {
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
-    text-align: center;
-    color: rgb(1, 223,rgb(57, 57, 57));
-}
-
-.c-modal-footer .btn {
-    background-color: #16e0d0; 
-    color: rgb(1, 223,rgb(0, 155, 83));
-    font-weight: bold;
-    border-radius: 50px;
-}
-
-.btn:hover {
-    background-color: #16e0d0; 
-    color: rgb(1, 223,rgb(0, 155, 83));
-}
-
-.event-details {
+.left-section {
     display: flex;
-    flex-direction: column;
     align-items: center;
 }
 
-.event-icon {
-    font-size: 40px;
-    margin-bottom: 10px;
+/* Keep elements on the same line */
+.app-name, #datetime {
+    white-space: nowrap; /* Prevent wrapping */
+    margin-right: 10px;  /* Space between elements */
 }
 
-.event-info h4 {
-    margin: 0;
-    font-size: 24px;
-    font-weight: bold;
+/* Optional: Adjust datetime font size and color */
+#datetime {
+    font-size: 16px;
+    color: #fff;
 }
 
-.event-info p {
-    margin: 5px 0;
+/* Right section styling */
+.right-section {
+    display: flex;
+    align-items: center;
+}
+
+/* User profile container */
+.user-profile {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-left: 20px; /* Adjust spacing from left section */
+}
+
+/* User icon styling */
+.user-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #575757;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 18px;
+    color: #fff;
 }
 
-.fc-view-container{
-    background-color: #efefef;
-}
 
-.tooltip-inner {
-    background-color: rgba(0, 0, 0, 0.8);
-    color: white;
-    padding: 10px;
-    border-radius: 5px;
-    font-size: 14px;
-}
-.tooltip-arrow {
-    border-top-color: rgba(0, 0, 0, 0.8);
+
+/* Show dropdown on hover */
+.user-profile:hover .dropdown {
+    display: block;
 }
 
