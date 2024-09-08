@@ -1,5 +1,8 @@
 /* dashboard.css */
-
+a {
+    text-decoration: none;
+    color: inherit;
+}
 #upcoming-events {
     list-style-type: none;
 }
@@ -103,10 +106,6 @@
 }
 
 
-
-
-
-/* sidebarnavigation */
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -394,5 +393,24 @@ body {
     height: 5px;
     width: 5px;
     background-color: #333;
+}
+
+/* dashboard sections */
+#sec-four{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+
+/* dashboard section 4 */
+.space{
+    background-color: #f2f2f2; /* Example background color */
+    padding: 20px;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
 }
 
