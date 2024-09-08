@@ -17,7 +17,7 @@ try {
     $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     if (empty($events)) {
-        echo "No events found for tomorrow.<br>";
+        $message = "No events found for tomorrow.<br>";
     } else {
         foreach ($events as $event) {
             $title = $event['title'];

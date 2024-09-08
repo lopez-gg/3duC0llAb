@@ -10,6 +10,7 @@
 .notification-bell {
     position: relative;
     cursor: pointer;
+    font-size: 1.5rem;
 }
 .notification-count {
     position: absolute;
@@ -33,19 +34,77 @@
     max-height: 400px;
     overflow-y: auto;
 }
+
 .notification-list {
     list-style: none;
     padding: 0;
     margin: 0;
 }
+
 .notification-list li {
+    display: flex;
+    align-items: flex-start;
     padding: 10px;
     border-bottom: 1px solid #ddd;
     color: #333;
 }
+
 .notification-list li:last-child {
     border-bottom: none; /* Remove border for last item */
 }
+
+.notification-list li.unread {
+    font-weight: bold;
+    background-color: #e9f7ef; /* Light green background for unread */
+}
+
+.notification-list li.read {
+    font-weight: normal;
+    background-color: #ffffff; /* White background for read notifications */
+}
+
+.notification-list li.past {
+    color: #808080; /* Grey text for past notifications */
+    background-color: #f8f9fa; /* Light grey background for past events */
+}
+
+/* Notification item structure */
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.notification-item i {
+    margin-right: 10px;
+    font-size: 1rem; /* Icon size */
+}
+
+/* Notification content styles */
+.notification-content {
+    flex: 1;
+}
+
+.notification-title {
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.notification-time {
+    color: #888; /* Lighter color for the time */
+    font-size: 0.9rem;
+    display: block;
+}
+
+/* Styles for icon */
+.notification-list i {
+    cursor: pointer;
+}
+
+
+
+
 
 /* sidebarnavigation */
 body {
@@ -57,12 +116,14 @@ body {
     overflow: auto; /* Changed from 'hidden' to 'auto' to allow scrolling */
 }
 
+/* General styles for the top navigation bar */
 .top-nav {
     width: 100%;
     height: 60px;
     background-color: #333;
     color: #fff;
     display: flex;
+    justify-content: space-between; /* Space between left and right sections */
     align-items: center;
     padding: 10px 20px;
     box-sizing: border-box;
@@ -70,10 +131,15 @@ body {
     top: 0;
     left: 0;
     z-index: 1000;
-    justify-content: space-between;
 }
 
-.top-nav .sidebar-toggle-button {
+/* Left section styles */
+.left-section {
+    display: flex;
+    align-items: center;
+}
+
+.sidebar-toggle-button {
     background-color: #333;
     color: #fff;
     border: none;
@@ -82,18 +148,97 @@ body {
     margin-right: 20px;
 }
 
-.top-nav .app-name {
+.app-name {
     font-size: 20px;
     font-weight: bold;
+    margin-right: 10px;
+    white-space: nowrap;
 }
 
-.top-nav .user-profile {
+#datetime {
+    white-space: nowrap;
+    font-size: 16px;
+}
+
+/* Right section styles */
+.right-section {
+    display: flex;
+    align-items: center;
+}
+
+/* Notification bell styles */
+.notification-bell {
     position: relative;
-    display: inline-block;
+    margin-right: 20px;
     cursor: pointer;
 }
 
-.top-nav .user-profile .user-icon {
+.notification-bell i {
+    font-size: 20px;
+    color: #fff;
+}
+
+.notification-count {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    background-color: red;
+    color: #fff;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+}
+
+/* Notification dropdown styles */
+.notification-dropdown {
+    position: absolute;
+    top: 60px;
+    right: 40px; /* Adjust based on bell icon position */
+    background-color: #fff;
+    color: #333;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    width: 200px;
+    display: none;
+    z-index: 1001;
+}
+
+.notification-list {
+    list-style: none;
+    padding: 10px;
+    margin: 0;
+}
+
+.notification-list li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    transition: background-color 0.3s;
+}
+
+.notification-list li:hover {
+    background-color: #f4f4f4;
+}
+
+.see-more {
+    width: 100%;
+    padding: 10px;
+    background-color: #f4f4f4;
+    border: none;
+    color: #333;
+    cursor: pointer;
+    text-align: center;
+    display: block;
+}
+
+/* User profile styles */
+.user-profile {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.user-icon {
     width: 40px;
     height: 40px;
     background-color: #575757;
@@ -105,21 +250,20 @@ body {
     color: #fff;
 }
 
-.top-nav .user-profile .dropdown {
+.dropdown {
     display: none;
     position: absolute;
-    top: 50px;
+    top: 60px;
     right: 0;
     background-color: #fff;
     color: #333;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 4px;
-    overflow: hidden;
     width: 150px;
     z-index: 1001;
 }
 
-.top-nav .user-profile .dropdown a {
+.dropdown a {
     display: block;
     padding: 10px;
     text-decoration: none;
@@ -127,8 +271,34 @@ body {
     transition: background-color 0.3s;
 }
 
-.top-nav .user-profile .dropdown a:hover {
+.dropdown a:hover {
     background-color: #f4f4f4;
+}
+
+.dropdown form {
+    margin: 0;
+    padding: 0;
+}
+
+.dropdown input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background-color: transparent;
+    color: #333;
+    cursor: pointer;
+    text-align: left;
+    transition: background-color 0.3s;
+}
+
+.dropdown input[type="submit"]:hover {
+    background-color: #f4f4f4;
+}
+
+/* Hover effects */
+.user-profile:hover .dropdown,
+.notification-bell:hover .notification-dropdown {
+    display: block;
 }
 
 .main {
@@ -225,3 +395,4 @@ body {
     width: 5px;
     background-color: #333;
 }
+
