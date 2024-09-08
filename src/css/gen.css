@@ -129,7 +129,8 @@ body {
     top: 0;
     left: 0;
     z-index: 1000;
-    justify-content: space-between;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 .top-nav .sidebar-toggle-button {
@@ -188,6 +189,21 @@ body {
 
 .top-nav .user-profile .dropdown a:hover {
     background-color: #f4f4f4;
+}
+
+.left-section{
+    display: flex;
+    align-items: center;
+}
+
+.app-name{
+    margin-right: 10px;
+    white-space: nowrap;
+}
+
+#datetime {
+    white-space: nowrap; 
+    font-size: 16px; 
 }
 
 .main {

@@ -34,7 +34,7 @@ if (isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self';">
+    <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self';"> -->
     <title>Login</title>
     <style>
         .error {
@@ -68,6 +68,5 @@ if (isset($_SESSION['user_id'])) {
     </form>
 
     <footer>EduCollab 2024</footer>
-    <script src='/src/js/base.js'></script>
 </body>
 </html>
