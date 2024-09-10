@@ -25,11 +25,8 @@ $order = isset($_GET['order']) && $_GET['order'] === 'desc' ? 'desc' : 'asc';
 $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $yearRange = isset($_GET['year_range']) ? $_GET['year_range'] : getCurrentYearRange();
 
-
-// Generate the base URL dynamically
-$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-$host = $_SERVER['HTTP_HOST'];
-$baseURL = $protocol . $host . '/EduCollab/src/processes/a/fetch_manage_events.php';
+// Get base URL from the configuration
+$baseURL = $config['base_url'] . '/src/processes/a/fetch_manage_events.php';
 
 // Capture current parameters
 $params = [
@@ -59,7 +56,7 @@ if ($response === false) {
 
 curl_close($ch);
 
-//Output the raw JSON response for debugging
+// Output the raw JSON response for debugging
 // header('Content-Type: application/json');
 // echo $response; // Check what this outputs
 
@@ -67,6 +64,7 @@ $data = json_decode($response, true);
 if ($data === null) {
     die('Error decoding JSON: ' . json_last_error_msg());
 }
+
 
 // default sy
 $currentYear = date('Y');
@@ -180,7 +178,7 @@ unset($_SESSION['success_message']);
         <button type="button" class="btn btn-primary" onclick="window.location.href='add_new_event.php?sy=<?= htmlspecialchars($yearRange, ENT_QUOTES, 'UTF-8') ?>'">
             Add New Event
         </button>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#yearRangeModal">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#yearRangeModal">
             New SY Calendar
         </button>
 
@@ -279,7 +277,7 @@ unset($_SESSION['success_message']);
 
     <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
-    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
+    <!-- <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
     <script src="../../src/js/toggleSidebar.js"></script>

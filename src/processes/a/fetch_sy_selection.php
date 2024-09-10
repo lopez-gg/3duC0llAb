@@ -1,8 +1,6 @@
 <?php
 require_once __DIR__ . '/../../config/db_config.php';
 require_once __DIR__ . '/../../config/config.php';
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 
 // Read JSON input
 $input = json_decode(file_get_contents('php://input'), true);
