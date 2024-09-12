@@ -32,18 +32,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($stmt->execute()) {
             $_SESSION['success_title'] = "Success";
             $_SESSION['success_message'] = "Task posted successfully!";
-            echo $urgency . ' task addded';
-            // header("Location: ../../../public/admin/space_home.php?grade=" . urlencode($grade));
+            header("Location: ../../../public/admin/space_home.php?grade=" . urlencode($grade));
             exit;
         } 
     } catch (Exception $e) {
         $_SESSION['success_title'] = "Failed";
         $_SESSION['success_message'] = "Failed to post task, please try again later.";
         log_error('Task creation failed: ' . $e->getMessage(), 'error.log');
-        // header("Location: ../../../public/admin/space_home.php?grade=" . urlencode($grade));
+        header("Location: ../../../public/admin/space_home.php?grade=" . urlencode($grade));
         exit;
     }
 } else {
-    // header("Location: ../../../public/space_home.php?grade=" . urlencode($grade));
+    header("Location: ../../../public/space_home.php?grade=" . urlencode($grade));
     exit;
 }
