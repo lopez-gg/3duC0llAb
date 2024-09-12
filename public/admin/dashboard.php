@@ -41,6 +41,7 @@ $currentYear = date('Y');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../../src/css/gen.css">
+    <link rel="stylesheet" href="../../src/css/a/dashb.css">
 
     <title>Dashboard</title>
 
@@ -104,7 +105,10 @@ $currentYear = date('Y');
             <hr>
                 
             <section class='main-sec' id='sec-two'>
-                <a href="add_user.php">add new user<a>
+                <div class="s2-e"><a href="#">Faculty</a></div>
+                <div class="s2-e"><a href="#">General Announcement</a></div>
+                <div class="s2-e"><a href="#">Appointment Requests</a></div>
+                
             </section>
 
             <hr>
@@ -163,25 +167,25 @@ $currentYear = date('Y');
             <hr>
             
             <section class='main-sec' id='sec-four'>
-                <a href=''><div class="space">
+                <a href='space_home.php?grade=1'><div class="space">
                     Grade 1
                 </div></a>
-                <a href=''><div class="space">
+                <a href='space_home.php?grade=2'><div class="space">
                     Grade 2
                 </div></a>
-                <a href=''><div class="space">
+                <a href='space_home.php?grade=3'><div class="space">
                     Grade 3
                 </div></a>
-                <a href=''><div class="space">
+                <a href='space_home.php?grade=4'><div class="space">
                     Grade 4
                 </div></a>
-                <a href=''><div class="space">
+                <a href='space_home.php?grade=5'><div class="space">
                     Grade 5
                 </div></a>
-                <a href=''><div class="space">
+                <a href='space_home.php?grade=6'><div class="space">
                     Grade 6
                 </div></a>
-                <a href=''><div class="space">
+                <a href='space_home.php?grade=sned'><div class="space">
                     SNED
                 </div></a>
 

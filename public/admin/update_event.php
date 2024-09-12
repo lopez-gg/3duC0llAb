@@ -58,8 +58,8 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Event</title>
-    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css' rel='stylesheet' />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../src/css/gen.css">
     <link rel="stylesheet" href="../../src/css/event_form.css">
 </head>
@@ -169,7 +169,8 @@ try {
         <?php include '../display_mod.php'; ?>
 
         <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
-        <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
         <script src="../../src/js/toggleSidebar.js"></script>
         <script src="../../src/js/verify.js"></script>
         <script src='../../src/js/notification.js'></script>
@@ -180,7 +181,7 @@ try {
             }
 
             $('#confirmDiscardButton').on('click', function() {
-                window.location.href = 'handle_events.php'; // Redirect to handle_events.php
+                window.location.href = 'handle_events.php'; 
             });
         </script>
     </div>

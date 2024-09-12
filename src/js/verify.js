@@ -1,7 +1,9 @@
 
 
-function openVerificationModal(formId, title = '', message = '', confirmText = '') {
+function openVerificationModal(formId, title = '', message = '', confirmText = '', redirectUrl = '', usertype = '') {
     $('#verificationModal').data('form-id', formId);
+    $('#verificationModal').data('redirect-url', redirectUrl); 
+    $('#verificationModal').data('usertype', usertype); 
     $('#verificationModal').find('.modal-title').text(title);
     $('#verificationModal').find('.modal-body p').text(message);
     $('#verificationModal').find('.btn-danger').text(confirmText);
@@ -10,11 +12,15 @@ function openVerificationModal(formId, title = '', message = '', confirmText = '
 
 $('#verificationModal').on('hidden.bs.modal', function () {
     $(this).removeData('form-id');
+    $(this).removeData('redirect-url');
+    $(this).removeData('usertype');
 });
 
 
 $('#verificationModal').on('click', '.btn-danger', function () {
     var formId = $('#verificationModal').data('form-id');
+    var redirectUrl = $('#verificationModal').data('redirect-url');
+    var usertype = $('#verificationModal').data('usertype');
     if (formId) {
         console.log('Submitting form: ', formId);  // Debugging log
         $.ajax({
@@ -23,8 +29,18 @@ $('#verificationModal').on('click', '.btn-danger', function () {
             data: $('#' + formId).serialize(),
             success: function(response) {
                 console.log('Response: ', response);  // Debugging log
-                // Redirect or update the page based on success
-                window.location.href = 'handle_events.php';  // Redirect to the page after deletion
+                console.log(redirectUrl);
+                if (redirectUrl) {
+                    window.location.href = redirectUrl;  // Redirect to the specified URL
+                } else if (!redirectUrl){
+                    if (usertype === 'user'){
+                        window.location.href = 'dashboard.php'; 
+                    }else if (usertype === 'admin'){
+                        window.location.href = 'dashboard.php';  
+                    }else {
+                        window.location.href = 'login.php'; 
+                    }
+                }  // Redirect to the page after deletion
             },
             error: function(xhr, status, error) {
                 console.log('Error: ', error);  // Debugging log

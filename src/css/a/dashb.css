@@ -1,0 +1,38 @@
+/* dashboard sections */
+#sec-four{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+#sec-two{
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+
+/* dashboard section 4 */
+.space{
+    background-color: #f2f2f2; 
+    padding: 20px;
+    text-align: center;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-size: 16px;
+}
+
+
+.s2-e{
+    display: block;
+    justify-content: center;
+    text-align: center;
+    border-radius: 5px;
+    font-size: 16px;
+    padding: 1rem;
+    min-width: 80px;
+    max-width: 150px;
+    background-color: rgb(178, 178, 178);
+    height: 40px;
+}

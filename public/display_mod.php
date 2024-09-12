@@ -26,7 +26,7 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
                         <?php echo htmlspecialchars($successTitle, ENT_QUOTES, 'UTF-8'); ?>
                     <?php endif; ?>
                     </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -45,7 +45,7 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="verificationModalLabel">Confirm Action</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -53,7 +53,7 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
                 <p id="verificationMessage">Are you sure you want to proceed?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-danger" id="confirmActionButton">Confirm</button>
             </div>
         </div>
@@ -67,7 +67,7 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="discardChangesModalLabel">Discard Changes</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -75,7 +75,7 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
                 <p>Are you sure you want to discard changes?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="button" class="btn btn-danger" id="confirmDiscardButton">Discard Changes</button>
             </div>
         </div>
@@ -88,7 +88,7 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="yearRangeModalLabel">Enter New School Year</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -96,11 +96,11 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
                 <form id="yearRangeForm">
                     <div class="form-group">
                         <label for="startYear">Start Year:</label>
-                        <input type="number" class="form-control" id="startYear" name="startYear" min="1900" max="2099" required>
+                        <input type="number" class="form-control" id="startYear" name="startYear" min="2023" max="2099" required>
                     </div>
                     <div class="form-group">
                         <label for="endYear">End Year:</label>
-                        <input type="number" class="form-control" id="endYear" name="endYear" min="1900" max="2099" required>
+                        <input type="number" class="form-control" id="endYear" name="endYear" min="2023" max="2099" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Save and Proceed</button>
                 </form>
