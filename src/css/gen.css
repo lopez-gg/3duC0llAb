@@ -3,6 +3,8 @@ a {
     text-decoration: none;
     color: inherit;
 }
+
+
 #upcoming-events {
     list-style-type: none;
 }
@@ -10,6 +12,7 @@ a {
     margin: 10px 0;
 }
 
+/* notification */
 .notification-bell {
     position: relative;
     cursor: pointer;
@@ -406,3 +409,8 @@ body {
     padding: 10px;
 }
 
+
+/* tasks display */
+.task-container li {
+    list-style-type: none;
+}

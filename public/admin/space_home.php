@@ -124,8 +124,12 @@ unset($_SESSION['success_message']);
                         echo "<ul>";
                         foreach ($tasks as $task) {
                             $color = getUrgencyColor($task['tag']);
+                            echo "<div class='task-container'>";  // Debugging background
                             echo "<li>";
-                            echo "<div class='task-tag' style='color:" . htmlspecialchars($color) . "' title='" . htmlspecialchars($task['tag']) . "'></div><br>";
+                            
+                            // Set background-color instead of color for the circle
+                            echo "<div class='task-tag' style='height: 15px; width: 15px; border-radius: 50%; background-color:" . htmlspecialchars($color) . ";' title='" . htmlspecialchars($task['tag']) . "'></div><br>";
+                            
                             echo "<strong>Task Name:</strong> " . htmlspecialchars($task['title']) . "<br>";
                             echo "<strong>Assigned To:</strong> " . htmlspecialchars($task['assigned_username']) . "<br>";
                             echo "<strong>Due Date:</strong> " . htmlspecialchars($task['due_date']) . "<br>";
@@ -133,7 +137,8 @@ unset($_SESSION['success_message']);
                             echo "<strong>Status:</strong> " . htmlspecialchars($task['status']) . "<br>";
                             echo "<strong>Description:</strong> " . htmlspecialchars($task['description']) . "<br>";
                             
-                            echo "</li><br>";
+                            echo "</li>";
+                            echo "</div><br>"; 
                         }
                         echo "</ul>";
                     } else {
