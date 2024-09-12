@@ -414,3 +414,23 @@ body {
 .task-container li {
     list-style-type: none;
 }
+
+
+
+/* searchbar */
+.search-results {
+    border: 1px solid #ddd;
+    max-height: 150px;
+    overflow-y: auto;
+    position: absolute;
+    z-index: 1000;
+    background: #fff;
+    width: 100%;
+}
+.search-result-item {
+    padding: 10px;
+    cursor: pointer;
+}
+.search-result-item:hover {
+    background-color: #f1f1f1;
+}

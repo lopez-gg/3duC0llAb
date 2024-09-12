@@ -39,7 +39,7 @@ try {
     // Set success message and redirect
     $_SESSION['success_title'] = "Success";
     $_SESSION['success_message'] = "Event updated successfully!";
-    header("Location: ../../../public/admin/handle_events.php");
+    header("Location: ../../../public/admin/manage_events.php");
     exit();
 
 } catch (Exception $e) {
@@ -50,7 +50,7 @@ try {
     log_error('Error updating event: ' . $e->getMessage(), 'db_errors.txt');
     $_SESSION['success_title'] = "Failed";
     $_SESSION['succes_message'] = "Failed to update event. Please try again later.";
-    header("Location: ../../../public/admin/handle_events.php");
+    header("Location: ../../../public/admin/manage_events.php");
     exit();
 }
 ?>

@@ -2,8 +2,8 @@
 <?php
 require_once __DIR__ . '/../../src/config/config.php';
 require_once __DIR__ . '/../../src/config/access_control.php'; 
-require_once __DIR__ . '/../../src/config/session_config.php'; // Include session config
-require_once __DIR__ . '/../../src/config/db_config.php'; // Include database config
+require_once __DIR__ . '/../../src/config/session_config.php'; 
+require_once __DIR__ . '/../../src/config/db_config.php'; 
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -11,6 +11,11 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }else{
     $grade = (string)$_SESSION['grade'];
+    if ($grade === 'sned') {
+        $gradetodisplay = 'SNED'; 
+    } else {
+        $gradetodisplay = 'Grade ' . (string)$_SESSION['grade']; 
+    }
 }
 
 // Check if the user is admin
@@ -43,81 +48,113 @@ unset($_SESSION['success_message']);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../src/css/gen.css">
-    <style>
-        .search-results {
-            border: 1px solid #ddd;
-            max-height: 150px;
-            overflow-y: auto;
-            position: absolute;
-            z-index: 1000;
-            background: #fff;
-            width: 100%;
-        }
-        .search-result-item {
-            padding: 10px;
-            cursor: pointer;
-        }
-        .search-result-item:hover {
-            background-color: #f1f1f1;
-        }
-    </style>
+
 </head>
 <body>
-    <div class="container mt-5">
-        <h2>Assign Task</h2>
-        <form action="../../src/processes/a/process_assign_task.php" method="POST">
-            <!-- Task Title -->
-            <div class="form-group">
-                <label for="title">Task Title</label>
-                <input type="text" class="form-control" id="title" name="title" required>
+    <!-- top navigation -->
+    <!-- Adjusted to use dynamic content and removed unused sections -->
+    <div class="top-nav">
+        <div class="left-section">
+            <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
+            <div class="app-name">EduCollab</div>
+            <div id="datetime"><?php echo htmlspecialchars($currentDateTime); ?></div>
+        </div>
+
+        <div class="right-section">
+            <div class="notification-bell">
+                <i class="bi bi-bell-fill"></i>
+                <span class="notification-count">0</span>
+            </div>
+            
+            <div class="notification-dropdown">
+                <ul class="notification-list"> 
+                    <!-- Notifications will be appended here by JavaScript -->
+                </ul>
+                <button class="see-more" style="display: none;">See More...</button>
             </div>
 
-            <!-- Assigned To Search -->
-            <div class="form-group position-relative">
-                <label for="assignedToSearch">Assign To </label>
-                <input type="text" class="form-control" id="assignedToSearch" autocomplete="off" placeholder="Search here...">
-                <div id="searchResults" class="search-results"></div>
-                <input type="hidden" id="assignedTo" name="assignedTo">
+            <div class="user-profile" id="userProfile">
+                <div class="user-icon" onclick="toggleDropdown()">U</div>
+                <div class="dropdown" id="dropdown">
+                    <a href="#">Settings</a>
+                    <form action="../../src/processes/logout.php" method="post">
+                        <input type="submit" name="logout" value="Logout">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div> 
+
+    <!-- sidebar -->
+    <div class="main">
+        <div class="sidebar" id="sidebar">
+                <div class="logo"></div> 
+                <div class="nav-links">
+                    <a href="dashboard.php">Dashboard</a>
+                    <a href="calendar.php">Calendar</a>
+                </div>
             </div>
 
-            <!-- Task Description -->
-            <div class="form-group">
-                <label for="description">Description</label>
-                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
-            </div>
+        
+        <div class="content" id="content">
+            <!-- <div class="container mt-5"> -->
+                <h2><?php echo $gradetodisplay?> > Assign Task</h2>
+                
+                <form action="../../src/processes/a/process_assign_task.php" method="POST">
+                    <!-- Task Title -->
+                    <div class="form-group">
+                        <label for="title">Task Title</label>
+                        <input type="text" class="form-control" id="title" name="title" required>
+                    </div>
 
-            <!-- Urgency Selection (use radio buttons instead of checkboxes) -->
-            <div class="t-urgency-container">
-                <label class='t-urgency-e'>
-                    <input type='radio' name='urgency' value='Normal' default/> Normal
-                </label>
-                <label class='t-urgency-e'>
-                    <input type='radio' name='urgency' value='Urgent'/> Urgent
-                </label>   
-                <label class='t-urgency-e'>
-                    <input type='radio' name='urgency' value='Important'/> Important
-                </label>
-                <label class='t-urgency-e'>
-                    <input type='radio' name='urgency' value='Urgent and Important'/> Urgent and Important
-                </label>
-            </div>
+                    <!-- Assigned To Search -->
+                    <div class="form-group position-relative">
+                        <label for="assignedToSearch">Assign To </label>
+                        <input type="text" class="form-control" id="assignedToSearch" autocomplete="off" placeholder="Search here...">
+                        <div id="searchResults" class="search-results"></div>
+                        <input type="hidden" id="assignedTo" name="assignedTo">
+                    </div>
+
+                    <!-- Task Description -->
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    </div>
+
+                    <!-- Urgency Selection (use radio buttons instead of checkboxes) -->
+                    <div class="t-urgency-container">
+                        <label class='t-urgency-e'>
+                            <input type='radio' name='urgency' value='Normal' default/> Normal
+                        </label>
+                        <label class='t-urgency-e'>
+                            <input type='radio' name='urgency' value='Urgent'/> Urgent
+                        </label>   
+                        <label class='t-urgency-e'>
+                            <input type='radio' name='urgency' value='Important'/> Important
+                        </label>
+                        <label class='t-urgency-e'>
+                            <input type='radio' name='urgency' value='Urgent and Important'/> Urgent and Important
+                        </label>
+                    </div>
 
 
-            <!-- Due Date -->
-            <div class="form-group">
-                <label for="due_date">Due Date</label>
-                <input type="date" class="form-control" id="due_date" name="due_date">
-            </div>
+                    <!-- Due Date -->
+                    <div class="form-group">
+                        <label for="due_date">Due Date</label>
+                        <input type="date" class="form-control" id="due_date" name="due_date">
+                    </div>
 
-            <!-- Auto-set Task Type and Assigned By (hidden fields) -->
-            <input type="hidden" name="taskType" value="assigned">
-            <input type="hidden" name="assignedBy" value="<?php echo $_SESSION['user_id']; ?>">
-            <input type="hidden" name="grade" value="<?php echo $grade?>">
+                    <!-- Auto-set Task Type and Assigned By (hidden fields) -->
+                    <input type="hidden" name="taskType" value="assigned">
+                    <input type="hidden" name="assignedBy" value="<?php echo $_SESSION['user_id']; ?>">
+                    <input type="hidden" name="grade" value="<?php echo $grade?>">
 
-            <!-- Submit Button -->
-            <button type="submit" class="btn btn-primary">Add Task</button>
-            <button type="button" class="btn btn-danger" onclick="openVerificationModal('cancel_form_', 'Cancel', 'All entries will be discarded. Are you sure you want to cancel?  ', 'Yes', 'space_home.php?grade=<?=$grade?>', '1')">Cancel</button>
-        </form>
+                    <!-- Submit Button -->
+                    <button type="submit" class="btn btn-primary">Add Task</button>
+                    <button type="button" class="btn btn-danger" onclick="openVerificationModal('cancel_form_', 'Cancel', 'All entries will be discarded. Are you sure you want to cancel?  ', 'Yes', 'space_home.php?grade=<?=$grade?>', '1')">Cancel</button>
+                </form>
+            <!-- </div> -->
+        </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -126,6 +163,7 @@ unset($_SESSION['success_message']);
     <script src="../../src/js/toggleSidebar.js"></script>
     <script src="../../src/js/verify.js"></script>
     <script src='../../src/js/notification.js'></script>
+    <script src='../../src/js/datetime.js'></script>
     
     <script>
         $(document).ready(function() {

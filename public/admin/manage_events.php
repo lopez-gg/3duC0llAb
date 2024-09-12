@@ -154,7 +154,7 @@ unset($_SESSION['success_message']);
         <!-- date and time -->
         <div class="content" id="content">
 
-            <h2>Manage Events</h2>
+            <h2>Calendar > Manage Events</h2>
            
             <div class="dropdown">
             <div class="d-flex align-items-center" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
@@ -242,7 +242,7 @@ unset($_SESSION['success_message']);
                                 <form id="deleteForm_<?php echo htmlspecialchars($event['id'] ?? ''); ?>" action="../../src/processes/a/delete_event.php" method="POST" >
                                 <input type="hidden" name="id" value="<?php echo htmlspecialchars($event['id'] ?? ''); ?>">
                                 </form>
-                                <button type="button" class="btn btn-danger" title="Delete event" onclick="openVerificationModal('deleteForm_<?php echo htmlspecialchars($event['id'] ?? ''); ?>', 'Confirm Deletion', 'Are you sure you want to delete this event?', 'Delete', 'handle_events.php', '1')">
+                                <button type="button" class="btn btn-danger" title="Delete event" onclick="openVerificationModal('deleteForm_<?php echo htmlspecialchars($event['id'] ?? ''); ?>', 'Confirm Deletion', 'Are you sure you want to delete this event?', 'Delete', 'manage_events.php', '1')">
                                     <i class="bi bi-trash3"></i>
                                 </button>
 
@@ -277,7 +277,7 @@ unset($_SESSION['success_message']);
 
     <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
-    <!-- <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script> -->
+    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
     <script src="../../src/js/toggleSidebar.js"></script>
@@ -285,6 +285,7 @@ unset($_SESSION['success_message']);
     <script src="../../src/js/yr_select.js"></script>
     <script src="../../src/js/new_sy.js"></script>
     <script src='../../src/js/notification.js'></script>
+    <script src='../../src/js/datetime.js'></script>
 
 
     <script>

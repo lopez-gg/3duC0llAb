@@ -16,8 +16,6 @@ if (isset($_SESSION['grade']) && isset($_POST['query'])) {
 
     try {
         
-    echo "Grade: $grade <br>";
-    echo "Query: $query <br>";
         // Prepare SQL query to search users within the specified grade
         $stmt = $pdo->prepare("
             SELECT id, username, firstname, lastname 

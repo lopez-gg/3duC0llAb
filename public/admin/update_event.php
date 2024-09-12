@@ -68,6 +68,9 @@ try {
         <div class="left-section">
             <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
             <div class="app-name">EduCollab</div>
+            <div id="datetime">
+                <?php echo $currentDateTime; ?>
+            </div>
         </div>
 
         <!-- Bell icon with notification count -->
@@ -105,11 +108,8 @@ try {
         </div>
 
         <div class="content" id="content">
-            <div id="datetime">
-                <?php echo $currentDateTime; ?>
-            </div>
 
-            <h2>Edit Event</h2>
+            <h2>Calendar > Edit Event</h2>
 
             <form id="eventsForm" action="../../src/processes/a/update_event.php" method="POST">
                 <input type="hidden" name="id" value="<?php echo htmlspecialchars($event['id']); ?>">
@@ -174,6 +174,7 @@ try {
         <script src="../../src/js/toggleSidebar.js"></script>
         <script src="../../src/js/verify.js"></script>
         <script src='../../src/js/notification.js'></script>
+        <script src='../../src/js/datetime.js'></script>
 
         <script>
             function openDiscardChangesModal() {
@@ -181,7 +182,7 @@ try {
             }
 
             $('#confirmDiscardButton').on('click', function() {
-                window.location.href = 'handle_events.php'; 
+                window.location.href = 'manage_events.php'; 
             });
         </script>
     </div>

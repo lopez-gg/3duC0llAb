@@ -53,6 +53,10 @@ $currentMonth = date('F Y'); // e.g., July 2024
         <div class="left-section">
             <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
             <div class="app-name">Educollab</div>
+            <div id="datetime">
+                <?php echo $currentDateTime; ?>
+            </div>
+
         </div>
 
         <!-- Bell icon with notification count -->
@@ -92,13 +96,10 @@ $currentMonth = date('F Y'); // e.g., July 2024
 
         <div class="content" id="content">
         <!-- Current date and time -->
-        <div id="datetime">
-            <?php echo $currentDateTime; ?>
-        </div>
-
+        
         <!-- Calendar display -->
         <h2>PSCS Calendar</h2>
-        <button><a href="handle_events.php">Manage Events</a></button>
+        <button><a href="manage_events.php">Manage Events</a></button>
 
         <div id='calendar'></div>
 

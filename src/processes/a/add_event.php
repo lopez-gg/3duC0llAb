@@ -30,13 +30,13 @@ try {
     $pdo->commit();
 
     $_SESSION['success_message'] = "Events added successfully!";
-    header("Location: ../../../public/admin/handle_events.php?");
+    header("Location: ../../../public/admin/manage_events.php?");
     exit();
 } catch (Exception $e) {
     $pdo->rollBack();
     log_error('Error adding events: ' . $e->getMessage(), 'db_errors.txt');
     $_SESSION['error_message'] = "Failed to add events. Please try again later.";
-    header("Location: ../../../public/admin/handle_events.php");
+    header("Location: ../../../public/admin/manage_events.php");
     exit();
 }
 ?>

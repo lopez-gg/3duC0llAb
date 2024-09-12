@@ -56,7 +56,6 @@ unset($_SESSION['success_message']);
     </head>
     <body>
         <!-- top navigation -->
-        <!-- Adjusted to use dynamic content and removed unused sections -->
         <div class="top-nav">
             <div class="left-section">
                 <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
@@ -91,13 +90,13 @@ unset($_SESSION['success_message']);
 
         <!-- sidebar -->
         <div class="main">
-            <!-- <div class="sidebar" id="sidebar">
+            <div class="sidebar" id="sidebar">
                     <div class="logo"></div> 
                     <div class="nav-links">
                         <a href="dashboard.php">Dashboard</a>
                         <a href="calendar.php">Calendar</a>
                     </div>
-                </div> -->
+                </div>
 
             <!-- date and time -->
             <div class="content" id="content">
@@ -159,6 +158,7 @@ unset($_SESSION['success_message']);
         <script src="../../src/js/yr_select.js"></script>
         <script src="../../src/js/new_sy.js"></script>
         <script src='../../src/js/notification.js'></script>
+        <script src='../../src/js/datetime.js'></script>
 
 
         <script>

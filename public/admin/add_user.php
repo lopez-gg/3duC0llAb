@@ -105,6 +105,7 @@ unset($_SESSION['success_message']);
     <script src='../../src/js/notification.js'></script>
     <script src='../../src/js/verify.js'></script>
     <script src='../../src/js/toggleSidebar.js'></script>
+    <script src='../../src/js/datetime.js'></script>
     <script>
         $(window).on('load', function() {
             <?php if ($successMessage): ?>

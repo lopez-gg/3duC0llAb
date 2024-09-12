@@ -53,6 +53,10 @@ try {
         <div class="left-section">
             <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
             <div class="app-name">EduCollab</div>
+            <!-- date and time -->
+            <div id="datetime">
+                <?php echo $currentDateTime; ?>
+            </div>
         </div>
 
         <!-- Bell icon with notification count -->
@@ -94,12 +98,8 @@ try {
 
         <div class="content" id="content">
 
-        <!-- date and time -->
-        <div id="datetime">
-            <?php echo $currentDateTime; ?>
-        </div>
             <h3>SY <?php echo $sy?></h3>
-            <h2>Add Event</h2>
+            <h2>Calendar > Add Event</h2>
         
         <form id="eventsForm" action="../../src/processes/a/add_event.php" method="POST">
             <div id="form-container">
@@ -139,7 +139,7 @@ try {
             <button type="button" class="btn btn-secondary" id="addNewEvent">Add New Event</button>
             
             <button type="submit" class="btn btn-primary">Save Events</button>
-            <button type="button" class="btn btn-danger" onclick="openVerificationModal('cancel_form_', 'Cancel', 'All entries will be discarded. Are you sure you want to cancel?  ', 'Yes', 'handle_events.php', '1')">Cancel</button>
+            <button type="button" class="btn btn-danger" onclick="openVerificationModal('cancel_form_', 'Cancel', 'All entries will be discarded. Are you sure you want to cancel?  ', 'Yes', 'manage_events.php', '1')">Cancel</button>
 
         </form>
 
@@ -152,6 +152,7 @@ try {
         <script src="../../src/js/toggleSidebar.js"></script>
         <script src="../../src/js/verify.js"></script>
         <script src='../../src/js/notification.js'></script>
+        <script src='../../src/js/datetime.js'></script>
         
         <script>
             $(document).ready(function() {
