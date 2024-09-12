@@ -7,8 +7,15 @@ $grade = isset($_GET['grade']) ? $_GET['grade'] : null;
 
 if ($grade) {
     try {
-        // Prepare the SQL query to fetch tasks based on the grade
-        $stmt = $pdo->prepare("SELECT * FROM tasks WHERE grade = :grade ORDER BY created_at DESC");
+        // Prepare the SQL query to fetch tasks with user information based on the grade
+        $stmt = $pdo->prepare("
+            SELECT t.id, t.title, t.description, t.taskType, t.tag, t.grade, t.status, t.created_at, t.due_date, 
+                   u.username AS assigned_username
+            FROM tasks t
+            LEFT JOIN users u ON t.assignedTo = u.id
+            WHERE t.grade = :grade
+            ORDER BY t.created_at DESC
+        ");
         $stmt->bindParam(':grade', $grade, PDO::PARAM_STR);
 
         // Execute the query

@@ -1,0 +1,6 @@
+Task creation failed: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
+Task creation failed: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
+Task creation failed: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
+Task creation failed: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'tag' cannot be null
+Task creation failed: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'tag' cannot be null
+Task creation failed: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'tag' cannot be null

@@ -93,7 +93,7 @@ unset($_SESSION['success_message']);
             
         </form>
         
-        <button type="button" class="btn btn-danger" onclick="openVerificationModal('cancel_form_', 'Cancel', 'All entries will be discarded. Are you sure you want to cancel?  ', 'Yes')">Cancel</button>
+        <button type="button" class="btn btn-danger" onclick="openVerificationModal('cancel_form_', 'Cancel', 'All entries will be discarded. Are you sure you want to cancel?  ', 'Yes', 'dashboard.php', '1')">Cancel</button>
     </div>
 
 

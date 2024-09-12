@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 29, 2024 at 08:05 PM
+-- Generation Time: Sep 11, 2024 at 02:03 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -61,7 +61,6 @@ INSERT INTO `events` (`id`, `title`, `description`, `event_date`, `end_date`, `a
 (1, 'event 0', 'test\r\nedit 1\r\nedit 2', '2025-08-25', '2026-08-25', '2024-08-24', 'Holiday', '2025-2026'),
 (2, 'event 2', 'test edit', '2024-08-26', '2024-08-26', '2024-08-24', 'Holiday', '2025-2026'),
 (11, 'New Year', 'test', '2025-01-01', '2025-01-03', '2024-08-24', 'Holiday', '2025-2026'),
-(13, 'ARMIN ', 'edited from 24-25\r\n29/31 to 30-1', '2025-08-30', '2025-09-01', '2024-08-27', 'School', '2024-2025'),
 (14, 'add 2 a', 'sy24-25', '2024-10-02', '2024-10-28', '2024-08-27', 'School', '2025-2026'),
 (15, 'LEVI', 'edited', '2024-08-30', '2024-08-31', '2024-08-27', 'Holiday', '2024-2025'),
 (17, 'EREH', 'ajdnfkajdnf', '2024-10-14', '2024-10-16', '2024-08-28', 'Holiday', '2023-2024'),
@@ -70,7 +69,10 @@ INSERT INTO `events` (`id`, `title`, `description`, `event_date`, `end_date`, `a
 (21, 'sdkgme', 'erge', '2024-08-29', '2024-08-31', '2024-08-28', 'School', '2027-2028'),
 (22, '27', 'wiefh', '2024-08-30', '2024-08-31', '2024-08-29', 'Holiday', '2027-2028'),
 (23, 'siefjowe', 'wiejewo', '2024-09-04', '2024-09-05', '2024-08-29', 'School', '2023-2024'),
-(25, 'Test Event', 'Default Description', '2024-08-31', '2024-09-01', '2024-08-30', 'Meeting', '2024');
+(26, 'notif test', 'sjd', '2024-08-31', '2024-09-01', '2024-08-30', 'School', '2024-2025'),
+(27, 'retest', 'dgsgf', '2024-09-01', '2024-09-01', '2024-08-31', 'Others', '2024-2025'),
+(28, 'tom', 'xfgh', '2024-09-01', '2024-09-02', '2024-08-31', 'School', '2024-2025'),
+(29, 'neww', 'lgfdoklkn', '2024-09-02', '2024-09-02', '2024-09-01', 'School', '2024-2025');
 
 -- --------------------------------------------------------
 
@@ -136,7 +138,55 @@ INSERT INTO `logins` (`id`, `user_id`, `login_time`, `success`) VALUES
 (23, 7, '2024-08-29 16:54:25', 1),
 (24, 7, '2024-08-29 17:11:29', 1),
 (25, 4, '2024-08-29 17:11:47', 1),
-(26, 7, '2024-08-29 17:18:57', 1);
+(26, 7, '2024-08-29 17:18:57', 1),
+(27, 7, '2024-08-29 19:21:42', 1),
+(28, 7, '2024-08-29 19:22:37', 1),
+(29, 7, '2024-08-29 19:36:31', 1),
+(30, 4, '2024-08-29 19:43:51', 1),
+(31, 4, '2024-08-29 19:54:42', 1),
+(32, 7, '2024-08-30 04:25:10', 1),
+(33, 7, '2024-08-30 04:25:53', 1),
+(34, 4, '2024-08-30 05:40:08', 0),
+(35, 4, '2024-08-30 05:40:15', 0),
+(36, 4, '2024-08-30 05:40:25', 1),
+(37, 4, '2024-08-30 05:44:56', 1),
+(38, 4, '2024-08-30 07:23:36', 1),
+(39, 4, '2024-08-30 09:40:44', 1),
+(40, 7, '2024-08-30 09:41:23', 1),
+(41, 4, '2024-08-30 09:42:03', 1),
+(42, 4, '2024-08-30 09:44:40', 1),
+(43, 4, '2024-08-30 10:08:38', 1),
+(44, 4, '2024-08-31 02:12:55', 1),
+(45, 7, '2024-08-31 02:30:19', 1),
+(46, 4, '2024-08-31 02:31:25', 0),
+(47, 4, '2024-08-31 02:31:33', 1),
+(48, 7, '2024-08-31 11:19:55', 1),
+(49, 4, '2024-08-31 11:22:59', 1),
+(50, 7, '2024-08-31 11:24:08', 1),
+(51, 4, '2024-08-31 11:43:05', 1),
+(52, 4, '2024-08-31 11:46:58', 1),
+(53, 7, '2024-08-31 12:00:30', 1),
+(54, 4, '2024-08-31 12:00:50', 1),
+(55, 4, '2024-08-31 12:41:29', 0),
+(56, 4, '2024-08-31 12:41:35', 1),
+(57, 4, '2024-08-31 14:37:28', 1),
+(58, 7, '2024-08-31 14:43:56', 1),
+(59, 7, '2024-08-31 15:11:18', 1),
+(60, 4, '2024-08-31 16:04:27', 1),
+(61, 7, '2024-08-31 16:33:14', 1),
+(62, 4, '2024-09-03 02:31:43', 1),
+(63, 4, '2024-09-06 03:12:31', 1),
+(64, 4, '2024-09-08 06:26:44', 1),
+(65, 4, '2024-09-08 07:03:14', 1),
+(66, 4, '2024-09-08 10:01:00', 1),
+(67, 4, '2024-09-08 11:16:57', 1),
+(68, 4, '2024-09-08 11:18:35', 1),
+(69, 4, '2024-09-08 12:41:24', 1),
+(70, 4, '2024-09-09 09:20:31', 1),
+(71, 4, '2024-09-09 10:54:40', 0),
+(72, 4, '2024-09-09 10:54:46', 1),
+(73, 4, '2024-09-10 08:01:20', 1),
+(74, 4, '2024-09-11 12:02:35', 1);
 
 -- --------------------------------------------------------
 
@@ -150,16 +200,22 @@ CREATE TABLE `notifications` (
   `type` enum('info','warning','error','calendar_event') NOT NULL,
   `notif_content` text NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `read_at` timestamp NULL DEFAULT NULL
+  `read_at` timestamp NULL DEFAULT NULL,
+  `status` enum('unread','read') NOT NULL DEFAULT 'unread',
+  `event_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `notifications`
 --
 
-INSERT INTO `notifications` (`id`, `user_id`, `type`, `notif_content`, `created_at`, `read_at`) VALUES
-(1, NULL, 'calendar_event', 'Tomorrow\'s event: \'LEVI\'.', '2024-08-29 17:57:34', NULL),
-(2, NULL, 'calendar_event', 'Tomorrow\'s event: \'27\'.', '2024-08-29 17:57:34', NULL);
+INSERT INTO `notifications` (`id`, `user_id`, `type`, `notif_content`, `created_at`, `read_at`, `status`, `event_id`) VALUES
+(19, NULL, 'calendar_event', 'Tomorrow\'s event: \'Test Event\'.', '2024-08-30 09:28:17', NULL, 'read', 25),
+(20, NULL, 'calendar_event', 'Tomorrow\'s event: \'notif test\'.', '2024-08-30 09:28:17', NULL, 'read', 26),
+(21, NULL, 'calendar_event', 'Tomorrow\'s event: \'retest\'.', '2024-08-31 02:35:26', NULL, 'read', NULL),
+(22, NULL, 'calendar_event', 'Tomorrow\'s event: \'retest\'.', '2024-08-31 02:35:37', NULL, 'read', NULL),
+(23, NULL, 'calendar_event', 'Tomorrow\'s event: \'tom\'.', '2024-08-31 11:23:26', NULL, 'read', NULL),
+(24, NULL, 'calendar_event', 'Tomorrow\'s event: \'siefjowe\'.', '2024-09-03 02:31:43', NULL, 'read', NULL);
 
 -- --------------------------------------------------------
 
@@ -210,12 +266,22 @@ CREATE TABLE `tasks` (
   `title` varchar(255) NOT NULL,
   `description` text DEFAULT NULL,
   `taskType` enum('private','assigned','public') DEFAULT NULL,
-  `tag` enum('UI','UNI','NUI','NUNI') DEFAULT NULL,
+  `tag` enum('Normal','Urgent','Important') DEFAULT NULL,
+  `grade` varchar(10) DEFAULT NULL,
   `status` enum('completed','in_progress','pending') DEFAULT 'pending',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `due_date` date DEFAULT NULL,
+  `due_time` time DEFAULT NULL,
   `completed_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `tasks`
+--
+
+INSERT INTO `tasks` (`id`, `assignedBy`, `assignedTo`, `title`, `description`, `taskType`, `tag`, `grade`, `status`, `created_at`, `due_date`, `due_time`, `completed_at`) VALUES
+(1, 4, 5, 'assigned task 1', '', 'assigned', NULL, NULL, 'pending', '2024-09-06 08:01:43', '2024-09-07', NULL, NULL),
+(2, 4, 6, 'assigned task 2', '', 'assigned', NULL, NULL, 'pending', '2024-09-06 08:03:10', '2024-09-07', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -241,16 +307,14 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `firstname`, `lastname`, `gradeLevel`, `section`, `password`, `status`, `accType`, `created_at`) VALUES
-(4, 'admintest', 'admin', 'test', 'test', 'test', '$2y$10$AejWqKaXEPWFsJEa0YYEq./SBDNG3htMmHM4NPGw48R5zfvoHOmJ.', 'active', 'ADMIN', '2024-07-26 08:58:37'),
-(5, 'usertest', 'user', 'test', 'test', 'test', '$2y$10$LDw4kSr6WkVv1jZhFFYPvuqqI/c6E4kopojrW/W6YAnYiBVn.mupK', 'active', 'USER', '2024-07-26 09:25:29'),
-(6, 'newuser', 'new', 'user', 'test', 'test', '$2y$10$N75cH127LXgKVYhJQpKo5.aXTUSnRLLgTC8Mo7HRqy.L0dAVsgl5y', 'active', 'USER', '2024-07-26 09:34:28'),
-(7, 'an', 'an', 'an', '1', 'jhgv', '$2y$10$tPAqP5ETQ.F.nCxK8XR2lOIcrFNe/hiTyW9aazNs66zKUIY5/IfNi', 'active', 'USER', '2024-08-24 07:10:44'),
-(8, 'andg', 'an', 'an', '1', 'jhgv', '$2y$10$xUzBHzu8otBA7LnUnigWcugqCCf5eW3eC2HRgAwhywrNfgrVUXnIi', 'inactive', 'USER', '2024-08-24 07:19:54'),
-(9, 'andg', 'an', 'an', '1', 'jhgv', '$2y$10$d7yAU2LteGGIXa7nv5bEYeGBMQIotJmir0QnfLklHm2NboCJuTl3u', 'inactive', 'USER', '2024-08-24 07:20:18'),
-(10, 'user', 'fname', 'lname', 'grlvl', 'sec', '$2y$10$OLTI4QId2YXVq8KJUVhJmOeJPm2Du.vWzK9COl4VNyVihAuDMWi9W', 'inactive', 'USER', '2024-08-24 07:20:53'),
-(11, 'one', 'one', 'one', 'one', 'one', '$2y$10$rBxlKb0aeb5LbO5JSV1.AuDc5EQcv.3CqOlCpZuRFzoft9pdw47we', 'inactive', 'USER', '2024-08-24 07:22:12'),
-(12, 'two', 'two', 'two', 'two', 'two', '$2y$10$s6IG5/bDo1/leNTkyKXtZ.aUWyKsBBxhRnYZfjkBiHHsnItbhsWTm', 'inactive', 'USER', '2024-08-24 07:35:44'),
-(13, 'three', 'three', 'three', 'three', 'three', '$2y$10$Sc.6vo5LpLIPPsWmP.WoEuuYxNH0Gb1YgkjGUxaSsh3EVNVeABpNW', 'inactive', 'USER', '2024-08-24 07:39:11');
+(4, 'admintest', 'admin', 'test', 'Grade 1', 'test', '$2y$10$AejWqKaXEPWFsJEa0YYEq./SBDNG3htMmHM4NPGw48R5zfvoHOmJ.', 'active', 'ADMIN', '2024-07-26 08:58:37'),
+(5, 'usertest', 'user', 'test', 'Grade 2', 'test', '$2y$10$LDw4kSr6WkVv1jZhFFYPvuqqI/c6E4kopojrW/W6YAnYiBVn.mupK', 'active', 'USER', '2024-07-26 09:25:29'),
+(6, 'newuser', 'new', 'user', 'Grade 3', 'test', '$2y$10$N75cH127LXgKVYhJQpKo5.aXTUSnRLLgTC8Mo7HRqy.L0dAVsgl5y', 'active', 'USER', '2024-07-26 09:34:28'),
+(7, 'an', 'an', 'an', 'Grade 4', 'jhgv', '$2y$10$tPAqP5ETQ.F.nCxK8XR2lOIcrFNe/hiTyW9aazNs66zKUIY5/IfNi', 'active', 'USER', '2024-08-24 07:10:44'),
+(10, 'user', 'fname', 'lname', 'SNED', 'sec', '$2y$10$OLTI4QId2YXVq8KJUVhJmOeJPm2Du.vWzK9COl4VNyVihAuDMWi9W', 'inactive', 'USER', '2024-08-24 07:20:53'),
+(11, 'one', 'one', 'one', 'SNED', 'one', '$2y$10$rBxlKb0aeb5LbO5JSV1.AuDc5EQcv.3CqOlCpZuRFzoft9pdw47we', 'inactive', 'USER', '2024-08-24 07:22:12'),
+(12, 'two', 'two', 'two', 'Grade 1', 'two', '$2y$10$s6IG5/bDo1/leNTkyKXtZ.aUWyKsBBxhRnYZfjkBiHHsnItbhsWTm', 'inactive', 'USER', '2024-08-24 07:35:44'),
+(13, 'three', 'three', 'three', 'Grade 2', 'three', '$2y$10$Sc.6vo5LpLIPPsWmP.WoEuuYxNH0Gb1YgkjGUxaSsh3EVNVeABpNW', 'inactive', 'USER', '2024-08-24 07:39:11');
 
 --
 -- Indexes for dumped tables
@@ -333,7 +397,7 @@ ALTER TABLE `comments`
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT for table `event_types`
@@ -345,13 +409,13 @@ ALTER TABLE `event_types`
 -- AUTO_INCREMENT for table `logins`
 --
 ALTER TABLE `logins`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=75;
 
 --
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `posts`
@@ -369,7 +433,7 @@ ALTER TABLE `sy`
 -- AUTO_INCREMENT for table `tasks`
 --
 ALTER TABLE `tasks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`

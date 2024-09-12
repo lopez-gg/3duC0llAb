@@ -396,3 +396,13 @@ body {
 }
 
 
+.t-urgency-container{
+    display: flex;
+    gap: 0.5rem;
+}
+
+.t-urgency-e {
+    display: block;
+    padding: 10px;
+}
+

@@ -1,8 +1,20 @@
-<!-- /views/add_new_task.php -->
+<!-- add_new_task.php -->
 <?php
+require_once __DIR__ . '/../../src/config/config.php';
+require_once __DIR__ . '/../../src/config/access_control.php'; 
 require_once __DIR__ . '/../../src/config/session_config.php'; // Include session config
-require_once __DIR__ . '/../../src/config/config.php'; // Include general config
 require_once __DIR__ . '/../../src/config/db_config.php'; // Include database config
+
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header('Location: /public/login.php');
+    exit;
+}else{
+    $grade = (string)$_SESSION['grade'];
+}
+
+// Check if the user is admin
+check_access('ADMIN');
 
 // Set timezone
 date_default_timezone_set('Asia/Manila'); 
@@ -26,7 +38,11 @@ unset($_SESSION['success_message']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assign Task</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../src/css/gen.css">
     <style>
         .search-results {
             border: 1px solid #ddd;
@@ -70,6 +86,23 @@ unset($_SESSION['success_message']);
                 <textarea class="form-control" id="description" name="description" rows="3"></textarea>
             </div>
 
+            <!-- Urgency Selection (use radio buttons instead of checkboxes) -->
+            <div class="t-urgency-container">
+                <label class='t-urgency-e'>
+                    <input type='radio' name='urgency' value='Normal' default/> Normal
+                </label>
+                <label class='t-urgency-e'>
+                    <input type='radio' name='urgency' value='Urgent'/> Urgent
+                </label>   
+                <label class='t-urgency-e'>
+                    <input type='radio' name='urgency' value='Important'/> Important
+                </label>
+                <label class='t-urgency-e'>
+                    <input type='radio' name='urgency' value='Urgent and Important'/> Urgent and Important
+                </label>
+            </div>
+
+
             <!-- Due Date -->
             <div class="form-group">
                 <label for="due_date">Due Date</label>
@@ -79,35 +112,43 @@ unset($_SESSION['success_message']);
             <!-- Auto-set Task Type and Assigned By (hidden fields) -->
             <input type="hidden" name="taskType" value="assigned">
             <input type="hidden" name="assignedBy" value="<?php echo $_SESSION['user_id']; ?>">
+            <input type="hidden" name="grade" value="<?php echo $grade?>">
 
             <!-- Submit Button -->
             <button type="submit" class="btn btn-primary">Add Task</button>
+            <button type="button" class="btn btn-danger" onclick="openVerificationModal('cancel_form_', 'Cancel', 'All entries will be discarded. Are you sure you want to cancel?  ', 'Yes', 'space_home.php?grade=<?=$grade?>', '1')">Cancel</button>
         </form>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="../../src/js/toggleSidebar.js"></script>
+    <script src="../../src/js/verify.js"></script>
+    <script src='../../src/js/notification.js'></script>
+    
     <script>
         $(document).ready(function() {
             $('#assignedToSearch').on('keyup', function() {
                 let query = $(this).val();
+                let grade = '<?= $grade ?>';  // Ensure this outputs the correct grade value
 
-                if (query.length > 2) {
-
+                if (query.length > 1) {
                     $.ajax({
-                        url: '../../src/processes/search_users.php',
+                        url: '../../src/processes/a/search_users_by_grade.php',
                         method: 'POST',
-                        data: { query: query },
+                        data: { query: query, grade: grade },
                         success: function(data) {
-                            $('#searchResults').html(data); // Display the search results
+                            $('#searchResults').html(data);
                         },
                         error: function(xhr, status, error) {
-                            console.log("Error:", error);  // Log errors if any
+                            console.log("Error:", error);  
                             $('#searchResults').html('<div class="search-result-item">Error occurred. Please try again.</div>');
                         }
                     });
-                } else {
-                    $('#searchResults').html('<div class="search-result-item">Searching...</div>');  // Clear results if fewer than 3 characters are typed
-                }
+                } else if (query.length === 0) {
+                    $('#searchResults').html('');  
+                } 
             });
 
             // When a search result is clicked, populate the hidden input with user ID
@@ -121,6 +162,10 @@ unset($_SESSION['success_message']);
             });
         });
     </script>
+
+
+
+
 
 </body>
 </html>

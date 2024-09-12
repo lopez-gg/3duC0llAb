@@ -96,11 +96,11 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
                 <form id="yearRangeForm">
                     <div class="form-group">
                         <label for="startYear">Start Year:</label>
-                        <input type="number" class="form-control" id="startYear" name="startYear" min="1900" max="2099" required>
+                        <input type="number" class="form-control" id="startYear" name="startYear" min="2023" max="2099" required>
                     </div>
                     <div class="form-group">
                         <label for="endYear">End Year:</label>
-                        <input type="number" class="form-control" id="endYear" name="endYear" min="1900" max="2099" required>
+                        <input type="number" class="form-control" id="endYear" name="endYear" min="2023" max="2099" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Save and Proceed</button>
                 </form>
