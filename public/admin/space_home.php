@@ -18,9 +18,16 @@ if (!isset($_SESSION['user_id'])) {
     $_SESSION['grade'] = $grade;
 }
 
+// Set default values for the variables
+$currentDateTime = date('l, d/m/Y h:i:s A'); 
+// Handle Pagination Variables
+$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Initialize $currentPage
+$itemsPerPage = $data['itemsPerPage'] ?? 10; 
+$index = ($currentPage - 1) * $itemsPerPage + 1; 
+
 // Fetching tasks per grade
 $ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $config['base_url'] . "/src/processes/a/fetch_tasks.php?grade=" . urlencode($grade));
+curl_setopt($ch, CURLOPT_URL, $config['base_url'] . "/src/processes/a/fetch_space_tasks.php?grade=" . urlencode($grade));
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 $tasks_json = curl_exec($ch);
 if (curl_errno($ch)) {
@@ -28,12 +35,12 @@ if (curl_errno($ch)) {
 }
 curl_close($ch);
 $tasks = json_decode($tasks_json, true);
+
 if (isset($tasks['error'])) {
     echo "<p>Error: " . htmlspecialchars($tasks['error']) . "</p>";
 }
 
-// Set default values for the variables
-$currentDateTime = date('l, d/m/Y h:i:s A'); 
+$totalPages = $tasks['totalPages'] ?? 1; // Default to 1 if not set
 
 $successTitle = isset($_SESSION['success_title']) ? $_SESSION['success_title'] : null;
 $successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
@@ -56,7 +63,7 @@ unset($_SESSION['success_message']);
     </head>
     <body>
         <!-- top navigation -->
-        <div class="top-nav">
+        <!-- <div class="top-nav"> -->
             <div class="left-section">
                 <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
                 <div class="app-name">EduCollab</div>
@@ -86,17 +93,17 @@ unset($_SESSION['success_message']);
                     </div>
                 </div>
             </div>
-        </div> 
+        <!-- </div>  -->
 
         <!-- sidebar -->
         <div class="main">
-            <div class="sidebar" id="sidebar">
-                    <div class="logo"></div> 
-                    <div class="nav-links">
-                        <a href="dashboard.php">Dashboard</a>
-                        <a href="calendar.php">Calendar</a>
-                    </div>
+            <!-- <div class="sidebar" id="sidebar">
+                <div class="logo"></div> 
+                <div class="nav-links">
+                    <a href="dashboard.php">Dashboard</a>
+                    <a href="calendar.php">Calendar</a>
                 </div>
+            </div> -->
 
             <!-- date and time -->
             <div class="content" id="content">
@@ -117,48 +124,78 @@ unset($_SESSION['success_message']);
                 </section>
 
                 <section class="main-sec" id="sec-three">
-                    <?php
-                    // Display the tasks
-                    if (!empty($tasks)) {
-                        echo "<ul>";
-                        foreach ($tasks as $task) {
-                            $color = getUrgencyColor($task['tag']);
-                            echo "<div class='task-container'>";  // Debugging background
-                            echo "<li>";
-                            
-                            // Set background-color instead of color for the circle
-                            echo "<div class='task-tag' style='height: 15px; width: 15px; border-radius: 50%; background-color:" . htmlspecialchars($color) . ";' title='" . htmlspecialchars($task['tag']) . "'></div><br>";
-                            
-                            echo "<strong>Task Name:</strong> " . htmlspecialchars($task['title']) . "<br>";
-                            echo "<strong>Assigned To:</strong> " . htmlspecialchars($task['assigned_username']) . "<br>";
-                            echo "<strong>Due Date:</strong> " . htmlspecialchars($task['due_date']) . "<br>";
-                            echo "<strong>Created At:</strong> " . htmlspecialchars($task['created_at']) . "<br>";
-                            echo "<strong>Status:</strong> " . htmlspecialchars($task['status']) . "<br>";
-                            echo "<strong>Description:</strong> " . htmlspecialchars($task['description']) . "<br>";
-                            
-                            echo "</li>";
-                            echo "</div><br>"; 
-                        }
-                        echo "</ul>";
-                    } else {
-                        echo "<p>No tasks found for this grade.</p>";
-                    }
-                    ?>
+                    <div class="task-list-container">
+                        <?php if (empty($tasks['tasks'])): ?>
+                            <div>No tasks found.</div>
+                        <?php else: 
+                            ?>
+                            <?php foreach ($tasks['tasks'] as $task): ?>
+                                <div class="task-card" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 10px;">
+                                    <div class="task-header" style="display: flex; justify-content: space-between; align-items: center;">
+                                        <h5 style="margin: 0;"><?php echo htmlspecialchars($task['title'] ?? 'Untitled Task'); ?></h5>
+                                        <div class="task-status">
+                                            <?php $color = isset($task['tag']) ? getUrgencyColor($task['tag']) : 'gray'; ?>
+                                            <div style="height: 20px; width: 20px; background-color: <?php echo htmlspecialchars($color); ?>; border-radius: 50%;" title="<?php echo htmlspecialchars($task['tag'] ?? ''); ?>"></div>
+                                        </div>
+                                    </div>
+                                    <p><strong>Assigned To:</strong> <?php echo htmlspecialchars($task['assigned_username'] ?? 'Unassigned'); ?></p>
+                                    <p><strong>Due Date:</strong> <?php echo htmlspecialchars($task['due_date'] ?? 'No Due Date'); ?></p>
+                                    <p><strong>Status:</strong> <?php echo htmlspecialchars($task['status'] ?? 'Unknown'); ?></p>
+                                    <p><strong>Description:</strong> <?php echo htmlspecialchars($task['description'] ?? 'No description'); ?></p>
+                                    <div class="task-actions" style="display: flex; gap: 10px;">
+                                        <form action="update_task.php" method="GET" style="display:inline;">
+                                            <input type="hidden" name="id" value="<?php echo htmlspecialchars($task['id'] ?? ''); ?>">
+                                            <button type="submit" class="btn btn-normal" title="Edit Task">
+                                                <i class="bi bi-pencil-square"></i> Edit
+                                            </button>
+                                        </form>
+                                        <form id="deleteForm_<?php echo htmlspecialchars($task['id'] ?? ''); ?>" action="../../src/processes/a/delete_task.php" method="POST" style="display:inline;">
+                                            <input type="hidden" name="id" value="<?php echo htmlspecialchars($task['id'] ?? ''); ?>">
+                                        </form>
+                                        <button type="button" class="btn btn-danger" title="Delete Task" onclick="openVerificationModal('deleteForm_<?php echo htmlspecialchars($task['id'] ?? ''); ?>', 'Confirm Deletion', 'Are you sure you want to delete this task?', 'Delete', 'space_home.php', '1')">
+                                            <i class="bi bi-trash3"></i> Delete
+                                        </button>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                    <nav aria-label="Task pagination">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item <?php if ($currentPage <= 1) echo 'disabled'; ?>">
+                                <a class="page-link" href="?page=<?php echo $currentPage - 1; ?>&grade=<?php echo urlencode($grade); ?>" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <?php for ($page = 1; $page <= $totalPages; $page++): ?>
+                                <li class="page-item <?php if ($page == $currentPage) echo 'active'; ?>">
+                                    <a class="page-link" href="?page=<?php echo $page; ?>&grade=<?php echo urlencode($grade); ?>"><?php echo $page; ?></a>
+                                </li>
+                            <?php endfor; ?>
+                            <li class="page-item <?php if ($currentPage >= $totalPages) echo 'disabled'; ?>">
+                                <a class="page-link" href="?page=<?php echo $currentPage + 1; ?>&grade=<?php echo urlencode($grade); ?>" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+
                 </section>
+
             </div>
         </div>
 
         <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
-        <!-- <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script> -->
+        <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
-        <script src="../../src/js/toggleSidebar.js"></script>
+        
+        <script src='../../src/js/datetime.js'></script>
+        <!-- <script src="../../src/js/toggleSidebar.js"></script> -->
         <script src="../../src/js/verify.js"></script>
-        <script src="../../src/js/yr_select.js"></script>
         <script src="../../src/js/new_sy.js"></script>
         <script src='../../src/js/notification.js'></script>
-        <script src='../../src/js/datetime.js'></script>
 
 
         <script>
