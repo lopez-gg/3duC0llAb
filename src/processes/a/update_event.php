@@ -24,7 +24,7 @@ try {
     // Prepare the SQL update statement
     $stmt = $pdo->prepare("
         UPDATE events
-        SET title = ?, description = ?, event_date = ?, end_date = ?, event_type = ?, year_range = ?
+        SET title = ?, description = ?, event_date = ?, end_date = ?, event_type = ?, year_range = ?, updated_at = NOW()
         WHERE id = ?
     ");
 

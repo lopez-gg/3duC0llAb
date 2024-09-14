@@ -17,11 +17,14 @@ if (!isset($_SESSION['user_id'])) {
     $grade = isset($_GET['grade']) ? trim($_GET['grade']) : '';
     $_SESSION['grade'] = $grade;
 
-    if ($grade === 'sned'){
+    if (is_numeric($grade) && $grade >= 1 && $grade <= 6) {
+        $gradetodisplay = 'Grade ' . intval($grade);
+    } elseif (strtolower($grade) === 'sned') {
         $gradetodisplay = strtoupper($grade);
     } else {
-        $gradetodisplay = 'Grade ' . $grade;
+        $gradetodisplay = 'Unknown Grade'; 
     }
+    
 }
 
 // Set default values for the variables
@@ -131,7 +134,7 @@ unset($_SESSION['success_message']);
                         <a href="assign_task.php">Assign Task</a>
                     </div>
                     <div class="s2-e">
-                        <a href="">Announcements</a>
+                        <a href="space_forum.php?grade=<?php echo $grade?>">Forum</a>
                     </div>
                     <div class="s2-e">
                         <a href=""> <?php echo htmlspecialchars($grade); ?> Faculty</a>

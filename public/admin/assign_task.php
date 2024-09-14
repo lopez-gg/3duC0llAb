@@ -146,7 +146,7 @@ unset($_SESSION['success_message']);
                     <div class="form-group">
                         <label for="due_time">Due Time:</label>
                         <input type="time" class="form-control" name="due_time" value="<?php echo htmlspecialchars($task['due_time']); ?>">
-                    </div>
+                    </div> 
 
                     <!-- Auto-set Task Type and Assigned By (hidden fields) -->
                     <input type="hidden" name="taskType" value="assigned">
