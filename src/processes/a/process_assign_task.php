@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     try {
         $stmt = $pdo->prepare("
-            INSERT INTO tasks (assignedBy, assignedTo, grade, title, description, taskType, tag, status, created_at, due_date)
+            INSERT INTO tasks (assignedBy, assignedTo, grade, title, description, taskType, tag, progress, created_at, due_date)
             VALUES (:assignedBy, :assignedTo, :grade, :title, :description, :taskType, :urgency, 'pending', NOW(), :due_date)
         ");
         $stmt->bindParam(':assignedBy', $assignedBy);
@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bindParam(':title', $title);
         $stmt->bindParam(':description', $description);
         $stmt->bindParam(':taskType', $taskType);
-        $stmt->bindParam(':urgency', $urgency); // Bind the urgency value
+        $stmt->bindParam(':urgency', $urgency); 
         $stmt->bindParam(':due_date', $due_date);
 
         if ($stmt->execute()) {

@@ -24,10 +24,19 @@ $currentDateTime = date('l, d/m/Y h:i:s A');
 $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Initialize $currentPage
 $itemsPerPage = $data['itemsPerPage'] ?? 10; 
 $index = ($currentPage - 1) * $itemsPerPage + 1; 
+$params = [
+    'grade' => $grade, // Grade is mandatory for displaying tasks
+    'order' => isset($_GET['order']) ? $_GET['order'] : 'desc', // Sort order (optional)
+    'progress' => isset($_GET['progress']) ? $_GET['progress'] : '', // Task progress (optional)
+    'page' => isset($_GET['page']) ? $_GET['page'] : 1 // Pagination (optional)
+];
+
+// Build the query string
+$queryString = http_build_query($params);
 
 // Fetching tasks per grade
 $ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $config['base_url'] . "/src/processes/a/fetch_space_tasks.php?grade=" . urlencode($grade));
+curl_setopt($ch, CURLOPT_URL, $config['base_url'] . "/src/processes/a/fetch_space_tasks.php?" . $queryString);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 $tasks_json = curl_exec($ch);
 if (curl_errno($ch)) {
@@ -123,7 +132,21 @@ unset($_SESSION['success_message']);
                     </div>
                 </section>
 
+                <hr>
+                <section>
+                    <div class="">
+                        <button class="btn btn-secondary dropdown-toggle" id="sortIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Sort order">
+                            <i class="bi bi-funnel"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="sortIcon">
+                            <a class="dropdown-item sort-option" data-order="asc" >Ascending</a>
+                            <a class="dropdown-item sort-option" data-order="desc" >Descending</a>
+                        </div>
+                    </div>
+                </section>
                 <section class="main-sec" id="sec-three">
+                    
+
                     <div class="task-list-container">
                         <?php if (empty($tasks['tasks'])): ?>
                             <div>No tasks found.</div>
@@ -180,6 +203,7 @@ unset($_SESSION['success_message']);
                         </ul>
                     </nav>
 
+
                 </section>
 
             </div>
@@ -207,6 +231,29 @@ unset($_SESSION['success_message']);
                     }, 4500);
                 <?php endif; ?>
             });
+
+            $(document).ready(function () {
+                // Event listener for sorting options
+                $('.sort-option').on('click', function () {
+                    const order = $(this).data('order'); // Fetch sort order from button click
+                    
+                    // Collect existing URL parameters
+                    const params = {
+                        grade: "<?php echo urlencode($grade); ?>", // Grade is always essential
+                        order: order, // New sort order
+                        progress: "<?php echo isset($_GET['progress']) ? urlencode($_GET['progress']) : ''; ?>", // Keep current filters
+                        page: "<?php echo $currentPage; ?>" // Current page
+                    };
+
+                    // Build the query string
+                    const queryString = $.param(params);
+
+                    // Reload page with updated query
+                    window.location.href = `space_home.php?${queryString}`;
+                });
+            });
+</script>
+
 
         </script>
 

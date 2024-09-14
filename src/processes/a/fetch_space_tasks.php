@@ -1,31 +1,32 @@
 <?php
-require_once __DIR__ . '/../../config/db_config.php';
-require_once __DIR__ . '/../../config/config.php';
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+require_once __DIR__ . '/../../config/db_config.php'; // Database configuration file
+require_once __DIR__ . '/../../config/config.php';    // Application-specific configurations
 
-// Read JSON input or GET parameters
-$input = json_decode(file_get_contents('php://input'), true);
+// Capture the GET parameters or JSON input
+$order = isset($_GET['order']) ? $_GET['order'] : 'desc';  // Default to 'desc' if 'order' isn't specified
+$input = json_decode(file_get_contents('php://input'), true);  // Decode JSON input if available
 $grade = isset($input['grade']) ? $input['grade'] : (isset($_GET['grade']) ? $_GET['grade'] : null);
 $progress = isset($input['progress']) ? $input['progress'] : (isset($_GET['progress']) ? $_GET['progress'] : '');
 $order = isset($input['order']) ? ($input['order'] === 'asc' ? 'ASC' : 'DESC') : (isset($_GET['order']) ? ($_GET['order'] === 'asc' ? 'ASC' : 'DESC') : 'DESC');
-$page = isset($input['page']) ? (int)$input['page'] : (isset($_GET['page']) ? (int)$_GET['page'] : 1);
-$itemsPerPage = 3; // You can adjust the number of items per page
-$offset = ($page - 1) * $itemsPerPage;
 
-// Check if grade is specified
+// Pagination setup: Capture the page number (default is page 1)
+$page = isset($input['page']) ? (int)$input['page'] : (isset($_GET['page']) ? (int)$_GET['page'] : 1);
+$itemsPerPage = 3;  // Set the number of tasks to display per page
+$offset = ($page - 1) * $itemsPerPage;  // Calculate the offset for pagination
+
+// Ensure the grade is provided
 if ($grade) {
     try {
-        // Build the SQL query to fetch tasks
+        // SQL query to fetch tasks, filtering by grade and progress
         $query = "
-            SELECT t.id, t.title, t.description, t.taskType, t.tag, t.grade, t.progress, t.status, t.created_at, t.due_date, 
+            SELECT t.id, t.title, t.description, t.taskType, t.tag, t.grade, t.progress, t.created_at, t.due_date, 
                    u.username AS assigned_username
             FROM tasks t
             LEFT JOIN users u ON t.assignedTo = u.id
             WHERE t.grade = :grade 
-              AND t.progress != 'completed'"; // Only active tasks
+              AND t.progress != 'completed'";
 
-        // Apply progress filter if specified
+        // Add progress filter if specified
         if (!empty($progress)) {
             $query .= " AND t.progress = :progress";
         }
@@ -35,42 +36,44 @@ if ($grade) {
 
         // Prepare the query
         $stmt = $pdo->prepare($query);
-        $stmt->bindParam(':grade', $grade, PDO::PARAM_STR);
+        $stmt->bindParam(':grade', $grade, PDO::PARAM_STR);  // Bind the grade parameter
 
         if (!empty($progress)) {
-            $stmt->bindParam(':progress', $progress, PDO::PARAM_STR);
+            $stmt->bindParam(':progress', $progress, PDO::PARAM_STR);  // Bind the progress parameter if provided
         }
 
+        // Bind pagination parameters
         $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
         $stmt->bindParam(':itemsPerPage', $itemsPerPage, PDO::PARAM_INT);
 
         // Execute the query
         $stmt->execute();
 
-        // Fetch the tasks
+        // Fetch the resulting tasks
         $tasks = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Count total tasks for pagination
+        // Query to count the total number of tasks for pagination purposes
         $countQuery = "
             SELECT COUNT(*) 
             FROM tasks 
             WHERE grade = :grade 
               AND progress != 'completed'";
-              
+        
         if (!empty($progress)) {
             $countQuery .= " AND progress = :progress";
         }
 
+        // Prepare and execute the count query
         $countStmt = $pdo->prepare($countQuery);
-        $countStmt->bindParam(':grade', $grade, PDO::PARAM_STR);
-        
+        $countStmt->bindParam(':grade', $grade, PDO::PARAM_STR);  // Bind the grade for count
+
         if (!empty($progress)) {
-            $countStmt->bindParam(':progress', $progress, PDO::PARAM_STR);
+            $countStmt->bindParam(':progress', $progress, PDO::PARAM_STR);  // Bind progress if provided
         }
 
         $countStmt->execute();
-        $totalItems = $countStmt->fetchColumn();
-        $totalPages = ceil($totalItems / $itemsPerPage);
+        $totalItems = $countStmt->fetchColumn();  // Get the total number of tasks
+        $totalPages = ceil($totalItems / $itemsPerPage);  // Calculate the total number of pages
 
         // Prepare the response data
         $response = [
@@ -80,16 +83,17 @@ if ($grade) {
             'itemsPerPage' => $itemsPerPage,
         ];
 
-        // Output the JSON response
+        // Return the response as JSON
         header('Content-Type: application/json');
         echo json_encode($response);
 
     } catch (PDOException $e) {
-        // Log the error and return a JSON error message
+        // Log the error and return a JSON error response
         log_error('Error fetching tasks: ' . $e->getMessage(), 'db_errors.txt');
         echo json_encode(['error' => 'Failed to fetch tasks']);
     }
 } else {
+    // If grade isn't provided, return a JSON error message
     echo json_encode(['error' => 'Grade not specified']);
 }
 ?>

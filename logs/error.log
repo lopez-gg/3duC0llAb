@@ -5,3 +5,5 @@ Task creation failed: SQLSTATE[23000]: Integrity constraint violation: 1048 Colu
 Task creation failed: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'tag' cannot be null
 Task creation failed: SQLSTATE[23000]: Integrity constraint violation: 1048 Column 'tag' cannot be null
 Task creation failed: SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`educollab`.`tasks`, CONSTRAINT `tasks_ibfk_2` FOREIGN KEY (`assignedTo`) REFERENCES `users` (`id`))
+Task creation failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'field list'
+Task creation failed: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'field list'
