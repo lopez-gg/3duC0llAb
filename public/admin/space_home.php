@@ -172,8 +172,9 @@ unset($_SESSION['success_message']);
                                     <p><strong>Status:</strong> <?php echo htmlspecialchars($task['progress'] ?? 'Unknown'); ?></p>
                                     <p><strong>Description:</strong> <?php echo htmlspecialchars($task['description'] ?? 'No description'); ?></p>
                                     <div class="task-actions" style="display: flex; gap: 10px;">
-                                        <form action="update_task.php" method="GET" style="display:inline;">
+                                        <form action="update_tasks.php" method="GET" style="display:inline;">
                                             <input type="hidden" name="id" value="<?php echo htmlspecialchars($task['id'] ?? ''); ?>">
+                                            <input type="hidden" name="grade" value="<?= htmlspecialchars($grade); ?>">
                                             <button type="submit" class="btn btn-normal" title="Edit Task">
                                                 <i class="bi bi-pencil-square"></i> 
                                             </button>

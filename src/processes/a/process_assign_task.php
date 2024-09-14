@@ -9,7 +9,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $assignedTo = isset($_POST['assignedTo']) ? (int)$_POST['assignedTo'] : null; 
     $grade = isset($_POST['grade']) ? $_POST['grade'] : null; 
     $due_date = isset($_POST['due_date']) ? $_POST['due_date'] : null;
-    $urgency = isset($_POST['urgency']) ? $_POST['urgency'] : 'Normal'; // Fetch the urgency value from POST, default to "Normal" if not provided
+    $urgency = isset($_POST['urgency']) ? $_POST['urgency'] : 'Normal'; 
+    $due_time = isset($_POST['due_time']) ? $_POST['due_time'] : null; 
 
     // Automatically set taskType and assignedBy from the session
     $taskType = 'assigned';
@@ -17,8 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     try {
         $stmt = $pdo->prepare("
-            INSERT INTO tasks (assignedBy, assignedTo, grade, title, description, taskType, tag, progress, created_at, due_date)
-            VALUES (:assignedBy, :assignedTo, :grade, :title, :description, :taskType, :urgency, 'pending', NOW(), :due_date)
+            INSERT INTO tasks (assignedBy, assignedTo, grade, title, description, taskType, tag, progress, created_at, due_date, due_time)
+            VALUES (:assignedBy, :assignedTo, :grade, :title, :description, :taskType, :urgency, 'pending', NOW(), :due_date, :due_time)
         ");
         $stmt->bindParam(':assignedBy', $assignedBy);
         $stmt->bindParam(':assignedTo', $assignedTo);
@@ -28,6 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bindParam(':taskType', $taskType);
         $stmt->bindParam(':urgency', $urgency); 
         $stmt->bindParam(':due_date', $due_date);
+        $stmt->bindParam(':due_time', $due_time);
 
         if ($stmt->execute()) {
             $_SESSION['success_title'] = "Success";
