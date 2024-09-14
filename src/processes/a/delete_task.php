@@ -3,6 +3,7 @@ require_once __DIR__ . '/../../config/db_config.php';
 
 // Assuming you receive the task ID to delete via POST
 $taskId = $_POST['id'] ?? null;
+$grade = $_POST['grade'] ?? null;
 
 if ($taskId) {
     try {
@@ -12,7 +13,7 @@ if ($taskId) {
         $stmt = $pdo->prepare("
             INSERT INTO archived_tasks
             (id, assignedBy, assignedTo, title, description, taskType, tag, grade, progress, status, created_at, due_date, due_time, completed_at, deleted_at)
-            SELECT id, assignedBy, assignedTo, title, description, taskType, tag, grade, progress, status, created_at, due_date, due_time, completed_at, NOW()
+            SELECT id, assignedBy, assignedTo, title, description, taskType, tag, grade, progress, 'archived', created_at, due_date, due_time, completed_at, NOW()
             FROM tasks
             WHERE id = :id
         ");
@@ -28,13 +29,19 @@ if ($taskId) {
 
         // Redirect or respond with success
         $_SESSION['success_message'] = 'Task successfully deleted.';
-        header('Location: /admin/space_home.php');
+        // header('Location: /admin/space_home.php?grade=' . $grade);
+        echo 'positive' . $grade;
             
         exit;
     } catch (PDOException $e) {
         $pdo->rollBack();
         // Handle the error
-        echo 'Error: ' . $e->getMessage();
+        error_log('Error moving task to archived_tasks: ' . $e->getMessage());
+        echo 'negative' . $grade;
+        log_error('Error fetching tasks: ' . $e->getMessage(), 'db_errors.txt');
+        // Optionally show a user-friendly error message
+        $_SESSION['error_message'] = 'An error occurred while deleting the task.';
+        // header('Location: /admin/space_home.php?grade=' . $grade);
     }
 }
 ?>

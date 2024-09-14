@@ -16,6 +16,12 @@ if (!isset($_SESSION['user_id'])) {
 } else {
     $grade = isset($_GET['grade']) ? trim($_GET['grade']) : '';
     $_SESSION['grade'] = $grade;
+
+    if ($grade === 'sned'){
+        $gradetodisplay = strtoupper($grade);
+    } else {
+        $gradetodisplay = 'Grade ' . $grade;
+    }
 }
 
 // Set default values for the variables
@@ -64,7 +70,7 @@ unset($_SESSION['success_message']);
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Grade <?php echo htmlspecialchars($grade); ?></title>
+        <title><?php echo htmlspecialchars($gradetodisplay); ?></title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
         <link href="../../src/css/gen.css" rel="stylesheet">
@@ -117,7 +123,7 @@ unset($_SESSION['success_message']);
             <!-- date and time -->
             <div class="content" id="content">
                 <section class='main-sec' id='sec-one'>
-                    <h2>Grade <?php echo htmlspecialchars($grade); ?></h2>
+                    <h2> <?php echo strtoupper(htmlspecialchars($gradetodisplay)); ?></h2>
                 </section>
 
                 <section class="main-sec" id="sec-two">
@@ -128,7 +134,7 @@ unset($_SESSION['success_message']);
                         <a href="">Announcements</a>
                     </div>
                     <div class="s2-e">
-                        <a href="">Grade <?php echo htmlspecialchars($grade); ?> Faculty</a>
+                        <a href=""> <?php echo htmlspecialchars($grade); ?> Faculty</a>
                     </div>
                 </section>
 
@@ -163,20 +169,21 @@ unset($_SESSION['success_message']);
                                     </div>
                                     <p><strong>Assigned To:</strong> <?php echo htmlspecialchars($task['assigned_username'] ?? 'Unassigned'); ?></p>
                                     <p><strong>Due Date:</strong> <?php echo htmlspecialchars($task['due_date'] ?? 'No Due Date'); ?></p>
-                                    <p><strong>Status:</strong> <?php echo htmlspecialchars($task['status'] ?? 'Unknown'); ?></p>
+                                    <p><strong>Status:</strong> <?php echo htmlspecialchars($task['progress'] ?? 'Unknown'); ?></p>
                                     <p><strong>Description:</strong> <?php echo htmlspecialchars($task['description'] ?? 'No description'); ?></p>
                                     <div class="task-actions" style="display: flex; gap: 10px;">
                                         <form action="update_task.php" method="GET" style="display:inline;">
                                             <input type="hidden" name="id" value="<?php echo htmlspecialchars($task['id'] ?? ''); ?>">
                                             <button type="submit" class="btn btn-normal" title="Edit Task">
-                                                <i class="bi bi-pencil-square"></i> Edit
+                                                <i class="bi bi-pencil-square"></i> 
                                             </button>
                                         </form>
                                         <form id="deleteForm_<?php echo htmlspecialchars($task['id'] ?? ''); ?>" action="../../src/processes/a/delete_task.php" method="POST" style="display:inline;">
-                                            <input type="hidden" name="id" value="<?php echo htmlspecialchars($task['id'] ?? ''); ?>">
+                                            <input type="hidden" name="id" value="<?= htmlspecialchars($task['id'] ?? ''); ?>">
+                                            <input type="hidden" name="grade" value="<?= htmlspecialchars($grade); ?>">
                                         </form>
-                                        <button type="button" class="btn btn-danger" title="Delete Task" onclick="openVerificationModal('deleteForm_<?php echo htmlspecialchars($task['id'] ?? ''); ?>', 'Confirm Deletion', 'Are you sure you want to delete this task?', 'Delete', 'space_home.php', '1')">
-                                            <i class="bi bi-trash3"></i> Delete
+                                        <button type="button" class="btn btn-danger" title="Delete Task" onclick="openVerificationModal('deleteForm_<?php echo htmlspecialchars($task['id'] ?? ''); ?>', 'Confirm Deletion', 'Are you sure you want to delete this task?', 'Delete', 'space_home.php?grade=<?= $grade?>', '1')">
+                                            <i class="bi bi-trash3"></i> 
                                         </button>
                                     </div>
                                 </div>

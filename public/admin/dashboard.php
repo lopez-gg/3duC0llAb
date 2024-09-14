@@ -185,7 +185,7 @@ $currentYear = date('Y');
                 <a href='space_home.php?grade=6'><div class="space">
                     Grade 6
                 </div></a>
-                <a href='space_home.php?grade=sned'><div class="space">
+                <a href='space_home.php?grade=SNED'><div class="space">
                     SNED
                 </div></a>
 

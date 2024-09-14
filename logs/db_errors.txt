@@ -1,0 +1,4 @@
+Error fetching tasks: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'field list'
+Error fetching tasks: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'field list'
+Error fetching tasks: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'field list'
+Error fetching tasks: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'status' in 'field list'
