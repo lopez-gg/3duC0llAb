@@ -31,4 +31,10 @@ if (isset($_SESSION['last_regeneration']) && time() - $_SESSION['last_regenerati
     $_SESSION['last_regeneration'] = time();
 }
 
+// Generate a CSRF token if one doesn't exist
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32)); 
+}
+
+
 ?>

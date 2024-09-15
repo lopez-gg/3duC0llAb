@@ -37,24 +37,27 @@ $task = [
 ];
 
 if ($id) {
-    $stmt = $pdo->prepare("SELECT * FROM tasks WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT t.*, u.username AS assigned_username 
+                           FROM tasks t
+                           LEFT JOIN users u ON t.assignedTo = u.id 
+                           WHERE t.id = ?");
     $stmt->execute([$id]);
     $task = $stmt->fetch(PDO::FETCH_ASSOC);
 } else {
-    header('Location: manage_tasks.php');
+    header('Location: space_home.php?grade=' . $grade);
     exit;
 }
 
-$tags = ['Normal', 'Urgent', 'Important'];
+$tags = ['Normal', 'Urgent', 'Important', 'Urgent and Important'];
 $progressStatuses = ['completed', 'in_progress', 'pending'];
 
 // debug
-// if ($id && $grade) {
-//     echo "Task ID: " . htmlspecialchars($id) . "<br>";
-//     echo "Grade: " . htmlspecialchars($grade) . "<br>";
-// } else {
-//     echo "Missing task ID or grade.";
-// }
+if ($id && $grade) {
+    echo "Task ID: " . htmlspecialchars($id) . "<br>";
+    echo "Grade: " . htmlspecialchars($grade) . "<br>";
+} else {
+    echo "Missing task ID or grade.";
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -112,13 +115,12 @@ $progressStatuses = ['completed', 'in_progress', 'pending'];
         </div> -->
 
         <div class="content" id="content">
-
             <h2><?php echo $gradetodisplay?> > Edit Task</h2>
 
-
             <form id="taskForm" action="../../src/processes/a/process_update_task.php" method="POST">
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                 <input type="hidden" name="id" value="<?php echo htmlspecialchars($task['id']); ?>">
-
+                
                 <div class="task-form-group">
                     <div class="form-group">
                         <label for="title">Title:</label>
@@ -128,31 +130,24 @@ $progressStatuses = ['completed', 'in_progress', 'pending'];
                         <label for="description">Description:</label>
                         <textarea class="form-control" name="description"><?php echo htmlspecialchars($task['description']); ?></textarea>
                     </div>
-                    <div class="form-group">
-                        <label for="taskType">Task Type:</label>
-                        <select class="form-control" name="taskType" required>
-                            <option value="<?= htmlspecialchars($task['taskType'], ENT_QUOTES, 'UTF-8') ?>" selected>
-                                <?= htmlspecialchars($task['taskType'], ENT_QUOTES, 'UTF-8') ?>
-                            </option>
-                        </select>
+
+                    <div class="form-group position-relative">
+                        <label for="assignedToSearch">Assign To</label>
+                        <input type="text" class="form-control" id="assignedToSearch" autocomplete="off" 
+                               placeholder="Search here..." value="<?= htmlspecialchars($task['assigned_username'] ?? 'Unassigned'); ?>" required>
+                        <div id="searchResults" class="search-results"></div>
+                        <input type="hidden" id="assignedTo" name="assignedTo" value="<?= htmlspecialchars($task['assignedTo']); ?>">
                     </div>
+
                     <div class="form-group">
-                        <label for="tag">Tag:</label>
-                        <select class="form-control" name="tag" required>
-                            <option value="<?= htmlspecialchars($task['tag'], ENT_QUOTES, 'UTF-8') ?>" selected>
-                                <?= htmlspecialchars($task['tag'], ENT_QUOTES, 'UTF-8') ?>
-                            </option>
-                            <?php foreach ($tags as $tag): ?>
-                                <option value="<?= htmlspecialchars($tag, ENT_QUOTES, 'UTF-8') ?>">
-                                    <?= htmlspecialchars($tag, ENT_QUOTES, 'UTF-8') ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
+                        <label for="tag">Urgency:</label>
+                        <?php foreach ($tags as $value): ?>
+                            <label class='t-urgency-e'>
+                                <input type='radio' name='tag' value='<?= $value ?>' <?= $task['tag'] === $value ? 'checked' : '' ?> /> <?= $value ?>
+                            </label>
+                        <?php endforeach; ?>
                     </div>
-                    <div class="form-group">
-                        <label for="grade">Grade:</label>
-                        <input type="text" class="form-control" name="grade" value="<?php echo htmlspecialchars($task['grade']); ?>">
-                    </div>
+
                     <div class="form-group">
                         <label for="progress">Progress:</label>
                         <select class="form-control" name="progress" required>
@@ -166,6 +161,7 @@ $progressStatuses = ['completed', 'in_progress', 'pending'];
                             <?php endforeach; ?>
                         </select>
                     </div>
+
                     <div class="form-group">
                         <label for="due_date">Due Date:</label>
                         <input type="date" class="form-control" name="due_date" value="<?php echo htmlspecialchars($task['due_date']); ?>">
@@ -177,7 +173,7 @@ $progressStatuses = ['completed', 'in_progress', 'pending'];
                 </div>
 
                 <button type="submit" class="btn btn-primary">Update Task</button>
-                <button type="button" class="btn btn-secondary" onclick="openVerificationModal('discard_changes_<?php echo htmlspecialchars($task['id'] ?? ''); ?>', 'Confirm Deletion', 'Are you sure you want to discard changes?', 'Discard', 'space_home.php?grade=<?= $grade?>', '1')">Cancel</button>
+                <button type="button" class="btn btn-secondary" onclick="window.location.href='space_home.php?grade=<?= $grade?>'">Cancel</button>
             </form>
         </div>
 
@@ -186,12 +182,16 @@ $progressStatuses = ['completed', 'in_progress', 'pending'];
         <?php include '../display_mod.php'; ?>
 
         <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+        <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
-        <script src="../../src/js/toggleSidebar.js"></script>
-        <script src="../../src/js/verify.js"></script>
-        <script src='../../src/js/notification.js'></script>
+        
         <script src='../../src/js/datetime.js'></script>
+        <!-- <script src="../../src/js/toggleSidebar.js"></script> -->
+        <script src="../../src/js/verify.js"></script>
+        <script src="../../src/js/new_sy.js"></script>
+        <script src='../../src/js/notification.js'></script>
 
         <script>
             function openDiscardChangesModal() {
@@ -200,6 +200,40 @@ $progressStatuses = ['completed', 'in_progress', 'pending'];
 
             $('#confirmDiscardButton').on('click', function() {
                 window.location.href = 'manage_events.php'; 
+            });
+
+            $(document).ready(function() {
+                $('#assignedToSearch').on('keyup', function() {
+                    let query = $(this).val();
+                    let grade = '<?= $grade ?>';  // Ensure this outputs the correct grade value
+
+                    if (query.length > 1) {
+                        $.ajax({
+                            url: '../../src/processes/a/search_users_by_grade.php',
+                            method: 'POST',
+                            data: { query: query, grade: grade },
+                            success: function(data) {
+                                $('#searchResults').html(data);
+                            },
+                            error: function(xhr, status, error) {
+                                console.log("Error:", error);  
+                                $('#searchResults').html('<div class="search-result-item">Error occurred. Please try again.</div>');
+                            }
+                        });
+                    } else if (query.length === 0) {
+                        $('#searchResults').html('');  
+                    } 
+                });
+
+                // When a search result is clicked, populate the hidden input with user ID
+                $(document).on('click', '.search-result-item', function() {
+                    let userId = $(this).data('userid');
+                    let userInfo = $(this).text();
+                    
+                    $('#assignedToSearch').val(userInfo);  // Set the visible field
+                    $('#assignedTo').val(userId);  // Set the hidden field with user ID
+                    $('#searchResults').html('');  // Clear the search results
+                });
             });
         </script>
     </div>
