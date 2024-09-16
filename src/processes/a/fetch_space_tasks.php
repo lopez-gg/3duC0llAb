@@ -11,13 +11,11 @@ $order = isset($input['order']) ? ($input['order'] === 'asc' ? 'ASC' : 'DESC') :
 
 // Pagination setup: Capture the page number (default is page 1)
 $page = isset($input['page']) ? (int)$input['page'] : (isset($_GET['page']) ? (int)$_GET['page'] : 1);
-$itemsPerPage = 3;  // Set the number of tasks to display per page
-$offset = ($page - 1) * $itemsPerPage;  // Calculate the offset for pagination
+$itemsPerPage = 3;  
+$offset = ($page - 1) * $itemsPerPage;  
 
-// Ensure the grade is provided
 if ($grade) {
     try {
-        // SQL query to fetch tasks, filtering by grade and progress
         $query = "
             SELECT t.id, t.title, t.description, t.taskType, t.tag, t.grade, t.progress, t.created_at, t.due_date, 
                    u.username AS assigned_username

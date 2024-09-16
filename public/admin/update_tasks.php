@@ -109,7 +109,7 @@ if ($id && $grade) {
         <!-- <div class="sidebar" id="sidebar">
             <div class="logo"></div> 
             <div class="nav-links">
-                <a href="dashboard.php#">Dashboard</a>
+                <a href="dashboard.php">Dashboard</a>
                 <a href="calendar.php">Calendar</a>
             </div>
         </div> -->

@@ -1,45 +1,35 @@
 <?php
-require_once __DIR__ . '/../../config/db_config.php'; // Database config
+require_once __DIR__ . '/../config/db_config.php'; // Database config
 
 $grade = isset($_GET['grade']) ? trim($_GET['grade']) : '';
 
-if ($grade) {
-    try {
-        // Fetch forum posts for the grade
-        $query = "
-            SELECT p.id, p.title, p.content, p.created_at, u.username 
-            FROM forum_posts p 
-            JOIN users u ON p.user_id = u.id 
-            WHERE p.grade = :grade
-            ORDER BY p.created_at DESC";
-        $stmt = $pdo->prepare($query);
-        $stmt->bindParam(':grade', $grade);
-        $stmt->execute();
-        $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Fetch replies for each post
-        foreach ($posts as &$post) {
-            $post_id = $post['id'];
-            $replyQuery = "
-                SELECT r.id, r.reply_content, r.created_at, u.username 
-                FROM forum_replies r
-                JOIN users u ON r.user_id = u.id 
-                WHERE r.post_id = :post_id
-                ORDER BY r.created_at ASC";
-            $replyStmt = $pdo->prepare($replyQuery);
-            $replyStmt->bindParam(':post_id', $post_id);
-            $replyStmt->execute();
-            $post['replies'] = $replyStmt->fetchAll(PDO::FETCH_ASSOC);
-        }
+try {
+    // Prepare and execute SQL to fetch posts for the given grade, ordered by the most recent first
+    $query = "SELECT * FROM forum_posts WHERE grade = :grade ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
+    $stmt = $pdo->prepare($query);
+    $stmt->bindValue(':grade', $grade, PDO::PARAM_STR);
+    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    
+    // Execute the query
+    $stmt->execute();
+    $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Return posts with replies as JSON
-        header('Content-Type: application/json');
-        echo json_encode($posts);
+    // Fetch total count of posts for pagination
+    $totalQuery = "SELECT COUNT(*) as total FROM forum_posts WHERE grade = :grade";
+    $totalStmt = $pdo->prepare($totalQuery);
+    $totalStmt->bindValue(':grade', $grade, PDO::PARAM_STR);
+    $totalStmt->execute();
+    
+    $totalResult = $totalStmt->fetch(PDO::FETCH_ASSOC);
+    $totalPosts = $totalResult['total'] ?? 0;
 
-    } catch (PDOException $e) {
-        echo json_encode(['error' => 'Failed to fetch forum posts.']);
-    }
-} else {
-    echo json_encode(['error' => 'Grade not specified']);
+    // Calculate total pages
+    $totalPages = ceil($totalPosts / $limit);
+
+} catch (PDOException $e) {
+    // Log database errors
+    log_error('Database error: ' . $e->getMessage(), 'db_errors.txt');
+    throw new Exception('An error occurred while fetching posts from the database.');
 }
-?>

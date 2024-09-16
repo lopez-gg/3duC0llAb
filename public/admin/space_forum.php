@@ -1,189 +1,112 @@
 <?php
-require_once __DIR__ . '/../../src/config/config.php';
-require_once __DIR__ . '/../../src/config/access_control.php'; 
-require_once __DIR__ . '/../../src/config/session_config.php';
+// space_forum.php
 
+require_once __DIR__ . '/../../src/config/session_config.php'; // Includes session and security configurations
+require_once __DIR__ . '/../../src/config/db_config.php'; // Includes database connection
 
-check_access('ADMIN');
+// Get the grade from the URL parameter
+$grade = $_GET['grade'] ?? null;
 
-if (!isset($_SESSION['user_id'])) {
-    header('Location: /public/login.php');
+if (!$grade) {
+    echo 'Grade not specified.';
     exit;
-}else {
-    $grade = isset($_GET['grade']) ? trim($_GET['grade']) : '';
-    $_SESSION['grade'] = $grade;
-
-    if (is_numeric($grade) && $grade >= 1 && $grade <= 6) {
-        // If the grade is a number between 1 and 6, display it as 'Grade X'
-        $gradetodisplay = 'Grade ' . intval($grade);
-    } elseif (strtolower($grade) === 'sned') {
-        // If the grade is 'sned', display it as 'SNED'
-        $gradetodisplay = strtoupper($grade);
-    } else {
-        // Handle cases where the grade is not valid (optional)
-        $gradetodisplay = 'Unknown Grade'; // or handle error accordingly
-    }
-   
 }
 
-// Set default values for the variables
-$currentDateTime = date('l, d/m/Y h:i:s A'); 
-// Handle Pagination Variables
-$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Initialize $currentPage
+// Pagination settings
+$limit = 50; // Posts per page
+$page = $_GET['page'] ?? 1;
+$offset = ($page - 1) * $limit;
 
+// Include the script to fetch forum posts for the specific grade
+require_once __DIR__ . '/../../src/processes/fetch_forum_posts.php';
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo htmlspecialchars($gradetodisplay); ?> Forum</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <link href="../../src/css/gen.css" rel="stylesheet">
-    <link href="../../src/css/a/dashb.css" rel="stylesheet">
+    <title>Forum for Grade <?= htmlspecialchars($grade) ?></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Styling for the card header and content */
+        .card-header {
+            background-color: #f8f9fa;
+        }
+        .card-body p {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+    </style>
 </head>
 <body>
-    <div class="top-nav">
-        <div class="left-section">
-            <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
-            <div class="app-name">EduCollab</div>
-            <div id="datetime"><?php echo htmlspecialchars($currentDateTime); ?></div>
-        </div>
 
-        <div class="right-section">
-            <div class="notification-bell">
-                <i class="bi bi-bell-fill"></i>
-                <span class="notification-count">0</span>
-            </div>
-            
-            <div class="notification-dropdown">
-                <ul class="notification-list"> 
-                    <!-- Notifications will be appended here by JavaScript -->
-                </ul>
-                <button class="see-more" style="display: none;">See More...</button>
-            </div>
+<div class="container mt-5">
+    <h1 class="mb-4">Forum for Grade <?= htmlspecialchars($grade) ?></h1>
 
-            <div class="user-profile" id="userProfile">
-                <div class="user-icon" onclick="toggleDropdown()">U</div>
-                <div class="dropdown" id="dropdown">
-                    <a href="#">Settings</a>
-                    <form action="../../src/processes/logout.php" method="post">
-                        <input type="submit" name="logout" value="Logout">
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div> 
-
-    <!-- sidebar -->
-    <div class="main">
-        <div class="sidebar" id="sidebar">
-            <div class="logo"></div> 
-            <div class="nav-links">
-                <a href="dashboard.php">Dashboard</a>
-                <a href="calendar.php">Calendar</a>
-            </div>
-        </div>
-
-        <div class="content" id="content">
-            <section class=main-sec id='sec-one'>
-                <h2><?php echo htmlspecialchars($gradetodisplay); ?> Forum</h2>
-            </section>
-
-            <section class=main-sec id='sec-one'>
-                <!-- Form to add new forum post -->
-                <form id="newPostForm">
-                    <input type="hidden" name="grade" value="<?php echo htmlspecialchars($grade); ?>">
-                    <div class="form-group">
-                        <label for="title">Title</label>
-                        <input type="text" id="title" name="title" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="content">Content</label>
-                        <textarea id="content" name="content" class="form-control" rows="5" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Add Post</button>
-                </form>
-            </section>
-            <hr>
-
-            <!-- Forum Posts -->
-            <div id="forumPosts"></div>
-        </div>
+    <div class="mb-4 text-end">
+        <a href="new_post.php?grade=<?= urlencode($grade) ?>" class="btn btn-primary">Create New Post</a>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
-    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <?php if (count($posts) > 0): ?>
+        <?php foreach ($posts as $post): ?>
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between">
+                    <div>
+                        <strong><?= htmlspecialchars($post['title']) ?></strong>
+                        <small class="text-muted">by User <?= $post['user_id'] ?> on <?= $post['created_at'] ?></small>
+                    </div>
+                    <div>
+                        <a href="view_post.php?id=<?= $post['id'] ?>" class="btn btn-sm btn-outline-secondary">See full post</a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p>
+                        <?= strlen($post['content']) > 200 ? substr(htmlspecialchars($post['content']), 0, 200) . '...' : htmlspecialchars($post['content']) ?>
+                    </p>
 
-    
-    <script src='../../src/js/datetime.js'></script>
-    <!-- <script src="../../src/js/toggleSidebar.js"></script> -->
-    <script src="../../src/js/verify.js"></script>
-    <script src="../../src/js/new_sy.js"></script>
-    <script src='../../src/js/notification.js'></script>
-    <script>
-    $(document).ready(function() {
-        const grade = '<?php echo htmlspecialchars($grade); ?>';
+                    <!-- Toggle Replies Button -->
+                    <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReplies<?= $post['id'] ?>" aria-expanded="false" aria-controls="collapseReplies<?= $post['id'] ?>">
+                        View Replies
+                    </button>
+                    
+                    <!-- Replies Section (Initially hidden) -->
+                    <div class="collapse mt-3" id="collapseReplies<?= $post['id'] ?>">
+                        <div class="card card-body">
+                           
+                            <!-- // Fetch replies for this post
+                            require __DIR__ . '/../../src/processes/fetch_replies.php'; // Fetch replies based on post ID
+                            if (count($replies) > 0):
+                                foreach ($replies as $reply): ?>
+                                    <div class="border-bottom mb-3">
+                                        <p><strong>User <n?= $reply['user_id'] ?>:</strong> <h?= htmlspecialchars($reply['reply_content']) ?></p>
+                                        <small class="text-muted">Posted on <h?= $reply['created_at'] ?></small>
+                                    </div>
+                                <k?php endforeach;
+                            else: ?>
+                                <p>No replies yet.</p>
+                            <g?php endif;  -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endforeach; ?>
 
-        // Fetch forum posts
-        function fetchPosts() {
-            $.getJSON('../../src/processes/fetch_forum_posts.php?grade=' + grade, function(data) {
-                let forumHtml = '';
-                data.forEach(post => {
-                    forumHtml += `
-                        <div class="card my-3">
-                            <div class="card-body">
-                                <h5 class="card-title">${post.title}</h5>
-                                <p class="card-text">${post.content}</p>
-                                <small class="text-muted">Posted by ${post.username} on ${post.created_at}</small>
-                                <hr>
-                                <div class="replies">
-                                    <h6>Replies</h6>`;
-                    post.replies.forEach(reply => {
-                        forumHtml += `
-                            <p><strong>${reply.username}:</strong> ${reply.reply_content} <small class="text-muted">on ${reply.created_at}</small></p>`;
-                    });
-                    forumHtml += `
-                                    <form class="replyForm">
-                                        <input type="hidden" name="post_id" value="${post.id}">
-                                        <textarea name="reply_content" class="form-control mb-2" rows="2" required></textarea>
-                                        <button type="submit" class="btn btn-sm btn-secondary">Reply</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>`;
-                });
-                $('#forumPosts').html(forumHtml);
-            });
-        }
+        <!-- Pagination -->
+        <nav>
+            <ul class="pagination justify-content-center">
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                        <a class="page-link" href="space_forum.php?grade=<?= urlencode($grade) ?>&page=<?= $i ?>"><?= $i ?></a>
+                    </li>
+                <?php endfor; ?>
+            </ul>
+        </nav>
+    <?php else: ?>
+        <p class="text-center">No posts found for this grade.</p>
+    <?php endif; ?>
+</div>
 
-        // Add new post
-        $('#newPostForm').submit(function(e) {
-            e.preventDefault();
-            $.post('../../src/processes/add_forum_post.php', $(this).serialize(), function(data) {
-                if (data.success) {
-                    fetchPosts(); // Reload posts after adding
-                    $('#newPostForm')[0].reset(); // Clear form
-                }
-            }, 'json');
-        });
-
-        // Add reply to post
-        $(document).on('submit', '.replyForm', function(e) {
-            e.preventDefault();
-            $.post('../../src/processes/add_forum_reply.php', $(this).serialize(), function(data) {
-                if (data.success) {
-                    fetchPosts(); // Reload posts after adding reply
-                }
-            }, 'json');
-        });
-
-        // Fetch posts on page load
-        fetchPosts();
-    });
-    </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
