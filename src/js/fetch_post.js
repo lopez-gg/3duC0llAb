@@ -26,18 +26,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Handle edit button
     document.querySelectorAll('.edit-button').forEach(button => {
-        button.addEventListener('click', function() {
-            const replyId = this.getAttribute('data-reply-id');
-            const replyContent = this.getAttribute('data-reply-content');
+        button.addEventListener('click', (event) => {
+            const replyId = button.getAttribute('data-reply-id');
+            const replyContent = button.getAttribute('data-reply-content');
 
-            // Fill the reply form for editing
-            document.querySelector('.reply-form-container textarea').value = replyContent;
-            document.getElementById('parent_id').value = 'NULL';
-            document.getElementById('action_type').value = 'edit';
+            // Set the form values and update the URL
             document.getElementById('reply_id').value = replyId;
+            document.getElementById('action_type').value = 'edit';
+            document.querySelector('textarea[name="reply_content"]').value = replyContent;
 
-            // Show the reply form
-            document.querySelector('.reply-form-container').scrollIntoView({ behavior: 'smooth' });
+            // Update the URL with query parameters
+            const url = new URL(window.location.href);
+            url.searchParams.set('action_type', 'edit');
+            url.searchParams.set('reply_id', replyId);
+            window.history.replaceState({}, '', url);
         });
     });
 

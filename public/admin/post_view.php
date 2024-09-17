@@ -143,7 +143,7 @@ $edited_reply_id = isset($_GET['edited_reply']) ? (int)$_GET['edited_reply'] : n
                 <input type="hidden" name="parent_id" id="parent_id" value="NULL">
                 <input type="hidden" name="action_type" id="action_type" value="reply">
                 <input type="hidden" name="reply_id" id="reply_id" value="0">
-                <button type="submit" class="btn btn-primary">Reply</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </form>
     </div>
