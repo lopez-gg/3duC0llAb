@@ -2,11 +2,21 @@
 require_once __DIR__ . '/../config/db_config.php'; // Database config
 
 $grade = isset($_GET['grade']) ? trim($_GET['grade']) : '';
-
+$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 50; // Default limit of posts
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Default page
+$offset = ($page - 1) * $limit;
 
 try {
-    // Prepare and execute SQL to fetch posts for the given grade, ordered by the most recent first
-    $query = "SELECT * FROM forum_posts WHERE grade = :grade ORDER BY created_at DESC LIMIT :limit OFFSET :offset";
+    // Prepare SQL to fetch posts along with username and reply count
+    $query = "
+        SELECT fp.id, fp.title, fp.content, fp.created_at, u.username, 
+               (SELECT COUNT(*) FROM forum_replies WHERE post_id = fp.id) AS reply_count 
+        FROM forum_posts fp
+        JOIN users u ON fp.user_id = u.id
+        WHERE fp.grade = :grade
+        ORDER BY fp.created_at DESC
+        LIMIT :limit OFFSET :offset";
+
     $stmt = $pdo->prepare($query);
     $stmt->bindValue(':grade', $grade, PDO::PARAM_STR);
     $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
@@ -28,8 +38,14 @@ try {
     // Calculate total pages
     $totalPages = ceil($totalPosts / $limit);
 
+    // Return data as JSON
+    echo json_encode([
+        'posts' => $posts,
+        'totalPosts' => $totalPosts,
+        'totalPages' => $totalPages
+    ]);
 } catch (PDOException $e) {
     // Log database errors
     log_error('Database error: ' . $e->getMessage(), 'db_errors.txt');
-    throw new Exception('An error occurred while fetching posts from the database.');
+    echo json_encode(['error' => 'An error occurred while fetching posts from the database.']);
 }

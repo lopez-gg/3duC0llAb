@@ -1,2 +1,15 @@
 Error updating task: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'gradeLevel' in 'field list'
 Error updating task: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'gradeLevel' in 'field list'
+Connection failed: SQLSTATE[HY000] [1130] Host 'localhost' is not allowed to connect to this MariaDB server
+Connection failed: SQLSTATE[HY000] [1130] Host 'localhost' is not allowed to connect to this MariaDB server
+Connection failed: SQLSTATE[HY000] [1130] Host 'localhost' is not allowed to connect to this MariaDB server
+Connection failed: SQLSTATE[HY000] [1130] Host 'localhost' is not allowed to connect to this MariaDB server
+Connection failed: SQLSTATE[HY000] [1130] Host 'localhost' is not allowed to connect to this MariaDB server
+Connection failed: SQLSTATE[HY000] [1049] Unknown database 'educollab'
+Connection failed: SQLSTATE[HY000] [1049] Unknown database 'educollab'
+Connection failed: SQLSTATE[HY000] [1049] Unknown database 'educollab'
+Connection failed: SQLSTATE[HY000] [1049] Unknown database 'educollab'
+Connection failed: SQLSTATE[HY000] [1049] Unknown database 'educollab'
+Connection failed: SQLSTATE[HY000] [1049] Unknown database 'educollab'
+Connection failed: SQLSTATE[HY000] [1049] Unknown database 'educollab'
+Connection failed: SQLSTATE[HY000] [1049] Unknown database 'educollab'
