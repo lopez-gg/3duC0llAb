@@ -1,8 +1,8 @@
 <?php
-// delete_reply.php
+// edit_reply.php
 
-require_once __DIR__ . '/../config/db_config.php';
-require_once __DIR__ . '/../config/session_config.php';
+require_once __DIR__ . '/../src/config/db_config.php';
+require_once __DIR__ . '/../src/config/session_config.php';
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: /public/login.php');
@@ -10,9 +10,9 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $reply_id = isset($_POST['reply_id']) ? (int)$_POST['reply_id'] : 0;
-$post_id = isset($_POST['post_id']) ? (int)$_POST['post_id'] : 0;
+$new_content = isset($_POST['reply_content']) ? $_POST['reply_content'] : '';
 
-if ($reply_id <= 0 || $post_id <= 0) {
+if ($reply_id <= 0 || empty($new_content)) {
     echo "Invalid request.";
     exit;
 }
@@ -30,15 +30,16 @@ try {
         exit;
     }
 
-    // Delete the reply
-    $deleteQuery = "DELETE FROM forum_replies WHERE id = :reply_id";
-    $deleteStmt = $pdo->prepare($deleteQuery);
-    $deleteStmt->bindValue(':reply_id', $reply_id, PDO::PARAM_INT);
-    $deleteStmt->execute();
+    // Update the reply content
+    $updateQuery = "UPDATE forum_replies SET reply_content = :reply_content WHERE id = :reply_id";
+    $updateStmt = $pdo->prepare($updateQuery);
+    $updateStmt->bindValue(':reply_content', $new_content, PDO::PARAM_STR);
+    $updateStmt->bindValue(':reply_id', $reply_id, PDO::PARAM_INT);
+    $updateStmt->execute();
 
-    $_SESSION['success_title'] = 'Reply Deleted';
-    $_SESSION['success_message'] = 'Your reply has been deleted successfully.';
-    header('Location: /public/post_view.php?id=' . $post_id);
+    $_SESSION['success_title'] = 'Reply Updated';
+    $_SESSION['success_message'] = 'Your reply has been updated successfully.';
+    header('Location: /public/post_view.php?id=' . $_POST['post_id']);
     exit;
 
 } catch (PDOException $e) {

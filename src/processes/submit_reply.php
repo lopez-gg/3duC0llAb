@@ -1,52 +1,67 @@
 <?php
 // submit_reply.php
 
-require_once __DIR__ . '/../config/db_config.php'; // Database config
-require_once __DIR__ . '/../config/session_config.php'; // Include session config
+require_once __DIR__ . '/../config/db_config.php';
+require_once __DIR__ . '/../config/session_config.php';
 
-// Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
     header('Location: /public/login.php');
     exit;
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $post_id = isset($_POST['post_id']) ? (int)$_POST['post_id'] : 0;
-    $reply_content = isset($_POST['reply_content']) ? trim($_POST['reply_content']) : '';
-    $parent_id = isset($_POST['parent_id']) && $_POST['parent_id'] !== 'NULL' ? (int)$_POST['parent_id'] : NULL;
-    $acc_type = isset($_POST['at']) ? $_POST['at'] : 'N/A';
+$post_id = isset($_POST['post_id']) ? (int)$_POST['post_id'] : 0;
+$parent_id = isset($_POST['parent_id']) && $_POST['parent_id'] !== 'NULL' ? (int)$_POST['parent_id'] : null;
+$reply_content = isset($_POST['reply_content']) ? $_POST['reply_content'] : '';
+$action_type = isset($_POST['action_type']) ? $_POST['action_type'] : '';
+$reply_id = isset($_POST['reply_id']) ? (int)$_POST['reply_id'] : 0;
 
-    if ($post_id <= 0 || empty($reply_content)) {
-        echo "Invalid input.";
-        exit;
-    }
-
-    try {
-        // Insert the reply into the database
-        $query = "INSERT INTO forum_replies (post_id, user_id, reply_content, parent_id, created_at)
-                  VALUES (:post_id, :user_id, :reply_content, :parent_id, NOW())";
-        $stmt = $pdo->prepare($query);
-        $stmt->bindValue(':post_id', $post_id, PDO::PARAM_INT);
-        $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
-        $stmt->bindValue(':reply_content', $reply_content, PDO::PARAM_STR);
-        $stmt->bindValue(':parent_id', $parent_id, PDO::PARAM_INT | PDO::PARAM_NULL); // Handle parent_id (can be null)
-        $stmt->execute();
-
-        // Redirect based on account type
-        if ($acc_type === 'am') {
-            header("Location: ../../public/admin/post_view.php?id=$post_id");
-        } else if ($acc_type === 'ur') {
-            header("Location: ../../public/user/post_view.php?id=$post_id");
-        } else {
-            echo 'Unknown account type.';
-        }
-    
-        exit;
-    } catch (PDOException $e) {
-        log_error('Database error: ' . $e->getMessage(), 'db_errors.txt');
-        echo "An error occurred.";
-        exit;
-    }
-} else {
+if ($post_id <= 0 || empty($reply_content)) {
     echo "Invalid request.";
+    exit;
+}
+
+try {
+    if ($action_type == 'edit' && $reply_id > 0) {
+        // Fetch the reply to check if it belongs to the current user
+        $replyQuery = "SELECT user_id FROM forum_replies WHERE id = :reply_id";
+        $replyStmt = $pdo->prepare($replyQuery);
+        $replyStmt->bindValue(':reply_id', $reply_id, PDO::PARAM_INT);
+        $replyStmt->execute();
+        $reply = $replyStmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$reply || $reply['user_id'] != $_SESSION['user_id']) {
+            echo "Unauthorized access.";
+            exit;
+        }
+
+        // Update the reply
+        $updateQuery = "UPDATE forum_replies SET reply_content = :reply_content WHERE id = :reply_id";
+        $updateStmt = $pdo->prepare($updateQuery);
+        $updateStmt->bindValue(':reply_content', $reply_content, PDO::PARAM_STR);
+        $updateStmt->bindValue(':reply_id', $reply_id, PDO::PARAM_INT);
+        $updateStmt->execute();
+
+        $_SESSION['success_title'] = 'Reply Updated';
+        $_SESSION['success_message'] = 'Your reply has been updated successfully.';
+        header('Location: ../../public/admin/post_view.php?id=' . $post_id . '&edited_reply=' . $reply_id);
+    } else {
+        // Insert a new reply
+        $insertQuery = "INSERT INTO forum_replies (post_id, parent_id, user_id, reply_content) VALUES (:post_id, :parent_id, :user_id, :reply_content)";
+        $insertStmt = $pdo->prepare($insertQuery);
+        $insertStmt->bindValue(':post_id', $post_id, PDO::PARAM_INT);
+        $insertStmt->bindValue(':parent_id', $parent_id, PDO::PARAM_INT);
+        $insertStmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+        $insertStmt->bindValue(':reply_content', $reply_content, PDO::PARAM_STR);
+        $insertStmt->execute();
+
+        $_SESSION['success_title'] = 'Reply Posted';
+        $_SESSION['success_message'] = 'Your reply has been posted successfully.';
+        header('Location: ../../public/admin/post_view.php?id=' . $post_id);
+    }
+    exit;
+
+} catch (PDOException $e) {
+    log_error('Database error: ' . $e->getMessage(), 'db_errors.txt');
+    echo "An error occurred.";
+    exit;
 }
