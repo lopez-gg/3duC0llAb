@@ -1,25 +1,22 @@
 <?php
-require_once __DIR__ . '/../../config/db_config.php'; 
-require_once __DIR__ . '/../../config/config.php'; 
-require_once __DIR__ . '/../../config/session_config.php';
+require_once __DIR__ . '/../../../src/config/db_config.php'; 
+require_once __DIR__ . '/../../../src/config/config.php'; 
+require_once __DIR__ . '/../../../src/config/session_config.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Verify CSRF token
     if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
         die('Invalid CSRF token');
     }
 
     $post_id = intval($_POST['post_id']);
-    $title = $_POST['title'];
-    $content = $_POST['content'];
-    $grade = $_POST['grade'];
+    $title = trim($_POST['title']);
+    $content = trim($_POST['content']);
+    $grade = trim($_POST['grade']);
 
-    // Ensure title and content are not empty
     if (empty($title) || empty($content) || empty($grade)) {
-        die('Title and content cannot be empty.');
+        die('Title, content, or grade cannot be empty.');
     }
 
-    // Update post in the database
     try {
         $pdo->beginTransaction();
 
@@ -40,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } catch (Exception $e) {
         $pdo->rollBack();
         log_error('Forum post edition failed: ' . $e->getMessage(), 'error.log');
-        
+        die('Failed to update post.');
     }
 }
 ?>

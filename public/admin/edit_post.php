@@ -1,12 +1,11 @@
 <?php
-require_once __DIR__ . '/../../src/config/session_config.php'; // For CSRF token and session management
+require_once __DIR__ . '/../../src/config/session_config.php'; 
 require_once __DIR__ . '/../../src/config/db_config.php'; 
 
-// Ensure user is logged in and authorized
 if (!isset($_SESSION['user_id'])) {
     header('Location: /public/login.php');
     exit;
-}else {
+} else {
     $grade = isset($_GET['grade']) ? trim($_GET['grade']) : '';
     $_SESSION['grade'] = $grade;
 
@@ -19,7 +18,6 @@ if (!isset($_SESSION['user_id'])) {
     }
 }
 
-// Fetch the post to edit
 $post_id = intval($_GET['id']);
 $stmt = $pdo->prepare("SELECT * FROM forum_posts WHERE id = :id AND user_id = :user_id");
 $stmt->execute(['id' => $post_id, 'user_id' => $_SESSION['user_id']]);
@@ -40,7 +38,7 @@ $csrf_token = $_SESSION['csrf_token'];
 </head>
 <body>
     <h1>Edit Post</h1>
-    <form method="post" action="../../src/processes/a/process_edit_post.php" style="display:inline;">
+    <form method="post" action="../../src/processes/a/process_edit_post.php">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
         <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
         <input type="hidden" name="grade" value="<?= htmlspecialchars($grade); ?>">
