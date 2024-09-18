@@ -18,6 +18,8 @@ if ($post_id <= 0) {
 }
 
 $edited_reply_id = isset($_GET['edited_reply']) ? (int)$_GET['edited_reply'] : null;
+$new_reply_id = isset($_GET['new_reply']) ? (int)$_GET['new_reply'] : null;
+
 
 try {
     // Fetch the post details
@@ -95,13 +97,7 @@ $edited_reply_id = isset($_GET['edited_reply']) ? (int)$_GET['edited_reply'] : n
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../src/css/gen.css" rel="stylesheet">
     <link href="../../src/css/forum_post.css" rel="stylesheet">
-    <style>
-        /* Add styles for the flash effect */
-        .highlight {
-            background-color: #d1e7dd; /* Light green background */
-            transition: background-color 0.5s ease;
-        }
-    </style>
+
 </head>
 <body>
     <div class="container mt-5">
@@ -151,6 +147,7 @@ $edited_reply_id = isset($_GET['edited_reply']) ? (int)$_GET['edited_reply'] : n
     <script src="../../src/js/fetch_post.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        
         document.addEventListener('DOMContentLoaded', () => {
             // Handle reply editing scroll and highlight
             const editedReplyId = <?= json_encode($edited_reply_id) ?>;
@@ -169,6 +166,33 @@ $edited_reply_id = isset($_GET['edited_reply']) ? (int)$_GET['edited_reply'] : n
                     }, 3500); // Adjust the delay as needed
                 }
             }
+
+            const newReplyId = <?= json_encode($new_reply_id) ?>;
+            if (newReplyId) {
+                const newReplyElement = document.querySelector(`.reply-item[data-reply-id="${newReplyId}"]`);
+                if (newReplyElement) {
+                    newReplyElement.classList.add('highlight');
+                    newReplyElement.scrollIntoView({ behavior: 'smooth' });
+
+                    // Remove highlight and URL parameter after a short delay
+                    setTimeout(() => {
+                        newReplyElement.classList.remove('highlight');
+                        const url = new URL(window.location.href);
+                        url.searchParams.delete('new_reply');
+                        window.history.replaceState({},'', url);
+                    }, 3500);
+                }
+            }
+
+        });
+
+        $(window).on('load', function() {
+            <?php if ($successMessage): ?>
+                $('#successModal').modal('show');
+                setTimeout(function() {
+                    $('#successModal').modal('hide');
+                }, 4500);
+            <?php endif; ?>
         });
     </script>
 </body>
