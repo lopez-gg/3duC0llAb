@@ -66,20 +66,36 @@ try {
         foreach ($replies as $reply) {
             if ($reply['parent_id'] == $parent_id) {
                 $html .= '<li class="list-group-item reply-item mb-3" style="margin-left: ' . ($level * 20) . 'px;" data-reply-id="' . $reply['id'] . '">';
+                $html .= '<div class="reply-header">';
                 $html .= '<p><strong>' . htmlspecialchars($reply['username']) . '</strong> <small class="text-muted">' . $reply['created_at'] . '</small></p>';
                 $html .= '<p>' . nl2br(htmlspecialchars($reply['reply_content'])) . '</p>';
-                
+        
                 // Only show edit and delete buttons for replies by the current user
                 if ($reply['user_id'] == $_SESSION['user_id']) {
-                    $html .= '<button class="btn btn-warning btn-sm edit-button" data-reply-id="' . $reply['id'] . '" data-reply-content="' . htmlspecialchars($reply['reply_content']) . '">Edit</button> ';
-                    $html .= '<button class="btn btn-danger btn-sm delete-button" data-reply-id="' . $reply['id'] . '">Delete</button>';
+                    $html .= '<div class="reply-actions">';
+                    $html .= '<button class="btn btn-warning btn-sm edit-button" data-reply-id="' . $reply['id'] . '" data-reply-content="' . htmlspecialchars($reply['reply_content']) . '">
+                                <i class="bi bi-pencil-square"></i>
+                              </button> ';
+                    $html .= '<button class="btn btn-danger btn-sm delete-button" data-reply-id="' . $reply['id'] . '">
+                                <i class="bi bi-trash3"></i>
+                              </button>';
+                    $html .= '</div>';
                 }
-
-                $html .= '<button class="btn btn-link reply-button" data-reply-id="' . $reply['id'] . '" data-reply-username="' . htmlspecialchars($reply['username']) . '" data-reply-content="' . htmlspecialchars($reply['reply_content']) . '">Reply</button>';
+        
+                $html .= '</div>'; // Close reply-header div
+        
+                // Footer for positioning the reply button
+                $html .= '<div class="reply-footer">';
+                $html .= '<button class="btn btn-link reply-button" data-reply-id="' . $reply['id'] . '" data-reply-username="' . htmlspecialchars($reply['username']) . '" data-reply-content="' . htmlspecialchars($reply['reply_content']) . '">
+                            <i class="bi bi-reply"></i>
+                          </button>';
+                $html .= '</div>'; // Close reply-footer div
+                
                 $html .= displayReplies($replies, $reply['id'], $level + 1);
                 $html .= '</li>';
             }
         }
+        
         return $html;
     }
 
@@ -159,7 +175,7 @@ unset($_SESSION['success_message']);
         </div>
         <form id="replyForm" action="../../src/processes/submit_reply.php" method="post">
             <div class="input-group">
-                <textarea class="form-control" name="reply_content" rows="1" placeholder="Write your reply..." required></textarea>
+                <textarea class="form-control" name="reply_content" rows="1" placeholder="Add a comment..." required></textarea>
                 <input type="hidden" name="post_id" value="<?= $post_id ?>">
                 <input type="hidden" name="parent_id" id="parent_id" value="NULL">
                 <input type="hidden" name="action_type" id="action_type" value="reply">
@@ -169,7 +185,6 @@ unset($_SESSION['success_message']);
         </form>
     </div>
 
-    <!-- <script src="../../src/js/fetch_post.js"></script> -->
     <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
     <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
@@ -214,6 +229,57 @@ unset($_SESSION['success_message']);
                 }
             }
 
+        });
+
+         // Handle reply button clicks
+        $(document).on('click', '.reply-button', function() {
+            console.log('Reply button clicked');
+            var replyId = $(this).data('reply-id');
+            var replyUsername = $(this).data('reply-username');
+            var replyContent = $(this).data('reply-content');
+            var characterLimit = 200;
+            
+            // Log the values
+            // console.log('Reply ID:', replyId);
+            // console.log('Reply Username:', replyUsername);
+            // console.log('Reply Content:', replyContent);
+
+            function formatReplyContent(content, limit) {
+                if (content.length > limit) {
+                    // Trim the content and add an ellipsis
+                    content = content.substring(0, limit) + '...';
+                }
+                // Replace newlines with <br> for proper formatting
+                return content.replace(/\n/g, '<br>');
+            }
+
+            var formattedReplyContent = formatReplyContent(replyContent, characterLimit);
+
+            // Show reply context and fill the form
+            $('#reply-context').html(
+                '<strong>Replying to:</strong> ' + 
+                '<span class="reply-info"><strong>' + replyUsername + ':</strong> <pre> ' + formattedReplyContent + '</pre> </span>'
+            );
+            $('#parent_id').val(replyId);
+            $('#action_type').val('reply');  // Set action type to 'reply'
+            $('textarea[name="reply_content"]').attr('placeholder', 'Write your reply...');
+            $('#reply_id').val(0);  // Reset the reply_id for new replies
+
+            // Show the reply form
+            $('#reply-context-container').show();
+            $('.reply-form').show();
+        });
+
+        // Handle reply context cancel
+        $('#reply-context-cancel').on('click', function() {
+            $('#reply-context').html('Replying to:');
+            $('#parent_id').val('NULL');
+            $('textarea[name="reply_content"]').attr('placeholder', 'Add comment...');
+            $('#action_type').val('reply');  // Reset action type
+            $('#reply_id').val(0);  // Reset the reply_id
+
+            // Hide the reply form
+            $('#reply-context-container').hide();
         });
 
         $(document).on('click', '.delete-button', function() {

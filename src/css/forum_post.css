@@ -17,11 +17,11 @@ body {
     margin-bottom: 20px;
     padding: 20px;
     background-color: white;
+    position: relative; 
 }
 
 .post-card {
     margin-bottom: 10px;
-    position: relative;
 }
 
 .partition {
@@ -30,7 +30,7 @@ body {
 }
 
 .replies-card {
-    padding-bottom: 70px; /* Ensure space for the fixed reply form */
+    padding-bottom: 70px; 
 }
 
 .reply-form {
@@ -70,10 +70,10 @@ body {
 
 .post-actions {
     position: absolute;
-    top: 10px; /* Adjust as needed */
-    right: 10px; /* Adjust as needed */
+    top: 10px; 
+    right: 10px; 
     display: flex;
-    gap: 10px; /* Adjust space between buttons */
+    gap: 10px; 
 }
 
 .post-actions a,
@@ -83,14 +83,14 @@ body {
     cursor: pointer;
 }
 
-.edit-button i,
-.delete-button i {
-    font-size: 18px; /* Adjust size as needed */
-    color: #007bff; /* Adjust color as needed */
+.edit-button i {
+    font-size: 20px;
+    color: #007bff; 
 }
 
 .delete-button i {
-    color: #dc3545; /* Adjust color as needed */
+    font-size: 18px;
+    color: #dc3545; 
 }
 
 .no-replies {
@@ -131,6 +131,65 @@ body {
     color: #007bff;
     font-size: 14px;
     font-weight: bold;
+}
+
+.reply-item {
+    position: relative; /* Ensure children can be positioned absolutely */
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9; /* Light background for replies */
+    border: 1px solid #e9ecef; /* Border for separation */
+    border-radius: 4px; /* Rounded corners */
+}
+
+.reply-content {
+    padding-bottom: 30px; /* Space for the footer */
+}
+
+.reply-info {
+    display: block;
+    margin-top: 5px;
+    font-size: 14px;
+    color: #555;
+}
+
+.reply-actions {
+    position: absolute;
+    top: 10px; /* Position edit and delete buttons */
+    right: 10px; /* Adjust as needed */
+    display: flex;
+    gap: 10px; /* Adjust space between buttons */
+}
+
+.reply-actions .edit-button,
+.reply-actions .delete-button {
+    border: none;
+    background-color: inherit;
+    cursor: pointer;
+}
+
+.reply-actions .edit-button i {
+    color: #ffc107; /* Yellow for edit */
+}
+
+.reply-actions .delete-button i {
+    color: #dc3545; /* Red for delete */
+}
+
+.reply-footer {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.reply-button {
+    border: none;
+    background-color: inherit;
+    cursor: pointer;
+}
+
+.reply-button i {
+    color: #007bff; /* Blue for reply */
 }
 
 .highlight {
