@@ -54,9 +54,11 @@ try {
         $insertStmt->bindValue(':reply_content', $reply_content, PDO::PARAM_STR);
         $insertStmt->execute();
 
+        $new_reply_id = $pdo->lastInsertId();
+
         $_SESSION['success_title'] = 'Reply Posted';
         $_SESSION['success_message'] = 'Your reply has been posted successfully.';
-        header('Location: ../../public/admin/post_view.php?id=' . $post_id);
+        header('Location: ../../public/admin/post_view.php?id=' . $post_id . '&new_reply=' . $new_reply_id);
     }
     exit;
 
