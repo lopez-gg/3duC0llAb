@@ -1,4 +1,3 @@
-//process_assign_task.php
 <?php
 require_once __DIR__ . '/../../config/session_config.php'; // Include session config
 require_once __DIR__ . '/../../config/db_config.php'; // Include database config

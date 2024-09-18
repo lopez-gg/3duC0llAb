@@ -32,7 +32,7 @@ try {
         die("Task not found");
     }
 
-    $grade = $task['grade'];  // Keep the existing grade
+    $grade = $task['grade']; 
 
     // Begin transaction
     $pdo->beginTransaction();

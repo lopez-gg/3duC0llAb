@@ -6,7 +6,8 @@ require_once __DIR__ . '/../../config/session_config.php';
 $id = $_POST['id'] ?? null;
 
 if (empty($id)) {
-    $_SESSION['success_message'] = 'Invalid event ID.';
+    $_SESSION['success_message'] = 'An error occured. Please try again.';
+    log_error('Event ID is empty: ' . $e->getMessage(), 'db_errors.txt');
     exit;
 }
 

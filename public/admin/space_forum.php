@@ -26,6 +26,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Set default values for the variables
+$csrf_token = $_SESSION['csrf_token'];
 $currentDateTime = date('l, d/m/Y h:i:s A'); 
 // Pagination settings
 $limit = 50; // Posts per page
@@ -132,25 +133,22 @@ unset($_SESSION['success_message']);
                                 <p>
                                     <?= strlen($post['content']) > 200 ? substr(htmlspecialchars($post['content']), 0, 200) . '...' : htmlspecialchars($post['content']) ?>
                                 </p>
-
-                                <!-- Number of replies -->
                                 <p><small><?= $post['reply_count'] ?> Replies</small></p>
                                 <a href="post_view.php?id=<?= $post['id'] ?>" class="btn btn-sm btn-outline-primary">Comment</a>
-   
 
-                                <!-- Replies section -->
-                                <!-- <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReplies<?= $post['id'] ?>" aria-expanded="false" aria-controls="collapseReplies<?= $post['id'] ?>">
-                                    View Replies
-                                </button>
-
-                                <div class="collapse mt-3" id="collapseReplies<?= $post['id'] ?>">
-                                    <div class="card card-body">
-                                        <p>No replies yet.</p>
-                                    </div>
-                                </div> -->
+                                <!-- Edit and Delete buttons -->
+                                <a href="edit_post.php?grade=<?= $grade?>&id=<?= $post['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
+                                <form action="../../src/processes/a/delete_post.php" method="post" style="display:inline;">
+                                <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+                                    <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+                                    <input type="hidden" name="grade" value="<?= $grade?>">
+                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
                             </div>
                         </div>
                     <?php endforeach; ?>
+
 
                     <!-- Pagination -->
                     <nav>
