@@ -102,6 +102,7 @@ unset($_SESSION['success_message']);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Post Details</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../src/css/gen.css" rel="stylesheet">
     <link href="../../src/css/forum_post.css" rel="stylesheet">
@@ -116,17 +117,23 @@ unset($_SESSION['success_message']);
             <div class="post-header">
                 <div class="post-title"><?= htmlspecialchars($post['title']) ?></div>
                 <p class="post-meta">by <?= htmlspecialchars($post['username']) ?> on <?= $post['created_at'] ?></p>
-                <a href="edit_post.php?grade=<?= $grade?>&id=<?= $post['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
-                <form action="../../src/processes/a/delete_post.php" method="post" style="display:inline;">
-                <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
-                    <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
-                    <input type="hidden" name="grade" value="<?= $grade?>">
-                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
-                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                </form>
+                <div class="post-actions">
+                    <a href="edit_post.php?grade=<?= $grade?>&id=<?= $post['id'] ?>" title='Edit post' class="edit-button">
+                        <i class="bi bi-pencil-square"></i>
+                    </a>
+                    <form id="delete_post_<?= $post['id'] ?>" action="../../src/processes/a/delete_post.php" method="post" style="display:inline;">
+                        <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+                        <input type="hidden" name="grade" value="<?= $grade ?>">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+                        <button type="button" class="delete-button" data-form-id="delete_post_<?= $post['id'] ?>">
+                            <i class="bi bi-trash3"></i>
+                        </button>
+                    </form>
+                </div>
             </div>
             <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
         </div>
+
 
         <!-- Partition Line -->
         <div class="partition"></div>
@@ -157,13 +164,18 @@ unset($_SESSION['success_message']);
                 <input type="hidden" name="parent_id" id="parent_id" value="NULL">
                 <input type="hidden" name="action_type" id="action_type" value="reply">
                 <input type="hidden" name="reply_id" id="reply_id" value="0">
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <button type="submit" class="btn btn-primary" >Submit</button>
             </div>
         </form>
     </div>
 
-    <script src="../../src/js/fetch_post.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- <script src="../../src/js/fetch_post.js"></script> -->
+    <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="../../src/js/verify.js"></script>
+    
     <script>
         
         document.addEventListener('DOMContentLoaded', () => {
@@ -203,6 +215,12 @@ unset($_SESSION['success_message']);
             }
 
         });
+
+        $(document).on('click', '.delete-button', function() {
+            var formId = $(this).data('form-id');
+            confirmDeleteModal(formId, 'Confirm Deletion', 'Are you sure you want to delete this post?', 'Delete');
+        });
+
 
         $(window).on('load', function() {
             <?php if ($successMessage): ?>

@@ -51,3 +51,27 @@ $('#verificationModal').on('click', '.btn-danger', function () {
         console.log('No form ID found.');
     }
 });
+
+
+
+
+function confirmDeleteModal(formId, title = '', message = '', confirmText = '') {
+    $('#confirmDeleteModal').data('form-id', formId);
+    $('#confirmDeleteModal').find('.modal-title').text(title);
+    $('#confirmDeleteModal').find('.modal-body p').text(message);
+    $('#confirmDeleteModal').find('.btn-danger').text(confirmText);
+    $('#confirmDeleteModal').modal('show');
+}
+
+
+$('#confirmDeleteModal').on('click', '.btn-danger', function () {
+    var formId = $('#confirmDeleteModal').data('form-id');
+    if (formId) {
+        console.log('Submitting form: ', formId);
+        $('#' + formId).submit();  // Use regular form submission
+        $('#confirmDeleteModal').modal('hide');  // Hide the modal
+    } else {
+        console.log('No form ID found.');
+    }
+});
+
