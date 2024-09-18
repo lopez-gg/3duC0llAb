@@ -51,6 +51,12 @@ if (isset($response['error'])) {
     $posts = $response['posts'];
     $totalPages = $response['totalPages'];
 }
+
+$successTitle = isset($_SESSION['success_title']) ? $_SESSION['success_title'] : null;
+$successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
+$verificationMessage = isset($_SESSION['verification_message']) ? $_SESSION['verification_message'] : null;
+include '../display_mod.php';
+unset($_SESSION['success_message']);
 ?>
 
 <!DOCTYPE html>
@@ -163,6 +169,16 @@ if (isset($response['error'])) {
         </div>
     </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(window).on('load', function() {
+                    <?php if ($successMessage): ?>
+                        $('#successModal').modal('show');
+                        setTimeout(function() {
+                            $('#successModal').modal('hide');
+                        }, 4500);
+                    <?php endif; ?>
+                });
+    </script>
 </body>
 </html>
