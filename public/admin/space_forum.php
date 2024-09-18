@@ -126,7 +126,7 @@ unset($_SESSION['success_message']);
                                     <small class="text-muted">by <?= htmlspecialchars($post['username']) ?> on <?= $post['created_at'] ?></small>
                                 </div>
                                 <div>
-                                    <a href="post_view.php?id=<?= $post['id'] ?>" class="btn btn-sm btn-outline-secondary">See full post</a>
+                                    <a href="post_view.php?grade=<?=$grade?>&id=<?= $post['id'] ?>" class="btn btn-sm btn-outline-secondary">See full post</a>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -134,7 +134,7 @@ unset($_SESSION['success_message']);
                                     <?= strlen($post['content']) > 200 ? substr(htmlspecialchars($post['content']), 0, 200) . '...' : htmlspecialchars($post['content']) ?>
                                 </p>
                                 <p><small><?= $post['reply_count'] ?> Replies</small></p>
-                                <a href="post_view.php?id=<?= $post['id'] ?>" class="btn btn-sm btn-outline-primary">Comment</a>
+                                <a href="post_view.php?grade=<?=$grade?>&id=<?= $post['id'] ?>" class="btn btn-sm btn-outline-primary">Comment</a>
 
                                 <!-- Edit and Delete buttons -->
                                 <a href="edit_post.php?grade=<?= $grade?>&id=<?= $post['id'] ?>" class="btn btn-sm btn-warning">Edit</a>

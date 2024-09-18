@@ -7,6 +7,19 @@ require_once __DIR__ . '/../../src/config/session_config.php';
 if (!isset($_SESSION['user_id'])) {
     header('Location: /public/login.php');
     exit;
+} else {
+    $grade = isset($_GET['grade']) ? trim($_GET['grade']) : '';
+    $_SESSION['grade'] = $grade;
+
+    if (is_numeric($grade) && $grade >= 1 && $grade <= 6) {
+        $gradetodisplay = 'Grade ' . intval($grade);
+    } elseif (strtolower($grade) === 'sned') {
+        $gradetodisplay = strtoupper($grade);
+    } else if(strtolower($grade === 'general')){
+        $gradetodisplay = 'PSCS General ';
+    }else {
+        $gradetodisplay = 'Unknown Grade'; 
+    }
 }
 
 $post_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
@@ -19,7 +32,7 @@ if ($post_id <= 0) {
 
 $edited_reply_id = isset($_GET['edited_reply']) ? (int)$_GET['edited_reply'] : null;
 $new_reply_id = isset($_GET['new_reply']) ? (int)$_GET['new_reply'] : null;
-
+$csrf_token = $_SESSION['csrf_token'];
 
 try {
     // Fetch the post details
@@ -83,11 +96,6 @@ include '../display_mod.php';
 unset($_SESSION['success_message']);
 ?>
 
-<?php
-// Check if there is an edited reply ID
-$edited_reply_id = isset($_GET['edited_reply']) ? (int)$_GET['edited_reply'] : null;
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -100,12 +108,22 @@ $edited_reply_id = isset($_GET['edited_reply']) ? (int)$_GET['edited_reply'] : n
 
 </head>
 <body>
+    <h1 class="mb-4"><?= htmlspecialchars($gradetodisplay) ?> Forum </h1>
+
     <div class="container mt-5">
         <!-- Post Card -->
         <div class="post-card post-container">
             <div class="post-header">
                 <div class="post-title"><?= htmlspecialchars($post['title']) ?></div>
                 <p class="post-meta">by <?= htmlspecialchars($post['username']) ?> on <?= $post['created_at'] ?></p>
+                <a href="edit_post.php?grade=<?= $grade?>&id=<?= $post['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
+                <form action="../../src/processes/a/delete_post.php" method="post" style="display:inline;">
+                <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+                    <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+                    <input type="hidden" name="grade" value="<?= $grade?>">
+                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                </form>
             </div>
             <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
         </div>
