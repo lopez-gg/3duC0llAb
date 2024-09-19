@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../src/config/db_config.php';
 require_once __DIR__ . '/../../src/config/session_config.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: /public/login.php');
+    header('Location: ../login.php');
     exit;
 } else {
     $grade = isset($_GET['grade']) ? trim($_GET['grade']) : '';
@@ -23,7 +23,6 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $post_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-
 
 if ($post_id <= 0) {
     echo "Invalid post ID.";
@@ -61,27 +60,49 @@ try {
     $repliesStmt->execute();
     $replies = $repliesStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    function displayReplies($replies, $parent_id = null, $level = 0) {
+    function displayReplies($replies, $post_id, $csrf_token, $parent_id = null, $level = 0) {
         $html = '';
         foreach ($replies as $reply) {
             if ($reply['parent_id'] == $parent_id) {
                 $html .= '<li class="list-group-item reply-item mb-3" style="margin-left: ' . ($level * 20) . 'px;" data-reply-id="' . $reply['id'] . '">';
+                $html .= '<div class="reply-header">';
                 $html .= '<p><strong>' . htmlspecialchars($reply['username']) . '</strong> <small class="text-muted">' . $reply['created_at'] . '</small></p>';
                 $html .= '<p>' . nl2br(htmlspecialchars($reply['reply_content'])) . '</p>';
-                
+        
                 // Only show edit and delete buttons for replies by the current user
                 if ($reply['user_id'] == $_SESSION['user_id']) {
-                    $html .= '<button class="btn btn-warning btn-sm edit-button" data-reply-id="' . $reply['id'] . '" data-reply-content="' . htmlspecialchars($reply['reply_content']) . '">Edit</button> ';
-                    $html .= '<button class="btn btn-danger btn-sm delete-button" data-reply-id="' . $reply['id'] . '">Delete</button>';
+                    $html .= '<div class="reply-actions">';
+                    $html .= '<button class="btn btn-warning btn-sm edit-button" data-reply-id="' . $reply['id'] . '" data-reply-content="' . htmlspecialchars($reply['reply_content']) . '">
+                                <i class="bi bi-pencil-square"></i>
+                              </button> ';
+                    $html .= '<form id="delete_reply_' . $reply['id'] . '" action="../../src/processes/delete_reply.php" method="post" style="display:inline;">
+                                <input type="hidden" name="reply_id" value="' . $reply['id'] . '">
+                                <input type="hidden" name="post_id" value="' . $post_id . '">
+                                <input type="hidden" name="csrf_token" value="' . htmlspecialchars($csrf_token) . '">
+                                <button type="button" class="btn btn-danger btn-sm delete-button" data-form-id="delete_reply_' . $reply['id'] . '" data-reply-id="' . $reply['id'] . '">
+                                    <i class="bi bi-trash3"></i>
+                                </button>
+                            </form>';
+                    $html .= '</div>';
                 }
-
-                $html .= '<button class="btn btn-link reply-button" data-reply-id="' . $reply['id'] . '" data-reply-username="' . htmlspecialchars($reply['username']) . '" data-reply-content="' . htmlspecialchars($reply['reply_content']) . '">Reply</button>';
-                $html .= displayReplies($replies, $reply['id'], $level + 1);
+        
+                $html .= '</div>'; // Close reply-header div
+        
+                // Footer for positioning the reply button
+                $html .= '<div class="reply-footer">';
+                $html .= '<button class="btn btn-link reply-button" data-reply-id="' . $reply['id'] . '" data-reply-username="' . htmlspecialchars($reply['username']) . '" data-reply-content="' . htmlspecialchars($reply['reply_content']) . '">
+                            <i class="bi bi-reply"></i>
+                          </button>';
+                $html .= '</div>'; // Close reply-footer div
+                
+                $html .= displayReplies($replies, $post_id, $csrf_token, $reply['id'], $level + 1);
                 $html .= '</li>';
             }
         }
+        
         return $html;
     }
+    
 
 } catch (PDOException $e) {
     log_error('Database error: ' . $e->getMessage(), 'db_errors.txt');
@@ -115,24 +136,29 @@ unset($_SESSION['success_message']);
         <!-- Post Card -->
         <div class="post-card post-container">
             <div class="post-header">
-                <div class="post-title"><?= htmlspecialchars($post['title']) ?></div>
-                <p class="post-meta">by <?= htmlspecialchars($post['username']) ?> on <?= $post['created_at'] ?></p>
-                <div class="post-actions">
-                    <a href="edit_post.php?grade=<?= $grade?>&id=<?= $post['id'] ?>" title='Edit post' class="edit-button">
-                        <i class="bi bi-pencil-square"></i>
-                    </a>
-                    <form id="delete_post_<?= $post['id'] ?>" action="../../src/processes/a/delete_post.php" method="post" style="display:inline;">
-                        <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
-                        <input type="hidden" name="grade" value="<?= $grade ?>">
-                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
-                        <button type="button" class="delete-button" data-form-id="delete_post_<?= $post['id'] ?>">
-                            <i class="bi bi-trash3"></i>
-                        </button>
-                    </form>
+                <div class="post-title">
+                    <?= htmlspecialchars($post['title']) ?>
+                </div>
+                <div>
+                    <p class="post-meta">by <?= htmlspecialchars($post['username']) ?> on <?= $post['created_at'] ?></p>
+                    <div class="post-actions">
+                        <a href="edit_post.php?grade=<?= $grade?>&id=<?= $post['id'] ?>" title='Edit post' class="edit-button">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <form id="delete_post_<?= $post['id'] ?>" action="../../src/processes/a/delete_post.php" method="post" style="display:inline;">
+                            <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+                            <input type="hidden" name="grade" value="<?= $grade ?>">
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+                            <button type="button" class="delete-button" data-form-id="delete_post_<?= $post['id'] ?>">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
             <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
         </div>
+        
 
 
         <!-- Partition Line -->
@@ -143,12 +169,13 @@ unset($_SESSION['success_message']);
             <h5>Replies</h5>
             <?php if (count($replies) > 0): ?>
                 <ul class="list-group">
-                    <?= displayReplies($replies) ?>
+                    <?= displayReplies($replies, $post_id, $csrf_token) ?>
                 </ul>
             <?php else: ?>
                 <p class="no-replies">No replies yet.</p>
             <?php endif; ?>
         </div>
+        
     </div>
 
     <!-- Fixed Reply Form -->
@@ -159,17 +186,20 @@ unset($_SESSION['success_message']);
         </div>
         <form id="replyForm" action="../../src/processes/submit_reply.php" method="post">
             <div class="input-group">
-                <textarea class="form-control" name="reply_content" rows="1" placeholder="Write your reply..." required></textarea>
+                <textarea class="form-control" name="reply_content" rows="1" placeholder="Add a comment..." required></textarea>
+            </div>
+            <div class="button-container">
+                <button type="submit" class="btn btn-primary" >Submit</button>
+            </div>
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                 <input type="hidden" name="post_id" value="<?= $post_id ?>">
+                <input type="hidden" name="grade" value="<?= $grade ?>">
                 <input type="hidden" name="parent_id" id="parent_id" value="NULL">
                 <input type="hidden" name="action_type" id="action_type" value="reply">
                 <input type="hidden" name="reply_id" id="reply_id" value="0">
-                <button type="submit" class="btn btn-primary" >Submit</button>
-            </div>
         </form>
     </div>
 
-    <!-- <script src="../../src/js/fetch_post.js"></script> -->
     <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
     <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
@@ -216,10 +246,124 @@ unset($_SESSION['success_message']);
 
         });
 
+         // Handle reply button clicks
+        $(document).on('click', '.reply-button', function() {
+            console.log('Reply button clicked');
+            var replyId = $(this).data('reply-id');
+            var replyUsername = $(this).data('reply-username');
+            var replyContent = $(this).data('reply-content');
+            var characterLimit = 200;
+            
+            // Log the values
+            // console.log('Reply ID:', replyId);
+            // console.log('Reply Username:', replyUsername);
+            // console.log('Reply Content:', replyContent);
+
+            function formatReplyContent(content, limit) {
+                if (content.length > limit) {
+                    // Trim the content and add an ellipsis
+                    content = content.substring(0, limit) + '...';
+                }
+                // Replace newlines with <br> for proper formatting
+                return content.replace(/\n/g, '<br>');
+            }
+
+            var formattedReplyContent = formatReplyContent(replyContent, characterLimit);
+
+            // Show reply context and fill the form
+            $('#reply-context').html(
+                '<strong>Replying to:</strong> ' + 
+                '<span class="reply-info"><strong>' + replyUsername + ':</strong> <pre> ' + formattedReplyContent + '</pre> </span>'
+            );
+            $('#parent_id').val(replyId);
+            $('#action_type').val('reply');  // Set action type to 'reply'
+            $('textarea[name="reply_content"]').attr('placeholder', 'Write your reply...');
+            $('#reply_id').val(0);  // Reset the reply_id for new replies
+
+            // Show the reply form
+            $('#reply-context-container').show();
+            $('.reply-form').show();
+        });
+
+        // Handle reply context cancel
+        $('#reply-context-cancel').on('click', function() {
+            $('#reply-context').html('Replying to:');
+            $('#parent_id').val('NULL');
+            $('textarea[name="reply_content"]').attr('placeholder', 'Add comment...');
+            $('#action_type').val('reply');  // Reset action type
+            $('#reply_id').val(0);  // Reset the reply_id
+
+            // Hide the reply form
+            $('#reply-context-container').hide();
+        });
+
+        $(document).on('click', '.edit-button', function() {
+            console.log('Edit button clicked');
+            var replyId = $(this).data('reply-id');
+            var replyContent = $(this).data('reply-content');
+
+            // Log the values
+            console.log('Reply ID:', replyId);
+            console.log('Reply Content:', replyContent);
+
+            // Show reply context (you may want to indicate it's in "edit mode" visually)
+            $('#reply-context').html('<strong>Editing reply:</strong>');
+
+            // Set the reply content in the textarea for editing
+            $('textarea[name="reply_content"]').val(replyContent);
+
+            // Change the action type to "edit" and set the reply ID to the one being edited
+            $('#action_type').val('edit');
+            $('#reply_id').val(replyId);
+
+            // Change the placeholder to indicate editing mode
+            $('textarea[name="reply_content"]').attr('placeholder', 'Edit your reply...');
+
+            // Show the reply form if it's hidden
+            $('#reply-context-container').show();
+            $('.reply-form').show();
+        });
+
+        // Reset the form when canceling the reply context or after submission
+        $('#reply-context-cancel').on('click', function() {
+            // Reset everything back to new reply mode
+            $('#reply-context').html('Replying to:');
+            $('#parent_id').val('NULL');
+            $('textarea[name="reply_content"]').val('');
+            $('textarea[name="reply_content"]').attr('placeholder', 'Add comment...');
+            $('#action_type').val('reply');  // Reset action type
+            $('#reply_id').val(0);  // Reset reply_id
+
+            // Hide the reply form
+            $('#reply-context-container').hide();
+        });
+
+
         $(document).on('click', '.delete-button', function() {
             var formId = $(this).data('form-id');
             confirmDeleteModal(formId, 'Confirm Deletion', 'Are you sure you want to delete this post?', 'Delete');
         });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const textarea = document.querySelector('textarea[name="reply_content"]');
+
+            // Function to auto-resize the textarea
+            function autoResize() {
+                const maxLines = 5;
+                const lineHeight = parseInt(window.getComputedStyle(textarea).lineHeight, 10); // Get the line height
+                const maxHeight = lineHeight * maxLines; // Calculate max height based on the max number of lines
+                
+                textarea.style.height = 'auto'; // Reset height
+                textarea.style.height = Math.min(textarea.scrollHeight, maxHeight) + 'px'; // Set new height, capped at maxHeight
+            }
+
+            // Attach the input event listener to auto-resize the textarea as the user types
+            textarea.addEventListener('input', autoResize);
+
+            // Initialize auto-resize in case there is pre-filled content
+            autoResize();
+        });
+
 
 
         $(window).on('load', function() {
