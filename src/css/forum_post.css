@@ -46,7 +46,7 @@ body {
 }
 
 .replies-card {
-    padding-bottom: 70px; 
+    padding-bottom: 130px; 
 }
 
 .reply-form {
@@ -82,11 +82,12 @@ body {
 .post-meta {
     font-size: 14px;
     color: #6c757d;
+    padding-top: 5px;
 }
 
 .post-actions {
     position: absolute;
-    top: 10px; 
+    bottom: 10px; 
     right: 10px; 
     display: flex;
     gap: 10px; 

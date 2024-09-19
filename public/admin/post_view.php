@@ -136,24 +136,29 @@ unset($_SESSION['success_message']);
         <!-- Post Card -->
         <div class="post-card post-container">
             <div class="post-header">
-                <div class="post-title"><?= htmlspecialchars($post['title']) ?></div>
-                <p class="post-meta">by <?= htmlspecialchars($post['username']) ?> on <?= $post['created_at'] ?></p>
-                <div class="post-actions">
-                    <a href="edit_post.php?grade=<?= $grade?>&id=<?= $post['id'] ?>" title='Edit post' class="edit-button">
-                        <i class="bi bi-pencil-square"></i>
-                    </a>
-                    <form id="delete_post_<?= $post['id'] ?>" action="../../src/processes/a/delete_post.php" method="post" style="display:inline;">
-                        <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
-                        <input type="hidden" name="grade" value="<?= $grade ?>">
-                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
-                        <button type="button" class="delete-button" data-form-id="delete_post_<?= $post['id'] ?>">
-                            <i class="bi bi-trash3"></i>
-                        </button>
-                    </form>
+                <div class="post-title">
+                    <?= htmlspecialchars($post['title']) ?>
+                </div>
+                <div>
+                    <p class="post-meta">by <?= htmlspecialchars($post['username']) ?> on <?= $post['created_at'] ?></p>
+                    <div class="post-actions">
+                        <a href="edit_post.php?grade=<?= $grade?>&id=<?= $post['id'] ?>" title='Edit post' class="edit-button">
+                            <i class="bi bi-pencil-square"></i>
+                        </a>
+                        <form id="delete_post_<?= $post['id'] ?>" action="../../src/processes/a/delete_post.php" method="post" style="display:inline;">
+                            <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+                            <input type="hidden" name="grade" value="<?= $grade ?>">
+                            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+                            <button type="button" class="delete-button" data-form-id="delete_post_<?= $post['id'] ?>">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
             <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
         </div>
+        
 
 
         <!-- Partition Line -->
@@ -170,6 +175,7 @@ unset($_SESSION['success_message']);
                 <p class="no-replies">No replies yet.</p>
             <?php endif; ?>
         </div>
+        
     </div>
 
     <!-- Fixed Reply Form -->
@@ -182,15 +188,15 @@ unset($_SESSION['success_message']);
             <div class="input-group">
                 <textarea class="form-control" name="reply_content" rows="1" placeholder="Add a comment..." required></textarea>
             </div>
+            <div class="button-container">
+                <button type="submit" class="btn btn-primary" >Submit</button>
+            </div>
                 <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                 <input type="hidden" name="post_id" value="<?= $post_id ?>">
                 <input type="hidden" name="grade" value="<?= $grade ?>">
                 <input type="hidden" name="parent_id" id="parent_id" value="NULL">
                 <input type="hidden" name="action_type" id="action_type" value="reply">
                 <input type="hidden" name="reply_id" id="reply_id" value="0">
-                <div class="button-container">
-                <button type="submit" class="btn btn-primary" >Submit</button>
-            </div>
         </form>
     </div>
 

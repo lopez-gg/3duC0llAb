@@ -67,7 +67,9 @@ unset($_SESSION['success_message']);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forum for Grade <?= htmlspecialchars($grade) ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="../../src/css/gen.css" rel="stylesheet">
+    <link href="../../src/css/forum_post.css" rel="stylesheet">
     <link href="../../src/css/a/dashb.css" rel="stylesheet">
     
     <style>
@@ -128,6 +130,29 @@ unset($_SESSION['success_message']);
                                 <div>
                                     <a href="post_view.php?grade=<?=$grade?>&id=<?= $post['id'] ?>" class="btn btn-sm btn-outline-secondary">See full post</a>
                                 </div>
+                                <div class="dropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                        <!-- Edit Option -->
+                                        <li>
+                                            <a class="dropdown-item" href="edit_post.php?grade=<?= $grade ?>&id=<?= $post['id'] ?>">
+                                                <i class="bi bi-pencil-square"></i> Edit Post
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <form id="delete_post_<?= $post['id'] ?>" action="../../src/processes/a/delete_post.php" method="post" class="dropdown-item p-0">
+                                                <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+                                                <input type="hidden" name="grade" value="<?= $grade ?>">
+                                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+                                                <button type="submit" class="btn btn-link text-danger p-0 delete-button" style="display:inline;">
+                                                    <i class="bi bi-trash3"></i> Delete Post
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <p>
@@ -137,14 +162,7 @@ unset($_SESSION['success_message']);
                                 <a href="post_view.php?grade=<?=$grade?>&id=<?= $post['id'] ?>" class="btn btn-sm btn-outline-primary">Comment</a>
 
                                 <!-- Edit and Delete buttons -->
-                                <a href="edit_post.php?grade=<?= $grade?>&id=<?= $post['id'] ?>" class="btn btn-sm btn-warning">Edit</a>
-                                <form action="../../src/processes/a/delete_post.php" method="post" style="display:inline;">
-                                <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
-                                    <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
-                                    <input type="hidden" name="grade" value="<?= $grade?>">
-                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
-                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                </form>
+                                
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -181,13 +199,18 @@ unset($_SESSION['success_message']);
 
     <script>
         $(window).on('load', function() {
-                    <?php if ($successMessage): ?>
-                        $('#successModal').modal('show');
-                        setTimeout(function() {
-                            $('#successModal').modal('hide');
-                        }, 4500);
-                    <?php endif; ?>
-                });
+            <?php if ($successMessage): ?>
+                $('#successModal').modal('show');
+                setTimeout(function() {
+                    $('#successModal').modal('hide');
+                }, 4500);
+            <?php endif; ?>
+        });
+                
+        $(document).on('click', '.delete-button', function() {
+            var formId = $(this).data('form-id');
+            confirmDeleteModal(formId, 'Confirm Deletion', 'Are you sure you want to delete this post?', 'Delete');
+        });
     </script>
 </body>
 </html>
