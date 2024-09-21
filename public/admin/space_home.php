@@ -137,7 +137,7 @@ unset($_SESSION['success_message']);
                         <a href="space_forum.php?grade=<?php echo $grade?>">Forum</a>
                     </div>
                     <div class="s2-e">
-                        <a href=""> <?php echo htmlspecialchars($grade); ?> Faculty</a>
+                        <a href=""> <?php echo htmlspecialchars($gradetodisplay); ?> Faculty</a>
                     </div>
                 </section>
 

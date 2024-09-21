@@ -38,13 +38,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             error_log('Database Error: ' . $e->getMessage(), 3, 'db_errors.log');
             $_SESSION['success_title'] = 'Failed';
             $_SESSION['succes_message'] = 'Failed to post forum topic. Please try again.';
+            if($grade === 'general'){
+                header('Location: ../../../public/admin/general_forum.php');
+            }else{
             header('Location: ../../../public/admin/space_forum.php?grade=' . urlencode($grade));
+            }
             exit;
         }
     } else {
         // Redirect with an error message if fields are missing
-        $_SESSION['error_message'] = 'Please fill in all fields.';
-        header("Location: ../../../public/admin/space_forum.php");
+        echo $_SESSION['error_message'] = 'Please fill in all fields.';
+        echo $grade . ' ' . $title . ' ' . $content;
+        // header("Location: ../../../public/admin/new_post.php");
         exit;
     }
 }

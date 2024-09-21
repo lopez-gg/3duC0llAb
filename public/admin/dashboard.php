@@ -89,10 +89,11 @@ $currentYear = date('Y');
 
     <div class="main">
         <div class="sidebar" id="sidebar">
-            <div class="logo"></div> 
+            <div class="logo">PSCS</div> 
             <div class="nav-links">
                 <a href="dashboard.php">Dashboard</a>
                 <a href="calendar.php">Calendar</a>
+                
             </div>
         </div>
 
@@ -106,7 +107,7 @@ $currentYear = date('Y');
                 
             <section class='main-sec' id='sec-two'>
                 <div class="s2-e"><a href="#">Faculty</a></div>
-                <div class="s2-e"><a href="#">General Announcement</a></div>
+                <div class="s2-e"><a href="general_forum.php">General Forum</a></div>
                 <div class="s2-e"><a href="#">Appointment Requests</a></div>
                 
             </section>
