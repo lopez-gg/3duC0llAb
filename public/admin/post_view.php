@@ -232,16 +232,24 @@ unset($_SESSION['success_message']);
 
                     <!-- Fixed Reply Form -->
                     <div class="reply-form reply-form-container">
+                        <!-- Hidden container for reply context -->
                         <div class="reply-context-container" id="reply-context-container">
                             <p id="reply-context">Replying to:</p>
                             <span id="reply-context-cancel" class="reply-context-cancel">Cancel</span>
                         </div>
+
                         <form id="replyForm" action="../../src/processes/submit_reply.php" method="post">
+
+                             <!-- Container holding both input and button -->
                             <div class="input-group">
-                                <textarea class="form-control" name="reply_content" rows="1" placeholder="Add a comment..." required></textarea>
-                            </div>
-                            <div class="button-container">
-                                <button type="submit" class="btn btn-primary" >Submit</button>
+                                <div class="input-container">
+                                    <textarea class="form-control" name="reply_content" rows="1" placeholder="Add a comment..." required></textarea>
+                                </div>
+                          
+                                <div class="button-container">
+                                    <button type="submit" class="btn btn-primary" >Submit</button>
+                                </div>
+
                             </div>
                                 <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                                 <input type="hidden" name="post_id" value="<?= $post_id ?>">
@@ -268,6 +276,8 @@ unset($_SESSION['success_message']);
     <script>
         
         document.addEventListener('DOMContentLoaded', () => {
+            $('#reply-context-container').hide();
+
             // Handle reply editing scroll and highlight
             const editedReplyId = <?= json_encode($edited_reply_id) ?>;
             if (editedReplyId) {
