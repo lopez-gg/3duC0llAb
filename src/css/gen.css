@@ -359,6 +359,10 @@ body {
     background-color: #575757;
 }
 
+.nav-links .active{
+    background-color: #7b7b7b;
+}
+
 .content {
     flex: 1;
     padding-top: 0;

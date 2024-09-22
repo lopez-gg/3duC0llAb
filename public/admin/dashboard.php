@@ -91,7 +91,7 @@ $currentYear = date('Y');
         <div class="sidebar" id="sidebar">
             <div class="logo">PSCS</div> 
             <div class="nav-links">
-                <a href="dashboard.php">Dashboard</a>
+                <a href="dashboard.php" class="active">Dashboard</a>
                 <a href="calendar.php">Calendar</a>
                 
             </div>

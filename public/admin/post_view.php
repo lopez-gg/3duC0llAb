@@ -178,6 +178,7 @@ unset($_SESSION['success_message']);
                 <div class="nav-links">
                     <a href="dashboard.php">Dashboard</a>
                     <a href="calendar.php">Calendar</a>
+                    <a href="general_forum.php">General Forum</a>
                 </div>
             </div>
 

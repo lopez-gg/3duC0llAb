@@ -68,7 +68,8 @@ body {
 }
 
 .replies-card {
-    padding-bottom: 130px; 
+    /* padding-bottom: 130px; */
+    position: relative;
 }
 
 .reply-form {
@@ -159,6 +160,15 @@ body {
 
 .reply-form-container {
     width: 100%;
+    position:sticky; /* Position relative to the parent */
+    bottom: 0;
+    left: 0; 
+    right: 0; 
+    background-color: #ffffff; /* Ensure background is white */
+    padding: 15px; /* Add padding */
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.2); /* Add shadow for depth */
+    z-index: 10;
+    border-radius: 8px;
 }
 
 
