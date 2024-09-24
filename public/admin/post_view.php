@@ -57,11 +57,12 @@ try {
     }
 
     // Fetch replies for the post (including nested replies), most recent first
-    $repliesQuery = "SELECT fr.id, fr.reply_content, fr.created_at, u.username, fr.parent_id, fr.user_id
-                     FROM forum_replies fr
-                     JOIN users u ON fr.user_id = u.id
-                     WHERE fr.post_id = :post_id
-                     ORDER BY fr.created_at DESC";
+    $repliesQuery = "SELECT fr.id, fr.reply_content, fr.created_at, u.username, fr.parent_id, fr.user_id, fr.deleted
+        FROM forum_replies fr
+        JOIN users u ON fr.user_id = u.id
+        WHERE fr.post_id = :post_id
+        ORDER BY fr.created_at DESC";
+
     $repliesStmt = $pdo->prepare($repliesQuery);
     $repliesStmt->bindValue(':post_id', $post_id, PDO::PARAM_INT);
     $repliesStmt->execute();
@@ -71,45 +72,61 @@ try {
         $html = '';
         foreach ($replies as $reply) {
             if ($reply['parent_id'] == $parent_id) {
-                $html .= '<li class="list-group-item reply-item mb-3" style="margin-left: ' . ($level * 20) . 'px;" data-reply-id="' . $reply['id'] . '">';
+                // Apply a class to deleted replies for styling
+                $html .= '<li class="list-group-item reply-item mb-3 ' . ($reply['deleted'] ? 'deleted' : '') . '" style="margin-left: ' . ($level * 20) . 'px;" data-reply-id="' . $reply['id'] . '">';
+                
                 $html .= '<div class="reply-header">';
-                $html .= '<div><p><strong>' . htmlspecialchars($reply['username']) . '</strong> <small class="text-muted">' . $reply['created_at'] . '</small></p></div>';
-                $html .= '<p>' . nl2br(htmlspecialchars($reply['reply_content'])) . '</p>';
         
-                // Only show edit and delete buttons for replies by the current user
-                if ($reply['user_id'] == $_SESSION['user_id']) {
-                    $html .= '<div class="reply-actions">';
-                    $html .= '<button class="btn btn-warning btn-sm edit-button" data-reply-id="' . $reply['id'] . '" data-reply-content="' . htmlspecialchars($reply['reply_content']) . '">
-                                <i class="bi bi-pencil-square"></i>
-                              </button> ';
-                    $html .= '<form id="delete_reply_' . $reply['id'] . '" action="../../src/processes/a/delete_reply.php" method="post" style="display:inline;">
-                                <input type="hidden" name="reply_id" value="' . $reply['id'] . '">
-                                <input type="hidden" name="post_id" value="' . $post_id . '">
-                                <input type="hidden" name="grade" value="' . $grade . '">
-                                <input type="hidden" name="csrf_token" value="' . htmlspecialchars($csrf_token) . '">
-                                <button type="button" class="btn btn-danger btn-sm delete-button" data-form-id="delete_reply_' . $reply['id'] . '" data-reply-id="' . $reply['id'] . '">
-                                    <i class="bi bi-trash3"></i>
-                                </button>
-                            </form>';
-                    $html .= '</div>';
+                // Check if the reply is deleted
+                if ($reply['deleted']) {
+                    // Display the "This reply has been deleted" message
+                    $html .= '<div><p><strong>' . htmlspecialchars($reply['username']) . '</strong> <small class="text-muted">' . $reply['created_at'] . '</small></p></div>';
+                    $html .= '<p><em>This reply has been deleted.</em></p>';
+                } else {
+                    // Display normal reply content if not deleted
+                    $html .= '<div><p><strong>' . htmlspecialchars($reply['username']) . '</strong> <small class="text-muted">' . $reply['created_at'] . '</small></p></div>';
+                    $html .= '<p>' . nl2br(htmlspecialchars($reply['reply_content'])) . '</p>';
+        
+                    // Show edit and delete buttons only if the reply belongs to the current user and is not deleted
+                    if ($reply['user_id'] == $_SESSION['user_id']) {
+                        $html .= '<div class="reply-actions">';
+                        $html .= '<button class="btn btn-warning btn-sm edit-button" data-reply-id="' . $reply['id'] . '" data-reply-content="' . htmlspecialchars($reply['reply_content']) . '">
+                                    <i class="bi bi-pencil-square"></i>
+                                  </button> ';
+                        $html .= '<form id="delete_reply_' . $reply['id'] . '" action="../../src/processes/a/delete_reply.php" method="post" style="display:inline;">
+                                    <input type="hidden" name="reply_id" value="' . $reply['id'] . '">
+                                    <input type="hidden" name="post_id" value="' . $post_id . '">
+                                    <input type="hidden" name="grade" value="' . $grade . '">
+                                    <input type="hidden" name="csrf_token" value="' . htmlspecialchars($csrf_token) . '">
+                                    <button type="button" class="btn btn-danger btn-sm delete-button" data-form-id="delete_reply_' . $reply['id'] . '" data-reply-id="' . $reply['id'] . '">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </form>';
+                        $html .= '</div>';
+                    }
                 }
         
                 $html .= '</div>'; // Close reply-header div
         
-                // Footer for positioning the reply button
-                $html .= '<div class="reply-footer">';
-                $html .= '<button class="btn btn-link reply-button" data-reply-id="' . $reply['id'] . '" data-reply-username="' . htmlspecialchars($reply['username']) . '" data-reply-content="' . htmlspecialchars($reply['reply_content']) . '">
-                            <i class="bi bi-reply"></i>
-                          </button>';
-                $html .= '</div>'; // Close reply-footer div
-                
+                // Footer for positioning the reply button (only show if the reply is not deleted)
+                if (!$reply['deleted']) {
+                    $html .= '<div class="reply-footer">';
+                    $html .= '<button class="btn btn-link reply-button" data-reply-id="' . $reply['id'] . '" data-reply-username="' . htmlspecialchars($reply['username']) . '" data-reply-content="' . htmlspecialchars($reply['reply_content']) . '">
+                                <i class="bi bi-reply"></i>
+                              </button>';
+                    $html .= '</div>'; // Close reply-footer div
+                }
+        
+                // Recursively display sub-replies
                 $html .= displayReplies($replies, $post_id, $grade, $csrf_token, $reply['id'], $level + 1);
                 $html .= '</li>';
             }
         }
-        
+    
         return $html;
     }
+    
+    
     
 
 } catch (PDOException $e) {

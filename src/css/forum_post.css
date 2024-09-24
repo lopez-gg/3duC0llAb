@@ -262,3 +262,9 @@ body {
     background-color: #d1e7dd;
     transition: background-color 0.5s ease;
 }
+
+.reply-item.deleted {
+    background-color: #f8f9fa;
+    font-style: italic;
+    color: #6c757d;
+}

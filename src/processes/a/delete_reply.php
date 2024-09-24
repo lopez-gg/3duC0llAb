@@ -13,13 +13,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $reply_id = isset($_POST['reply_id']) ? (int)$_POST['reply_id'] : 0;
     $post_id = isset($_POST['post_id']) ? (int)$_POST['post_id'] : 0;
     $acc_type = isset($_POST['at']) ? (int)$_POST['at'] : 0;
-    $grade = isset($_POST['grade']) ? isset($_POST['grade']) : null ;
+    $grade = isset($_POST['grade']) ? $_POST['grade'] : null;
 
     if ($reply_id <= 0 || $post_id <= 0) {
-        echo $_SESSION['success_title'] = 'Error';
-        $_SESSION['success_message'] = 'An error occured. Please try again.';
-        header('Location: ../../../public/admin/post_view.php?grade= ' . $grade .'&id=' . $post_id);
-        
+        $_SESSION['success_title'] = 'Error';
+        $_SESSION['success_message'] = 'An error occurred. Please try again.';
+        header('Location: ../../../public/admin/post_view.php?grade=' . $grade . '&id=' . $post_id);
         exit;
     }
 
@@ -34,26 +33,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$reply || $reply['user_id'] != $_SESSION['user_id']) {
             $_SESSION['success_title'] = 'Unauthorized Access';
             $_SESSION['success_message'] = 'You are not the owner of this reply.';
-            header('Location: ../../../public/admin/post_view.php?grade=' .$grade . '&id=' . $post_id);
+            header('Location: ../../../public/admin/post_view.php?grade=' . $grade . '&id=' . $post_id);
             exit;
         }
 
-        // Delete the reply
-        $deleteQuery = "DELETE FROM forum_replies WHERE id = :reply_id";
+        // Mark the reply as deleted instead of actually deleting it
+        $deleteQuery = "UPDATE forum_replies SET deleted = 1 WHERE id = :reply_id";
         $deleteStmt = $pdo->prepare($deleteQuery);
         $deleteStmt->bindValue(':reply_id', $reply_id, PDO::PARAM_INT);
         $deleteStmt->execute();
 
-        
         $_SESSION['success_title'] = 'Reply Deleted';
-        echo$_SESSION['success_message'] = 'Your reply has been deleted successfully.';
-        header('Location: ../../../public/admin/post_view.php?grade='. $grade . '&id=' . $post_id);
-        
+        $_SESSION['success_message'] = 'Your reply has been marked as deleted.';
+        header('Location: ../../../public/admin/post_view.php?grade=' . $grade . '&id=' . $post_id);
         exit;
 
-        } catch (PDOException $e) {
-            log_error('Database error: ' . $e->getMessage(), 'db_errors.txt');
-            echo "An error occurred.";
-            exit;
-        }
+    } catch (PDOException $e) {
+        log_error('Database error: ' . $e->getMessage(), 'db_errors.txt');
+        echo "An error occurred.";
+        exit;
+    }
 }
