@@ -23,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
 
         $pdo->commit();
+        $_SESSION['success_title'] = "Success";
         $_SESSION['success_message'] = "Post deleted successfully!";
         header("Location: ../../../public/admin/space_forum.php?grade=" . urlencode($grade));
         exit;

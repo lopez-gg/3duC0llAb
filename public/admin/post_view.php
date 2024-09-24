@@ -67,7 +67,7 @@ try {
     $repliesStmt->execute();
     $replies = $repliesStmt->fetchAll(PDO::FETCH_ASSOC);
 
-    function displayReplies($replies, $post_id, $csrf_token, $parent_id = null, $level = 0) {
+    function displayReplies($replies, $post_id, $grade, $csrf_token, $parent_id = null, $level = 0) {
         $html = '';
         foreach ($replies as $reply) {
             if ($reply['parent_id'] == $parent_id) {
@@ -82,11 +82,11 @@ try {
                     $html .= '<button class="btn btn-warning btn-sm edit-button" data-reply-id="' . $reply['id'] . '" data-reply-content="' . htmlspecialchars($reply['reply_content']) . '">
                                 <i class="bi bi-pencil-square"></i>
                               </button> ';
-                    $html .= '<form id="delete_reply_' . $reply['id'] . '" action="../../src/processes/delete_reply.php" method="post" style="display:inline;">
+                    $html .= '<form id="delete_reply_' . $reply['id'] . '" action="../../src/processes/a/delete_reply.php" method="post" style="display:inline;">
                                 <input type="hidden" name="reply_id" value="' . $reply['id'] . '">
                                 <input type="hidden" name="post_id" value="' . $post_id . '">
+                                <input type="hidden" name="grade" value="' . $grade . '">
                                 <input type="hidden" name="csrf_token" value="' . htmlspecialchars($csrf_token) . '">
-                                <input type="hidden" name="at" value="am">
                                 <button type="button" class="btn btn-danger btn-sm delete-button" data-form-id="delete_reply_' . $reply['id'] . '" data-reply-id="' . $reply['id'] . '">
                                     <i class="bi bi-trash3"></i>
                                 </button>
@@ -103,7 +103,7 @@ try {
                           </button>';
                 $html .= '</div>'; // Close reply-footer div
                 
-                $html .= displayReplies($replies, $post_id, $csrf_token, $reply['id'], $level + 1);
+                $html .= displayReplies($replies, $post_id, $grade, $csrf_token, $reply['id'], $level + 1);
                 $html .= '</li>';
             }
         }
@@ -203,7 +203,6 @@ unset($_SESSION['success_message']);
                                         <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
                                         <input type="hidden" name="grade" value="<?= $grade ?>">
                                         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
-                                        <input type="hidden" name="at" value="am">
                                         <button type="button" class="delete-button" data-form-id="delete_post_<?= $post['id'] ?>">
                                             <i class="bi bi-trash3"></i>
                                         </button>
@@ -224,7 +223,7 @@ unset($_SESSION['success_message']);
                         <h5>Replies</h5>
                         <?php if (count($replies) > 0): ?>
                             <ul class="list-group">
-                                <?= displayReplies($replies, $post_id, $csrf_token) ?>
+                                <?= displayReplies($replies, $post_id, $grade, $csrf_token) ?>
                             </ul>
                         <?php else: ?>
                             <p class="no-replies">No replies yet.</p>
@@ -239,7 +238,7 @@ unset($_SESSION['success_message']);
                             <span id="reply-context-cancel" class="reply-context-cancel">Cancel</span>
                         </div>
 
-                        <form id="replyForm" action="../../src/processes/submit_reply.php" method="post">
+                        <form id="replyForm" action="../../src/processes/a/submit_reply.php" method="post">
 
                              <!-- Container holding both input and button -->
                             <div class="input-group">
@@ -255,7 +254,6 @@ unset($_SESSION['success_message']);
                                 <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                                 <input type="hidden" name="post_id" value="<?= $post_id ?>">
                                 <input type="hidden" name="grade" value="<?= $grade ?>">
-                                <input type="hidden" name="at" value="am">
                                 <input type="hidden" name="parent_id" id="parent_id" value="NULL">
                                 <input type="hidden" name="action_type" id="action_type" value="reply">
                                 <input type="hidden" name="reply_id" id="reply_id" value="0">
@@ -436,7 +434,7 @@ unset($_SESSION['success_message']);
                 $('#successModal').modal('show');
                 setTimeout(function() {
                     $('#successModal').modal('hide');
-                }, 4500);
+                }, 3000);
             <?php endif; ?>
         });
     </script>
