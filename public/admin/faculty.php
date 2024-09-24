@@ -28,58 +28,65 @@ $facultyData = file_get_contents('../../src/processes/a/fetch_faculty.php');
     <link href="../../src/css/a/h-e-gen.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="container mt-4">
-        <h2>Manage Faculty Members</h2>
+    <?php include '../nav-sidebar-temp.php'?>
+        <div class="content" id="content"></div>
+            <div class="container mt-4">
+                <h2>Manage Faculty Members</h2>
 
-        <div class="row mb-3">
-            <div class="col-md-3">
-                <select id="gradeFilter" class="form-select" onchange="filterFaculty()">
-                    <option value="">All Grades</option>
-                    <option value="Grade 1">Grade 1</option>
-                    <option value="Grade 2">Grade 2</option>
-                    <option value="Grade 3">Grade 3</option>
-                    <option value="Grade 4">Grade 4</option>
-                    <option value="Grade 5">Grade 5</option>
-                    <option value="Grade 6">Grade 6</option>
-                    <option value="SNED">SNED</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <select id="statusFilter" class="form-select" onchange="filterFaculty()">
-                    <option value="">All Statuses</option>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                    <option value="deactivated">Deactivated</option>
-                </select>
-            </div>
-            <div class="col-md-4">
-                <input type="text" id="searchFaculty" class="form-control" placeholder="Search by name..." onkeyup="searchFaculty()">
-            </div>
-            <div class="col-md-2 text-end">
-                <button class="btn btn-primary" onclick="window.location.href='add_new_faculty.php'">Add Faculty</button>
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <select id="gradeFilter" class="form-select" onchange="filterFaculty()">
+                            <option value="">All Grades</option>
+                            <option value="Grade 1">Grade 1</option>
+                            <option value="Grade 2">Grade 2</option>
+                            <option value="Grade 3">Grade 3</option>
+                            <option value="Grade 4">Grade 4</option>
+                            <option value="Grade 5">Grade 5</option>
+                            <option value="Grade 6">Grade 6</option>
+                            <option value="SNED">SNED</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select id="statusFilter" class="form-select" onchange="filterFaculty()">
+                            <option value="">All Statuses</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                            <option value="deactivated">Deactivated</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" id="searchFaculty" class="form-control" placeholder="Search by name..." onkeyup="searchFaculty()">
+                    </div>
+                    <div class="col-md-2 text-end">
+                        <button class="btn btn-primary" onclick="window.location.href='add_new_faculty.php'">Add Faculty</button>
+                    </div>
+                </div>
+
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Username</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Grade Level</th>
+                            <th>Section</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="facultyList">
+                        <?php echo $facultyData; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
-
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Username</th>
-                    <th>First Name</th>
-                    <th>Last Name</th>
-                    <th>Grade Level</th>
-                    <th>Section</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody id="facultyList">
-                <?php echo $facultyData; ?>
-            </tbody>
-        </table>
     </div>
-
     <script src="../../src/js/faculty.js"></script>
+    <script src='../../src/js/datetime.js'></script>
+    <script src='../../src/js/notification.js'></script>
+    <script src='../../src/js/toggleSidebar.js'></script>
+    
     <script>
         $(document).ready(function() {
             // Initial load

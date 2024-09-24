@@ -47,55 +47,7 @@ $currentYear = date('Y');
 
 </head>
 <body>
-    <div class="top-nav">
-        <div class="left-section">
-            <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
-            <div class="app-name">EduCollab</div>
-            <!-- Current date and time -->
-            <div id="datetime">
-                    <?php echo $currentDateTime; ?>
-            </div>
-           
-        </div>
-
-       
-        <div class="right-section">
-            <!-- Bell icon with notification count -->
-            <div class="notification-bell">
-                <i class="bi bi-bell-fill"></i>
-                <span class="notification-count">0</span>
-            </div>
-            
-            <!-- Notification dropdown-->
-            <div class="notification-dropdown">
-                <ul class="notification-list"> 
-                    <!-- Notifications will be appended here by JavaScript -->
-                </ul>
-                <button class="see-more" style="display: none;">See More...</button>
-            </div>
-
-            <div class="user-profile" id="userProfile">
-                <div class="user-icon" onclick="toggleDropdown()">U</div>
-                <div class="dropdown" id="dropdown">
-                    <a href="#">Settings</a>
-                    <form action="../../src/processes/logout.php" method="post">
-                        <input type="submit" name="logout" value="Logout">
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-    <div class="main">
-        <div class="sidebar" id="sidebar">
-            <div class="logo">PSCS</div> 
-            <div class="nav-links">
-                <a href="dashboard.php" class="active">Dashboard</a>
-                <a href="calendar.php">Calendar</a>
-                
-            </div>
-        </div>
+    <?php include '../nav-sidebar-temp.php'?>
 
         <div class="content" id="content">
         
@@ -106,10 +58,9 @@ $currentYear = date('Y');
             <hr>
                 
             <section class='main-sec' id='sec-two'>
-                <div class="s2-e"><a href="#">Faculty</a></div>
+                <div class="s2-e"><a href="faculty.php">Faculty</a></div>
                 <div class="s2-e"><a href="general_forum.php">General Forum</a></div>
                 <div class="s2-e"><a href="#">Appointment Requests</a></div>
-                
             </section>
 
             <hr>

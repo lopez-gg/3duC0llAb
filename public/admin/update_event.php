@@ -64,49 +64,7 @@ try {
     <link rel="stylesheet" href="../../src/css/event_form.css">
 </head>
 <body>
-    <div class="top-nav">
-        <div class="left-section">
-            <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
-            <div class="app-name">EduCollab</div>
-            <div id="datetime">
-                <?php echo $currentDateTime; ?>
-            </div>
-        </div>
-
-        <!-- Bell icon with notification count -->
-        <div class="notification-bell">
-            <i class="bi bi-bell-fill"></i>
-            <span class="notification-count">0</span>
-        </div>
-        
-        <!-- Notification dropdown -->
-        <div class="notification-dropdown">
-            <ul class="notification-list">
-                <!-- Notifications will be appended here by JavaScript -->
-            </ul>
-            <button class="see-more" style="display: none;">See More...</button>
-        </div>
-
-        <div class="user-profile" id="userProfile">
-            <div class="user-icon" onclick="toggleDropdown()">U</div>
-            <div class="dropdown" id="dropdown">
-                <a href="#">Settings</a>
-                <form action="../../src/processes/logout.php" method="post">
-                    <input type="submit" name="logout" value="Logout">
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="main">
-        <div class="sidebar" id="sidebar">
-            <div class="logo"></div> 
-            <div class="nav-links">
-                <a href="dashboard.php#">Dashboard</a>
-                <a href="calendar.php">Calendar</a>
-            </div>
-        </div>
-
+    <?php include '../nav-sidebar-temp.php'?>
         <div class="content" id="content">
 
             <h2>Calendar > Edit Event</h2>
@@ -175,16 +133,17 @@ try {
         <script src="../../src/js/verify.js"></script>
         <script src='../../src/js/notification.js'></script>
         <script src='../../src/js/datetime.js'></script>
-
-        <script>
-            function openDiscardChangesModal() {
-                $('#discardChangesModal').modal('show');
-            }
-
-            $('#confirmDiscardButton').on('click', function() {
-                window.location.href = 'manage_events.php'; 
-            });
-        </script>
     </div>
+    
+    <script>
+        function openDiscardChangesModal() {
+            $('#discardChangesModal').modal('show');
+        }
+
+        $('#confirmDiscardButton').on('click', function() {
+            window.location.href = 'manage_events.php'; 
+        });
+    </script>
+    
 </body>
 </html>

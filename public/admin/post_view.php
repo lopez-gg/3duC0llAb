@@ -155,131 +155,89 @@ unset($_SESSION['success_message']);
 
 </head>
 <body>
-    <!-- top navigation -->
-        <div class="top-nav">
-        <div class="left-section">
-                <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
-                <div class="app-name">EduCollab</div>
-                <div id="datetime"><?php echo htmlspecialchars($currentDateTime); ?></div>
-            </div>
+    <?php include '../nav-sidebar-temp.php'?>
 
-            <div class="right-section">
-                <div class="notification-bell">
-                    <i class="bi bi-bell-fill"></i>
-                    <span class="notification-count">0</span>
+        <div class="content" id="content">
+            
+            <h2 class="mb-4"> <?php echo strtoupper(htmlspecialchars($gradetodisplay)); ?> Forum > View post</h2>
+
+            <div class="container mt-5">
+        
+                <div class="post-card post-container">
+                    <div class="post-header">
+                        <div class="post-title">
+                            <?= htmlspecialchars($post['title']) ?>
+                        </div>
+                        <div>
+                            <p class="post-meta">by <?= htmlspecialchars($post['username']) ?> on <?= $post['created_at'] ?></p>
+                            <div class="post-actions">
+                                <a href="edit_post.php?grade=<?= $grade?>&id=<?= $post['id'] ?>" title='Edit post' class="edit-button">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <form id="delete_post_<?= $post['id'] ?>" action="../../src/processes/a/delete_post.php" method="post" style="display:inline;">
+                                    <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
+                                    <input type="hidden" name="grade" value="<?= $grade ?>">
+                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
+                                    <button type="button" class="delete-button" data-form-id="delete_post_<?= $post['id'] ?>">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
                 </div>
                 
-                <div class="notification-dropdown">
-                    <ul class="notification-list"> 
-                        <!-- Notifications will be appended here by JavaScript -->
-                    </ul>
-                    <button class="see-more" style="display: none;">See More...</button>
+
+
+                <!-- Partition Line -->
+                <div class="partition"></div>
+
+                <!-- Replies Section -->
+                <div class="replies-card replies-container">
+                    <h5>Replies</h5>
+                    <?php if (count($replies) > 0): ?>
+                        <ul class="list-group">
+                            <?= displayReplies($replies, $post_id, $grade, $csrf_token) ?>
+                        </ul>
+                    <?php else: ?>
+                        <p class="no-replies">No replies yet.</p>
+                    <?php endif; ?>
                 </div>
 
-                <div class="user-profile" id="userProfile">
-                    <div class="user-icon" onclick="toggleDropdown()">U</div>
-                    <div class="dropdown" id="dropdown">
-                        <a href="#">Settings</a>
-                        <form action="../../src/processes/logout.php" method="post">
-                            <input type="submit" name="logout" value="Logout">
-                        </form>
+                <!-- Fixed Reply Form -->
+                <div class="reply-form reply-form-container">
+                    <!-- Hidden container for reply context -->
+                    <div class="reply-context-container" id="reply-context-container">
+                        <p id="reply-context">Replying to:</p>
+                        <span id="reply-context-cancel" class="reply-context-cancel">Cancel</span>
                     </div>
-                </div>
-            </div>
-        </div> 
 
-        <!-- sidebar -->
-        <div class="main">
-            <div class="sidebar" id="sidebar">
-                <div class="logo"></div> 
-                <div class="nav-links">
-                    <a href="dashboard.php">Dashboard</a>
-                    <a href="calendar.php">Calendar</a>
-                    <a href="general_forum.php">General Forum</a>
-                </div>
-            </div>
+                    <form id="replyForm" action="../../src/processes/a/submit_reply.php" method="post">
 
-            <!-- date and time -->
-            <div class="content" id="content">
-                    <h2 class="mb-4"> <?php echo strtoupper(htmlspecialchars($gradetodisplay)); ?> Forum > View post</h2>
-
-                <div class="container mt-5">
-                    <!-- Post Card -->
-                    <div class="post-card post-container">
-                        <div class="post-header">
-                            <div class="post-title">
-                                <?= htmlspecialchars($post['title']) ?>
+                            <!-- Container holding both input and button -->
+                        <div class="input-group">
+                            <div class="input-container">
+                                <textarea class="form-control" name="reply_content" rows="1" placeholder="Add a comment..." required></textarea>
                             </div>
-                            <div>
-                                <p class="post-meta">by <?= htmlspecialchars($post['username']) ?> on <?= $post['created_at'] ?></p>
-                                <div class="post-actions">
-                                    <a href="edit_post.php?grade=<?= $grade?>&id=<?= $post['id'] ?>" title='Edit post' class="edit-button">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </a>
-                                    <form id="delete_post_<?= $post['id'] ?>" action="../../src/processes/a/delete_post.php" method="post" style="display:inline;">
-                                        <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
-                                        <input type="hidden" name="grade" value="<?= $grade ?>">
-                                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
-                                        <button type="button" class="delete-button" data-form-id="delete_post_<?= $post['id'] ?>">
-                                            <i class="bi bi-trash3"></i>
-                                        </button>
-                                    </form>
-                                </div>
+                        
+                            <div class="button-container">
+                                <button type="submit" class="btn btn-primary" >Submit</button>
                             </div>
+
                         </div>
-                        <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>
-                    </div>
-                    
-
-
-                    <!-- Partition Line -->
-                    <div class="partition"></div>
-
-                    <!-- Replies Section -->
-                    <div class="replies-card replies-container">
-                        <h5>Replies</h5>
-                        <?php if (count($replies) > 0): ?>
-                            <ul class="list-group">
-                                <?= displayReplies($replies, $post_id, $grade, $csrf_token) ?>
-                            </ul>
-                        <?php else: ?>
-                            <p class="no-replies">No replies yet.</p>
-                        <?php endif; ?>
-                    </div>
-
-                    <!-- Fixed Reply Form -->
-                    <div class="reply-form reply-form-container">
-                        <!-- Hidden container for reply context -->
-                        <div class="reply-context-container" id="reply-context-container">
-                            <p id="reply-context">Replying to:</p>
-                            <span id="reply-context-cancel" class="reply-context-cancel">Cancel</span>
-                        </div>
-
-                        <form id="replyForm" action="../../src/processes/a/submit_reply.php" method="post">
-
-                             <!-- Container holding both input and button -->
-                            <div class="input-group">
-                                <div class="input-container">
-                                    <textarea class="form-control" name="reply_content" rows="1" placeholder="Add a comment..." required></textarea>
-                                </div>
-                          
-                                <div class="button-container">
-                                    <button type="submit" class="btn btn-primary" >Submit</button>
-                                </div>
-
-                            </div>
-                                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-                                <input type="hidden" name="post_id" value="<?= $post_id ?>">
-                                <input type="hidden" name="grade" value="<?= $grade ?>">
-                                <input type="hidden" name="parent_id" id="parent_id" value="NULL">
-                                <input type="hidden" name="action_type" id="action_type" value="reply">
-                                <input type="hidden" name="reply_id" id="reply_id" value="0">
-                        </form>
-                    </div>
-                    
-                </div>               
-            </div>                
-        </div>
+                            <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                            <input type="hidden" name="post_id" value="<?= $post_id ?>">
+                            <input type="hidden" name="grade" value="<?= $grade ?>">
+                            <input type="hidden" name="parent_id" id="parent_id" value="NULL">
+                            <input type="hidden" name="action_type" id="action_type" value="reply">
+                            <input type="hidden" name="reply_id" id="reply_id" value="0">
+                    </form>
+                </div>
+                
+            </div>               
+        </div>                
+    </div>
 
     <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>

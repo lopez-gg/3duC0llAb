@@ -60,7 +60,7 @@ unset($_SESSION['success_message']);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="../../src/css/gen.css" rel="stylesheet">
     <link href="../../src/css/forum_post.css" rel="stylesheet">
-    <link href="../../src/css/a/dashb.css" rel="stylesheet">
+    <!-- <link href="../../src/css/a/dashb.css" rel="stylesheet"> -->
     
     <style>
         /* Styling for the card header and content */
@@ -74,42 +74,14 @@ unset($_SESSION['success_message']);
     </style>
 </head>
 <body>
-    <!-- top navigation -->
-    <div class="left-section">
-        <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
-        <div class="app-name">EduCollab</div>
-        <div id="datetime"><?php echo htmlspecialchars($currentDateTime); ?></div>
-    </div>
+    <?php include '../nav-sidebar-temp.php'?>
 
-    <div class="right-section">
-        <div class="notification-bell">
-            <i class="bi bi-bell-fill"></i>
-            <span class="notification-count">0</span>
-        </div>
-
-        <div class="user-profile" id="userProfile">
-            <div class="user-icon" onclick="toggleDropdown()">U</div>
-            <div class="dropdown" id="dropdown">
-                <a href="#">Settings</a>
-                <form action="../../src/processes/logout.php" method="post">
-                    <input type="submit" name="logout" value="Logout">
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main content -->
-    <div class="main">
         <div class="content" id="content">
-
             <div class="container mt-5">
                 <h1 class="mb-4">PSCS General Forum</h1>
 
                 <div class="mb-4 text-end">
-                    <!-- <form action="new_post.php">
-                        <input type="hidden" name="forum" id="forum" value="general">
-                        <button class="btn btn-primary">Create new post</button>
-                    </form> -->
+
                     <a href="new_post.php?forum=general" class="btn btn-primary">Create New Post</a>
                 </div>
 
@@ -177,6 +149,7 @@ unset($_SESSION['success_message']);
                 <?php endif; ?>
             </div>
         </div>
+        
     </div>
 
     <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
@@ -186,7 +159,7 @@ unset($_SESSION['success_message']);
 
     
     <script src='../../src/js/datetime.js'></script>
-    <!-- <script src="../../src/js/toggleSidebar.js"></script> -->
+    <script src="../../src/js/toggleSidebar.js"></script>
     <script src="../../src/js/verify.js"></script>
     <script src="../../src/js/new_sy.js"></script>
     <script src='../../src/js/notification.js'></script>

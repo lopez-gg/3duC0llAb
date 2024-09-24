@@ -367,6 +367,7 @@ body {
     flex: 1;
     padding-top: 0;
     padding: 20px;
+    padding-bottom: 0;
     background-color: #f4f4f4;
     margin-left: 250px;
     overflow-y: auto;

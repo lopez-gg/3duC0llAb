@@ -104,94 +104,49 @@ unset($_SESSION['success_message']);
     <link href="../../src/css/a/h-e-gen.css" rel="stylesheet" />
 </head>
 <body>
-    <!-- top navigation -->
-     <div class="top-nav">
-        <div class="left-section">
-            <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
-            <div class="app-name">EduCollab</div>
-            <div id="datetime">
-                <?php echo $currentDateTime; ?>
-            </div>
-        </div>
 
-        <div class="right-section">
-            <!-- Bell icon with notification count -->
-            <div class="notification-bell">
-                <i class="bi bi-bell-fill"></i>
-                <span class="notification-count">0</span>
-            </div>
-            
-            <!-- Notification dropdown-->
-            <div class="notification-dropdown">
-                <ul class="notification-list"> 
-                    <!-- Notifications will be appended here by JavaScript -->
-                </ul>
-                <button class="see-more" style="display: none;">See More...</button>
-            </div>
-
-            <div class="user-profile" id="userProfile">
-                <div class="user-icon" onclick="toggleDropdown()">U</div>
-                <div class="dropdown" id="dropdown">
-                    <a href="#">Settings</a>
-                    <form action="../../src/processes/logout.php" method="post">
-                        <input type="submit" name="logout" value="Logout">
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div> 
-
-    <!-- sidebar -->
-     <div class="main">
-     <div class="sidebar" id="sidebar">
-            <div class="logo"></div> 
-            <div class="nav-links">
-                <a href="dashboard.php">Dashboard</a>
-                <a href="calendar.php">Calendar</a>
-            </div>
-        </div>
-
-        <!-- date and time -->
+    <?php include '../nav-sidebar-temp.php'?>
         <div class="content" id="content">
 
             <h2>Calendar > Manage Events</h2>
            
             <div class="dropdown">
-            <div class="d-flex align-items-center" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                <h3>SY <span id="currentYearRange"><?php echo htmlspecialchars($yearRange); ?></span></h3>
-                <i class="bi bi-caret-down-fill ms-2" title="Filter by School Year"></i>
+                <div class="d-flex align-items-center" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <h3>SY <span id="currentYearRange"><?php echo htmlspecialchars($yearRange); ?></span></h3>
+                    <i class="bi bi-caret-down-fill ms-2" title="Filter by School Year"></i>
+                </div>
+                
+                <ul class="dropdown-menu" id="yearRangeDropdown" aria-labelledby="dropdownMenuButton">
+                    <?php foreach ($yearRanges as $range): ?>
+                        <li>
+                            <span class="dropdown-item" data-year-range="<?= htmlspecialchars($range['year_range'], ENT_QUOTES, 'UTF-8') ?>">
+                                <?= htmlspecialchars($range['year_range'], ENT_QUOTES, 'UTF-8') ?>
+                            </span>
+                        </li>
+                    <?php endforeach; ?>
+                </ul>
             </div>
-            <ul class="dropdown-menu" id="yearRangeDropdown" aria-labelledby="dropdownMenuButton">
-                <?php foreach ($yearRanges as $range): ?>
-                    <li>
-                        <span class="dropdown-item" data-year-range="<?= htmlspecialchars($range['year_range'], ENT_QUOTES, 'UTF-8') ?>">
-                            <?= htmlspecialchars($range['year_range'], ENT_QUOTES, 'UTF-8') ?>
-                        </span>
-                    </li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
 
 
 
         
-        <button type="button" class="btn btn-primary" onclick="window.location.href='add_new_event.php?sy=<?= htmlspecialchars($yearRange, ENT_QUOTES, 'UTF-8') ?>'">
-            Add New Event
-        </button>
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#yearRangeModal">
-            New SY Calendar
-        </button>
-
-     
-        <div class="dropdown sort-dropdown">
-            <button class="btn btn-secondary dropdown-toggle" id="sortIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Sort order">
-                <i class="bi bi-funnel"></i>
+            <button type="button" class="btn btn-primary" onclick="window.location.href='add_new_event.php?sy=<?= htmlspecialchars($yearRange, ENT_QUOTES, 'UTF-8') ?>'">
+                Add New Event
             </button>
-            <div class="dropdown-menu" aria-labelledby="sortIcon">
-                <a class="dropdown-item sort-option" data-order="asc" >Ascending</a>
-                <a class="dropdown-item sort-option" data-order="desc" >Descending</a>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#yearRangeModal">
+                New SY Calendar
+            </button>
+
+        
+            <div class="dropdown sort-dropdown">
+                <button class="btn btn-secondary dropdown-toggle" id="sortIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Sort order">
+                    <i class="bi bi-funnel"></i>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="sortIcon">
+                    <a class="dropdown-item sort-option" data-order="asc" >Ascending</a>
+                    <a class="dropdown-item sort-option" data-order="desc" >Descending</a>
+                </div>
             </div>
-        </div>
 
 
 

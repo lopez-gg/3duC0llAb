@@ -72,48 +72,13 @@ unset($_SESSION['success_message']);
     <link href="../../src/css/forum_post.css" rel="stylesheet">
     <link href="../../src/css/a/dashb.css" rel="stylesheet">
     
-    <style>
-        /* Styling for the card header and content */
-        .card-header {
-            background-color: #f8f9fa;
-        }
-        .card-body p {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-    </style>
 </head>
 <body>
-    <!-- top navigation -->
-    <div class="left-section">
-        <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
-        <div class="app-name">EduCollab</div>
-        <div id="datetime"><?php echo htmlspecialchars($currentDateTime); ?></div>
-    </div>
-
-    <div class="right-section">
-        <div class="notification-bell">
-            <i class="bi bi-bell-fill"></i>
-            <span class="notification-count">0</span>
-        </div>
-
-        <div class="user-profile" id="userProfile">
-            <div class="user-icon" onclick="toggleDropdown()">U</div>
-            <div class="dropdown" id="dropdown">
-                <a href="#">Settings</a>
-                <form action="../../src/processes/logout.php" method="post">
-                    <input type="submit" name="logout" value="Logout">
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main content -->
-    <div class="main">
+    <?php include '../nav-sidebar-temp.php'?>
         <div class="content" id="content">
 
             <div class="container mt-5">
-                <h1 class="mb-4">Forum for Grade <?= htmlspecialchars($grade) ?></h1>
+                <h2 class="mb-4">Forum for Grade <?= htmlspecialchars($grade) ?></h2>
 
                 <div class="mb-4 text-end">
                     <a href="new_post.php?grade=<?= urlencode($grade) ?>" class="btn btn-primary">Create New Post</a>
@@ -192,7 +157,7 @@ unset($_SESSION['success_message']);
 
     
     <script src='../../src/js/datetime.js'></script>
-    <!-- <script src="../../src/js/toggleSidebar.js"></script> -->
+    <script src="../../src/js/toggleSidebar.js"></script>
     <script src="../../src/js/verify.js"></script>
     <script src="../../src/js/new_sy.js"></script>
     <script src='../../src/js/notification.js'></script>

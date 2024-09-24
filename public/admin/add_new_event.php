@@ -49,100 +49,55 @@ try {
 
 </head>
 <body>
-    <div class="top-nav">
-        <div class="left-section">
-            <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
-            <div class="app-name">EduCollab</div>
-            <!-- date and time -->
-            <div id="datetime">
-                <?php echo $currentDateTime; ?>
-            </div>
-        </div>
-
-        <!-- Bell icon with notification count -->
-        <div class="notification-bell">
-            <i class="bi bi-bell-fill"></i>
-            <span class="notification-count">0</span>
-        </div>
-        
-        <!-- Notification dropdown -->
-        <div class="notification-dropdown">
-            <ul class="notification-list">
-                <!-- Notifications will be appended here by JavaScript -->
-            </ul>
-            <button class="see-more" style="display: none;">See More...</button>
-        </div>
-
-        <div class="user-profile" id="userProfile">
-            <div class="user-icon" onclick="toggleDropdown()">U</div>
-            <div class="dropdown" id="dropdown">
-                <a href="#">Settings</a>
-                <form action="../../src/processes/logout.php" method="post">
-                    <input type="submit" name="logout" value="Logout">
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <div class="main">
-        <div class="sidebar" id="sidebar">
-            <div class="logo"></div> 
-            <div class="nav-links">
-                <a href="dashboard.php#">Dashboard</a>
-                <a href="calendar.php">Calendar</a>
-            </div>
-        </div>
-
-       
-        
-
+    <?php include '../nav-sidebar-temp.php'?>
         <div class="content" id="content">
 
             <h3>SY <?php echo $sy?></h3>
             <h2>Calendar > Add Event</h2>
         
-        <form id="eventsForm" action="../../src/processes/a/add_event.php" method="POST">
-            <div id="form-container">
-                <div class="event-form-group">
-                    <input type="hidden" name="events[0][year_range]" value="<?= htmlspecialchars($sy, ENT_QUOTES, 'UTF-8') ?>">
-                    <div class="form-group">
-                        <label for="title">Title:</label>
-                        <input type="text" class="form-control" name="events[0][title]" required>
+            <form id="eventsForm" action="../../src/processes/a/add_event.php" method="POST">
+                <div id="form-container">
+                    <div class="event-form-group">
+                        <input type="hidden" name="events[0][year_range]" value="<?= htmlspecialchars($sy, ENT_QUOTES, 'UTF-8') ?>">
+                        <div class="form-group">
+                            <label for="title">Title:</label>
+                            <input type="text" class="form-control" name="events[0][title]" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description:</label>
+                            <textarea class="form-control" name="events[0][description]" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="start">Start Date:</label>
+                            <input type="date" class="form-control" name="events[0][start]" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="end">End Date:</label>
+                            <input type="date" class="form-control" name="events[0][end]" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="type">Type:</label>
+                            <select class="form-control" name="events[0][type]" required>
+                                <option value="" disabled selected>Set event type</option>
+                                <?php foreach ($eventTypes as $eventType): ?>
+                                    <option value="<?= htmlspecialchars($eventType['type'], ENT_QUOTES, 'UTF-8') ?>">
+                                        <?= htmlspecialchars($eventType['type'], ENT_QUOTES, 'UTF-8') ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <hr>
                     </div>
-                    <div class="form-group">
-                        <label for="description">Description:</label>
-                        <textarea class="form-control" name="events[0][description]" required></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="start">Start Date:</label>
-                        <input type="date" class="form-control" name="events[0][start]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="end">End Date:</label>
-                        <input type="date" class="form-control" name="events[0][end]" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="type">Type:</label>
-                        <select class="form-control" name="events[0][type]" required>
-                            <option value="" disabled selected>Set event type</option>
-                            <?php foreach ($eventTypes as $eventType): ?>
-                                <option value="<?= htmlspecialchars($eventType['type'], ENT_QUOTES, 'UTF-8') ?>">
-                                    <?= htmlspecialchars($eventType['type'], ENT_QUOTES, 'UTF-8') ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <hr>
                 </div>
-            </div>
 
-            <button type="button" class="btn btn-secondary" id="addNewEvent">Add New Event</button>
-            
-            <button type="submit" class="btn btn-primary">Save Events</button>
-            <button type="button" class="btn btn-danger" onclick="openVerificationModal('cancel_form_', 'Cancel', 'All entries will be discarded. Are you sure you want to cancel?  ', 'Yes', 'manage_events.php', '1')">Cancel</button>
+                <button type="button" class="btn btn-secondary" id="addNewEvent">Add New Event</button>
+                
+                <button type="submit" class="btn btn-primary">Save Events</button>
+                <button type="button" class="btn btn-danger" onclick="openVerificationModal('cancel_form_', 'Cancel', 'All entries will be discarded. Are you sure you want to cancel?  ', 'Yes', 'manage_events.php', '1')">Cancel</button>
 
-        </form>
+            </form>
 
+        </div>
         
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>

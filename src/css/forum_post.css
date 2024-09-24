@@ -268,3 +268,11 @@ body {
     font-style: italic;
     color: #6c757d;
 }
+
+.card-header {
+    background-color: #f8f9fa;
+}
+.card-body p {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
