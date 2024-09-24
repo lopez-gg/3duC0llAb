@@ -12,6 +12,7 @@ $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP
 // Get filters from request (for AJAX calls)
 $grade = $_GET['grade'] ?? null;
 $status = $_GET['status'] ?? null;
+$search = $_GET['search'] ?? null;
 
 // Initial query to fetch faculty members
 $query = "SELECT * FROM users WHERE status != 'deactivated'";
@@ -27,6 +28,11 @@ if ($grade) {
 if ($status) {
     $query .= " AND status = :status";
     $params[':status'] = $status;
+}
+
+if ($search) {
+    $query .= " AND (firstname LIKE :search OR lastname LIKE :search OR username LIKE :search)";
+    $params[':search'] = '%' . $search . '%'; // Use wildcard search
 }
 
 // Fetch the faculty members
