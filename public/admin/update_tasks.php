@@ -52,12 +52,12 @@ $tags = ['Normal', 'Urgent', 'Important', 'Urgent and Important'];
 $progressStatuses = ['completed', 'in_progress', 'pending'];
 
 // debug
-if ($id && $grade) {
-    echo "Task ID: " . htmlspecialchars($id) . "<br>";
-    echo "Grade: " . htmlspecialchars($grade) . "<br>";
-} else {
-    echo "Missing task ID or grade.";
-}
+// if ($id && $grade) {
+//     echo "Task ID: " . htmlspecialchars($id) . "<br>";
+//     echo "Grade: " . htmlspecialchars($grade) . "<br>";
+// } else {
+//     echo "Missing task ID or grade.";
+// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,73 +68,77 @@ if ($id && $grade) {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../src/css/gen.css">
-    <link rel="stylesheet" href="../../src/css/task_form.css">
+    <link rel="stylesheet" href="../../src/css/form.css">
 </head>
 <body>
     <?php include '../nav-sidebar-temp.php'?>
 
         <div class="content" id="content">
-            <h2><?php echo $gradetodisplay?> > Edit Task</h2>
+        <h2><?php echo $gradetodisplay?> > Edit Task</h2>
 
-            <form id="taskForm" action="../../src/processes/a/process_update_task.php" method="POST">
-                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
-                <input type="hidden" name="id" value="<?php echo htmlspecialchars($task['id']); ?>">
-                
-                <div class="task-form-group">
-                    <div class="form-group">
-                        <label for="title">Title:</label>
-                        <input type="text" class="form-control" name="title" value="<?php echo htmlspecialchars($task['title']); ?>" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="description">Description:</label>
-                        <textarea class="form-control" name="description"><?php echo htmlspecialchars($task['description']); ?></textarea>
-                    </div>
+            <div class="form-container">
+                <form id="taskForm" action="../../src/processes/a/process_update_task.php" method="POST">
+                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
+                    <input type="hidden" name="id" value="<?php echo htmlspecialchars($task['id']); ?>">
+                    
+                    <div class="user-form-group">
+                        <div class="form-group">
+                            <label for="title">Title:</label>
+                            <input type="text" class="form-control" name="title" value="<?php echo htmlspecialchars($task['title']); ?>" required>
+                        </div>
 
-                    <div class="form-group position-relative">
-                        <label for="assignedToSearch">Assign To</label>
-                        <input type="text" class="form-control" id="assignedToSearch" autocomplete="off" 
-                               placeholder="Search here..." value="<?= htmlspecialchars($task['assigned_username'] ?? 'Unassigned'); ?>" required>
-                        <div id="searchResults" class="search-results"></div>
-                        <input type="hidden" id="assignedTo" name="assignedTo" value="<?= htmlspecialchars($task['assignedTo']); ?>">
-                    </div>
+                        <div class="form-group">
+                            <label for="description">Description:</label>
+                            <textarea class="form-control" name="description" value="None"><?php echo htmlspecialchars($task['description'] ?? ''); ?></textarea>
+                        </div>
 
-                    <div class="form-group">
-                        <label for="tag">Urgency:</label>
-                        <?php foreach ($tags as $value): ?>
-                            <label class='t-urgency-e'>
-                                <input type='radio' name='tag' value='<?= $value ?>' <?= $task['tag'] === $value ? 'checked' : '' ?> /> <?= $value ?>
-                            </label>
-                        <?php endforeach; ?>
-                    </div>
+                        <div class="form-group position-relative">
+                            <label for="assignedToSearch">Assign To:</label>
+                            <input type="text" class="form-control" id="assignedToSearch" autocomplete="off" 
+                                placeholder="Search here..." value="<?= htmlspecialchars($task['assigned_username'] ?? 'Unassigned'); ?>" required>
+                            <div id="searchResults" class="search-results"></div>
+                            <input type="hidden" id="assignedTo" name="assignedTo" value="<?= htmlspecialchars($task['assignedTo']); ?>">
+                        </div>
 
-                    <div class="form-group">
-                        <label for="progress">Progress:</label>
-                        <select class="form-control" name="progress" required>
-                            <option value="<?= htmlspecialchars($task['progress'], ENT_QUOTES, 'UTF-8') ?>" selected>
-                                <?= htmlspecialchars($task['progress'], ENT_QUOTES, 'UTF-8') ?>
-                            </option>
-                            <?php foreach ($progressStatuses as $status): ?>
-                                <option value="<?= htmlspecialchars($status, ENT_QUOTES, 'UTF-8') ?>">
-                                    <?= htmlspecialchars($status, ENT_QUOTES, 'UTF-8') ?>
-                                </option>
+                        <div class="form-group">
+                            <label for="tag">Urgency:</label>
+                            <?php foreach ($tags as $value): ?>
+                                <label class='t-urgency-e'>
+                                    <input type='radio' name='tag' value='<?= $value ?>' <?= $task['tag'] === $value ? 'checked' : '' ?> /> <?= $value ?>
+                                </label>
                             <?php endforeach; ?>
-                        </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="progress">Progress:</label>
+                            <select class="form-control" name="progress" required>
+                                <option value="<?= htmlspecialchars($task['progress'], ENT_QUOTES, 'UTF-8') ?>" selected>
+                                    <?= htmlspecialchars($task['progress'], ENT_QUOTES, 'UTF-8') ?>
+                                </option>
+                                <?php foreach ($progressStatuses as $status): ?>
+                                    <option value="<?= htmlspecialchars($status, ENT_QUOTES, 'UTF-8') ?>">
+                                        <?= htmlspecialchars($status, ENT_QUOTES, 'UTF-8') ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="due_date">Due Date:</label>
+                            <input type="date" class="form-control" name="due_date" value="<?php echo htmlspecialchars($task['due_date']); ?>">
+                        </div>
+                        <div class="form-group">
+                            <label for="due_time">Due Time:</label>
+                            <input type="time" class="form-control" name="due_time" value="<?php echo htmlspecialchars($task['due_time']); ?>">
+                        </div>
                     </div>
 
-                    <div class="form-group">
-                        <label for="due_date">Due Date:</label>
-                        <input type="date" class="form-control" name="due_date" value="<?php echo htmlspecialchars($task['due_date']); ?>">
-                    </div>
-                    <div class="form-group">
-                        <label for="due_time">Due Time:</label>
-                        <input type="time" class="form-control" name="due_time" value="<?php echo htmlspecialchars($task['due_time']); ?>">
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary">Update Task</button>
-                <button type="button" class="btn btn-secondary" onclick="window.location.href='space_home.php?grade=<?= $grade?>'">Cancel</button>
-            </form>
+                    <button type="submit" class="btn btn-primary">Update Task</button>
+                    <button type="button" class="btn btn-secondary" onclick="window.location.href='space_home.php?grade=<?= $grade?>'">Cancel</button>
+                </form>
+            </div>
         </div>
+    
 
     
 

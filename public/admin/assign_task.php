@@ -48,15 +48,16 @@ unset($_SESSION['success_message']);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../src/css/gen.css">
+    <link rel="stylesheet" href="../../src/css/form.css">
 
 </head>
 <body>
     <?php include '../nav-sidebar-temp.php'?>
         
         <div class="content" id="content">
-            <!-- <div class="container mt-5"> -->
-                <h2><?php echo $gradetodisplay?> > Assign Task</h2>
-                
+            <h2><?php echo $gradetodisplay?> > Assign Task</h2>
+        
+            <div class="form-container"> 
                 <form action="../../src/processes/a/process_assign_task.php" method="POST">
                     <!-- Task Title -->
                     <div class="form-group">
@@ -78,7 +79,7 @@ unset($_SESSION['success_message']);
                         <textarea class="form-control" id="description" name="description" rows="3"></textarea>
                     </div>
 
-                    <!-- Urgency Selection (use radio buttons instead of checkboxes) -->
+                    <!-- Urgency Selection -->
                     <div class="t-urgency-container">
                         <label class='t-urgency-e'>
                             <input type='radio' name='urgency' value='Normal' default/> Normal
@@ -94,28 +95,30 @@ unset($_SESSION['success_message']);
                         </label>
                     </div>
 
-
                     <!-- Due Date -->
                     <div class="form-group">
                         <label for="due_date">Due Date</label>
                         <input type="date" class="form-control" id="due_date" name="due_date">
                     </div>
                     <div class="form-group">
-                        <label for="due_time">Due Time:</label>
-                        <input type="time" class="form-control" name="due_time" value="<?php echo htmlspecialchars($task['due_time']); ?>">
-                    </div> 
+                        <label for="due_time">Due Time</label>
+                        <input type="time" class="form-control" id="due_time" name="due_time" value="<?php echo htmlspecialchars($task['due_time']); ?>">
+                    </div>
 
-                    <!-- Auto-set Task Type and Assigned By (hidden fields) -->
+                    <!-- Hidden Fields -->
                     <input type="hidden" name="taskType" value="assigned">
                     <input type="hidden" name="assignedBy" value="<?php echo $_SESSION['user_id']; ?>">
                     <input type="hidden" name="grade" value="<?php echo $grade?>">
 
-                    <!-- Submit Button -->
+                    <!-- Submit and Cancel Buttons -->
                     <button type="submit" class="btn btn-primary">Add Task</button>
-                    <button type="button" class="btn btn-danger" onclick="openVerificationModal('cancel_form_', 'Cancel', 'All entries will be discarded. Are you sure you want to cancel?  ', 'Yes', 'space_home.php?grade=<?=$grade?>', '1')">Cancel</button>
+                    <button type="button" class="btn btn-danger" 
+                            onclick="openVerificationModal('cancel_form_', 'Cancel', 'All entries will be discarded. Are you sure you want to cancel?', 'Yes', 'space_home.php?grade=<?=$grade?>', '1')">Cancel
+                    </button>
                 </form>
-            <!-- </div> -->
+            </div>
         </div>
+
     </div>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>

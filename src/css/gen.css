@@ -404,7 +404,7 @@ body {
 }
 
 
-.t-urgency-container{
+/* .t-urgency-container{
     display: flex;
     gap: 0.5rem;
 }
@@ -412,13 +412,13 @@ body {
 .t-urgency-e {
     display: block;
     padding: 10px;
-}
+} */
 
 
 /* tasks display */
-.task-container li {
+/* .task-container li {
     list-style-type: none;
-}
+} */
 
 
 

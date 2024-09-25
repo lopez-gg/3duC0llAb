@@ -27,7 +27,7 @@ function log_error($message, $file) {
 function getUrgencyColor($tag) {
     switch ($tag) {
         case 'Normal':
-            return 'gray';
+            return 'white';
         case 'Urgent':
             return 'yellow';
         case 'Important':
@@ -35,7 +35,18 @@ function getUrgencyColor($tag) {
         case 'Urgent and Important':
             return 'red';
         default:
-            return 'gray';
+            return 'white';
+    }
+}
+
+function getTaskType($task_type) {
+    switch($task_type) {
+        case 'assigned':
+            return $task_type_icon = "bi bi-people-fill";
+        case 'personal':
+            return $task_type_icon = "bi bi-person-fill-lock";
+        default:
+            return $task_type_icon = "bi bi-question-circle";
     }
 }
 

@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/../../src/config/config.php';
 require_once __DIR__ . '/../../src/config/access_control.php'; 
-require_once __DIR__ . '/../../src/config/session_config.php'; // Include session config
+require_once __DIR__ . '/../../src/config/session_config.php'; 
 require_once __DIR__ . '/../../src/config/db_config.php'; 
 require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
 
@@ -27,8 +27,6 @@ if (!isset($_SESSION['user_id'])) {
     
 }
 
-// Set default values for the variables
-$currentDateTime = date('l, d/m/Y h:i:s A'); 
 // Handle Pagination Variables
 $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Initialize $currentPage
 $itemsPerPage = $data['itemsPerPage'] ?? 10; 
@@ -77,7 +75,8 @@ unset($_SESSION['success_message']);
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
         <link href="../../src/css/gen.css" rel="stylesheet">
-        <link href="../../src/css/a/dashb.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../src/css/tasks.css">
+        <!-- <link href="../../src/css/a/dashb.css" rel="stylesheet"> -->
     </head>
     <body>
         <?php include '../nav-sidebar-temp.php'?>
@@ -110,47 +109,87 @@ unset($_SESSION['success_message']);
                         </div>
                     </div>
                 </section>
+                <hr>
                 <section class="main-sec" id="sec-three">
                     
-
                     <div class="task-list-container">
                         <?php if (empty($tasks['tasks'])): ?>
                             <div>No tasks found.</div>
-                        <?php else: 
-                            ?>
-                            <?php foreach ($tasks['tasks'] as $task): ?>
-                                <div class="task-card" style="border: 1px solid #ccc; padding: 15px; margin-bottom: 15px; border-radius: 10px;">
-                                    <div class="task-header" style="display: flex; justify-content: space-between; align-items: center;">
-                                        <h5 style="margin: 0;"><?php echo htmlspecialchars($task['title'] ?? 'Untitled Task'); ?></h5>
-                                        <div class="task-status">
-                                            <?php $color = isset($task['tag']) ? getUrgencyColor($task['tag']) : 'gray'; ?>
-                                            <div style="height: 20px; width: 20px; background-color: <?php echo htmlspecialchars($color); ?>; border-radius: 50%;" title="<?php echo htmlspecialchars($task['tag'] ?? ''); ?>"></div>
+                        <?php else: ?>
+                            <!-- Outer task-grid to hold multiple cards in a row -->
+                            <div class="task-grid">
+                                <?php foreach ($tasks['tasks'] as $task): ?>
+                                    <!-- Each task-card with internal grid for the layout -->
+                                    <div class="task-card">
+
+                                        <div class="r1">
+                                            <?php $color = isset($task['tag']) ? getUrgencyColor($task['tag']) : 'gray';?>
+                                            <?php $task_type = isset($task['taskType']) ? getTaskType($task['taskType']) : '';?>
+                                            <div class="urgency-circle" style="background-color: <?php echo htmlspecialchars($color) ?? 'None'; ?>" title="<?php echo htmlspecialchars($task['tag'] ?? '')?>"></div>
+                                            <div class="task-title"><?php echo htmlspecialchars($task['title'] ?? 'Untitled Task'); ?></div>
+                                            <div class="task-lock"><i class="<?php echo htmlspecialchars($task_type)?>" title="<?php echo htmlspecialchars($task['taskType'])?>"></i></div>
+                                            <div class="edit-button">
+                                                <a href="update_tasks.php?grade=<?=$grade?>&id=<?=$task['id'] ?>" class="btn btn-normal"><i class="bi bi-pencil-square"></i></a>
+                                            </div>
                                         </div>
+
+                                        <div class="r2">
+                                            <div class="task-label">Due Date</div>
+                                            <div class="task-due-date" title="Due date">
+                                                <?php echo $task['due_date'] ? date('F j', strtotime($task['due_date'])) : 'None'; ?>
+                                            </div>
+                                            <div class="task-due-time" title="Due time">
+                                                <?php echo $task['due_time'] ? date('h:i A', strtotime($task['due_time'])) : 'None'; ?>
+                                            </div>
+                                        </div>
+
+                                        <div class="r3">
+                                            <div class="task-label">Progress</div>
+                                            <div class="task-data"><?php echo htmlspecialchars($task['progress'] ?? ''); ?></div>
+                                        </div>
+
+                                        <div class="r3">
+                                            <div class="task-label">Assigned To</div>
+                                            <div class="task-data"><?php echo htmlspecialchars($task['assigned_username'] ?? ''); ?></div>
+                                        </div>
+
+                                        <div class="r3">
+                                            <div class="task-label">Assigned by</div>
+                                            <div class="task-data"><?php echo htmlspecialchars($task['assigned_by_username'])?></div>
+                                        </div>
+
+                                        <div class="r3">
+                                            <div class="task-label">Space</div>
+                                            <?php 
+                                                if (htmlspecialchars($task['grade']) === 'SNED') {
+                                                    $spaceToDisplay = 'SNED';
+                                                }else {
+                                                    $spaceToDisplay = 'Grade ' . htmlspecialchars($task['grade']);
+                                                }
+                                            ?>
+                                            <div class="task-data"><?php echo $spaceToDisplay?></div>
+                                        </div>
+
+                                        <div class="r4">
+                                            <div class="task-label-r4">Description</div>
+                                            <div class="task-data"><?php echo htmlspecialchars($task['description'] ?? 'None');?></div>
+                                        </div>
+
+                                        <!-- <div class="r5">
+                                            <div class="task-action-delete">
+                                                <form action="../../src/processes/a/delete_task.php" method="GET">
+                                                    <input type="hidden" name="id" value="<n?= htmlspecialchars($task['id'] ?? '');?>">
+                                                    <input type="hidden" name="grade" value="<n?= htmlspecialchars($task['grade']) ?? ''?>">
+                                                    <button type="submit" title="Edit task" class="btn btn-normal" style="display: inline;"><i class="bi bi-trash3"></i></button>
+                                                </form>
+                                            </div>
+                                        </div> -->
                                     </div>
-                                    <p><strong>Assigned To:</strong> <?php echo htmlspecialchars($task['assigned_username'] ?? 'Unassigned'); ?></p>
-                                    <p><strong>Due Date:</strong> <?php echo htmlspecialchars($task['due_date'] ?? 'No Due Date'); ?></p>
-                                    <p><strong>Status:</strong> <?php echo htmlspecialchars($task['progress'] ?? 'Unknown'); ?></p>
-                                    <p><strong>Description:</strong> <?php echo htmlspecialchars($task['description'] ?? 'No description'); ?></p>
-                                    <div class="task-actions" style="display: flex; gap: 10px;">
-                                        <form action="update_tasks.php" method="GET" style="display:inline;">
-                                            <input type="hidden" name="id" value="<?php echo htmlspecialchars($task['id'] ?? ''); ?>">
-                                            <input type="hidden" name="grade" value="<?= htmlspecialchars($grade); ?>">
-                                            <button type="submit" class="btn btn-normal" title="Edit Task">
-                                                <i class="bi bi-pencil-square"></i> 
-                                            </button>
-                                        </form>
-                                        <form id="deleteForm_<?php echo htmlspecialchars($task['id'] ?? ''); ?>" action="../../src/processes/a/delete_task.php" method="POST" style="display:inline;">
-                                            <input type="hidden" name="id" value="<?= htmlspecialchars($task['id'] ?? ''); ?>">
-                                            <input type="hidden" name="grade" value="<?= htmlspecialchars($grade); ?>">
-                                        </form>
-                                        <button type="button" class="btn btn-danger" title="Delete Task" onclick="openVerificationModal('deleteForm_<?php echo htmlspecialchars($task['id'] ?? ''); ?>', 'Confirm Deletion', 'Are you sure you want to delete this task?', 'Delete', 'space_home.php?grade=<?= $grade?>', '1')">
-                                            <i class="bi bi-trash3"></i> 
-                                        </button>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
+                                <?php endforeach; ?>
+                            </div>
                         <?php endif; ?>
                     </div>
+
                     <nav aria-label="Task pagination">
                         <ul class="pagination justify-content-center">
                             <li class="page-item <?php if ($currentPage <= 1) echo 'disabled'; ?>">
@@ -184,7 +223,7 @@ unset($_SESSION['success_message']);
 
         
         <script src='../../src/js/datetime.js'></script>
-        <!-- <script src="../../src/js/toggleSidebar.js"></script> -->
+        <script src="../../src/js/toggleSidebar.js"></script>
         <script src="../../src/js/verify.js"></script>
         <script src="../../src/js/new_sy.js"></script>
         <script src='../../src/js/notification.js'></script>

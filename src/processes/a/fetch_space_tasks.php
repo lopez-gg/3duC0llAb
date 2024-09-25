@@ -11,18 +11,21 @@ $order = isset($input['order']) ? ($input['order'] === 'asc' ? 'ASC' : 'DESC') :
 
 // Pagination setup: Capture the page number (default is page 1)
 $page = isset($input['page']) ? (int)$input['page'] : (isset($_GET['page']) ? (int)$_GET['page'] : 1);
-$itemsPerPage = 3;  
+$itemsPerPage = 15;  
 $offset = ($page - 1) * $itemsPerPage;  
 
 if ($grade) {
     try {
         $query = "
-            SELECT t.id, t.title, t.description, t.taskType, t.tag, t.grade, t.progress, t.created_at, t.due_date, 
-                   u.username AS assigned_username
-            FROM tasks t
-            LEFT JOIN users u ON t.assignedTo = u.id
-            WHERE t.grade = :grade 
-              AND t.progress != 'completed'";
+        SELECT t.id, t.title, t.description, t.taskType, t.tag, t.grade, t.progress, t.created_at, t.due_date, t.due_time, 
+               u_assigned.username AS assigned_username,
+               u_by.username AS assigned_by_username
+        FROM tasks t
+        LEFT JOIN users u_assigned ON t.assignedTo = u_assigned.id
+        LEFT JOIN users u_by ON t.assignedBy = u_by.id
+        WHERE t.grade = :grade 
+          AND t.progress != 'completed'";
+    
 
         // Add progress filter if specified
         if (!empty($progress)) {

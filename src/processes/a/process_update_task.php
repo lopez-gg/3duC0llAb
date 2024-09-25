@@ -52,7 +52,8 @@ try {
 
     // Set success message and redirect
     $_SESSION['success_title'] = "Success";
-    echo $_SESSION['success_message'] = "Task updated successfully!";
+    $_SESSION['success_message'] = "Task updated successfully!";
+    header('Location: ../../../public/admin/space_home.php?grade=' . $grade);
     exit();
 
 } catch (Exception $e) {
