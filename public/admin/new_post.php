@@ -31,10 +31,6 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 
-// Set default values for the variables
-$currentDateTime = date('l, d/m/Y h:i:s A'); 
-
-
 $successTitle = isset($_SESSION['success_title']) ? $_SESSION['success_title'] : null;
 $successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
 $verificationMessage = isset($_SESSION['verification_message']) ? $_SESSION['verification_message'] : null;
@@ -52,37 +48,41 @@ unset($_SESSION['error_message']);
     <title>Create New Forum Post</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <link href="../../src/css/gen.css" rel="stylesheet">
-    <link href="../../src/css/a/dashb.css" rel="stylesheet">
+    <link href="../../src/css/form.css" rel="stylesheet">
 </head>
 <body>
     <?php include '../nav-sidebar-temp.php'?>
 
-        <div class="content" id="content">
-            <h2 class="mb-4"> <?php echo htmlspecialchars($gradetodisplay); ?> Forum > Create new post</h2>
+    <div class="content" id="content">
+    <h2 class="mb-4"><?php echo htmlspecialchars($gradetodisplay); ?> Forum > Create new post</h2>
 
+    <section class="main-sec">
+        <?php if ($errorMessage): ?>
+            <div class="alert alert-danger">
+                <?= htmlspecialchars($errorMessage); ?>
+            </div>
+        <?php endif; ?>
 
-    
-            <section class="main-sec">                           
-                <?php if ($errorMessage): ?>
-                    <div class="alert alert-danger">
-                        <?= htmlspecialchars($errorMessage); ?>
-                    </div>
-                <?php endif; ?>
-
-                <form action="../../src/processes/a/add_forum_post.php" method="POST">
-                    <input type="hidden" name="grade" value="<?= htmlspecialchars($grade); ?>">
-                    <div class="form-group">
-                        <label for="title">Title</label>
-                        <input type="text" id="title" name="title" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="content">Content</label>
-                        <textarea id="content" name="content" class="form-control" rows="5" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Add Post</button>
-                </form>
-            </section>
+        <div class="form-container"> <!-- New container for styling -->
+            <form action="../../src/processes/a/add_forum_post.php" method="POST">
+                <input type="hidden" name="grade" value="<?= htmlspecialchars($grade); ?>">
+                
+                <div class="form-group">
+                    <label for="title">Title</label>
+                    <input type="text" id="title" name="title" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="content">Content</label>
+                    <textarea id="content" name="content" class="form-control" rows="5" required></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Add Post</button>
+            </form>
         </div>
+    </section>
+</div>
+
     </div>
     
 

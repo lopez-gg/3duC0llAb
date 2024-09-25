@@ -39,6 +39,8 @@ function getUrgencyColor($tag) {
     }
 }
 
+$currentDateTime = date('l, d/m/Y h:i:s A'); 
+
 function getCurrentYearRange() {
     $currentYear = date('Y');
     $nextYear = $currentYear + 1;

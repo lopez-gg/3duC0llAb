@@ -99,7 +99,7 @@ unset($_SESSION['success_message']);
     </style>
 </head>
 <body>
-    <!-- <s?php include '../nav-sidebar-temp.php' ?> -->
+    <?php include '../nav-sidebar-temp.php' ?>
     <div class="content" id="content">
         <div class="container mt-4">
             <h2>Manage Faculty Members</h2>
@@ -189,11 +189,11 @@ unset($_SESSION['success_message']);
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
     
-    <!-- <script src='../../src/js/datetime.js'></script> -->
-    <!-- <script src="../../src/js/toggleSidebar.js"></script> -->
+    <script src='../../src/js/datetime.js'></script>
+    <script src="../../src/js/toggleSidebar.js"></script>
     <script src="../../src/js/verify.js"></script>
     <script src="../../src/js/faculty.js"></script>
-    <!-- <script src='../../src/js/notification.js'></script> -->
+    <script src='../../src/js/notification.js'></script>
     <script>
         $(window).on('load', function() {
             <?php if ($successMessage): ?>

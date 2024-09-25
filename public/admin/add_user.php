@@ -24,7 +24,7 @@ unset($_SESSION['success_message']);
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../src/css/gen.css">
-    <link rel="stylesheet" href="../../src/css/event_form.css">
+    <link rel="stylesheet" href="../../src/css/form.css">
 
     <title>Add New User</title>
 </head>
@@ -33,70 +33,66 @@ unset($_SESSION['success_message']);
     <?php include '../nav-sidebar-temp.php'?>
 
         <div class="content" id="content">
-
             <h1>Add New Account</h1>
+            <div class="form-container">
+                <form action="../../src/processes/a/add_user_process.php" method="post">
+                    <div class="user-form-group">
+                        <?php 
+                        // Form fields array
+                        $formFields = [
+                            'username' => 'Username',
+                            'firstname' => 'First Name',
+                            'lastname' => 'Last Name',
+                            'section' => 'Section',
+                            'password' => 'Password'
+                        ];
+                        ?>
 
-            <form action="../../src/processes/a/add_user_process.php" method="post">
-                <div class="user-form-group">
-                    <div class="form-group">
-                        <label for="username">Username:</label>
-                        <input type="text" id="username" name="username" required><br><br>
+                        <?php foreach ($formFields as $name => $label): ?>
+                            <div class="form-group">
+                                <label for="<?= $name ?>"><?= $label ?>:</label>
+                                <input type="<?= $name === 'password' ? 'password' : 'text' ?>" 
+                                    id="<?= $name ?>" 
+                                    name="<?= $name ?>" 
+                                    required 
+                                    <?= $name === 'section' ? 'value="Subject Teacher"' : '' ?>>
+                            </div>
+                        <?php endforeach; ?>
+
+                        <div class="form-group">
+                            <label for="gradeLevel">Grade Level:</label>
+                            <select name="gradeLevel" id="gradeLevel" required>
+                                <?php
+                                $gradeLevels = ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'SNED'];
+                                foreach ($gradeLevels as $level): ?>
+                                    <option value="<?= $level ?>"><?= $level ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="firstname">First Name:</label>
-                        <input type="text" id="firstname" name="firstname" required><br><br>
-                    </div>
-                    <div class="form-group">
-                        <label for="lastname">Last Name:</label>
-                        <input type="text" id="lastname" name="lastname" required><br><br>
-                    </div>
-                    <div class="form-group">
-                        <label for="gradeLevel">Grade Level:</label>
-                        <select name="gradeLevel" id="gradeLevel">
-                            <option value="Grade 1">Grade 1</option>
-                            <option value="Grade 2">Grade 2</option> 
-                            <option value="Grade 3">Grade 3</option> 
-                            <option value="Grade 4">Grade 4</option> 
-                            <option value="Grade 5">Grade 5</option>
-                            <option value="Grade 6">Grade 6</option> 
-                            <option value="SNED">SNED</option>          
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="section">Section:</label>
-                        <input type="text" id="section" name="section" value="Subject Teacher"><br><br>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password:</label>
-                        <input type="password" id="password" name="password" required><br><br>
-                    </div>
-                </div>
-                <button type="submit" class="btn btn-primary">Register</button>
-                
-            </form>
-            
-            <button type="button" class="btn btn-secondary" onclick="openVerificationModal('', '', 'Are you sure you want to discard changes?', 'Discard', 'faculty.php', '1')">Cancel</button>
-    
+
+                    <button type="submit" class="btn btn-primary">Register</button>
+                    <button type="button" class="btn btn-secondary" 
+                            onclick="openDiscardChangesModal('', '', 'Are you sure you want to discard changes?', 'Discard')">Cancel
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
     <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
-    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
     <script src='../../src/js/notification.js'></script>
-    <script src='../../src/js/verify.js'></script>
     <script src='../../src/js/toggleSidebar.js'></script>
     <script src='../../src/js/datetime.js'></script>
     <script>
-        $(window).on('load', function() {
-            <?php if ($successMessage): ?>
-                $('#successModal').modal('show');
-                setTimeout(function() {
-                    $('#successModal').modal('hide');
-                }, 4500);
-            <?php endif; ?>
+        function openDiscardChangesModal() {
+            $('#discardChangesModal').modal('show');
+        }
+
+        $('#confirmDiscardButton').on('click', function() {
+            window.location.href = 'faculty.php'; 
         });
     </script>
 </body>

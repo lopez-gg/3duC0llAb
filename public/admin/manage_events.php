@@ -19,7 +19,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Set default values for the variables
-$currentDateTime = date('l, d/m/Y h:i:s A'); 
+
 $month = isset($_GET['month']) ? (int)$_GET['month'] : null;
 $order = isset($_GET['order']) && $_GET['order'] === 'desc' ? 'desc' : 'asc';
 $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -147,11 +147,6 @@ unset($_SESSION['success_message']);
                     <a class="dropdown-item sort-option" data-order="desc" >Descending</a>
                 </div>
             </div>
-
-
-
-            <!-- Filter Button -->
-            <!--<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#filterModal">Filter</button>-->
 
 
             <table class="table table-bordered mt-4">
