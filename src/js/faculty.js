@@ -82,3 +82,69 @@ function filterFaculty() {
         }
     });
 }
+
+$(document).on('click', '.verifyDeactivationButton', function() {
+    var facultyId = $(this).data('faculty-id');
+    
+    // Open modal and set the confirmation message for deactivation
+    $('#verificationMessage').text('Are you sure you want to deactivate this account?');
+    $('#verifyDeactivationModal').modal('show');
+
+    // When Confirm button is clicked for deactivation
+    $('#confirmDeactivation').off('click').on('click', function() {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '../../src/processes/a/faculty_actions.php';
+
+        const actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        actionInput.value = 'deactivate';
+
+        const idInput = document.createElement('input');
+        idInput.type = 'hidden';
+        idInput.name = 'faculty_id';
+        idInput.value = facultyId;
+
+        form.appendChild(actionInput);
+        form.appendChild(idInput);
+        document.body.appendChild(form);
+        form.submit();
+        
+        // Hide the modal
+        $('#verifyDeactivationModal').modal('hide');
+    });
+});
+
+$(document).on('click', '.verifyActivationButton', function() {
+    var facultyId = $(this).data('faculty-id');
+    
+    // Open modal and set the confirmation message for activation
+    $('#verificationMessage').text('Are you sure you want to activate this account?');
+    $('#verifyDeactivationModal').modal('show');
+
+    // When Confirm button is clicked for activation
+    $('#confirmDeactivation').off('click').on('click', function() {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '../../src/processes/a/faculty_actions.php';
+
+        const actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        actionInput.value = 'activate';
+
+        const idInput = document.createElement('input');
+        idInput.type = 'hidden';
+        idInput.name = 'faculty_id';
+        idInput.value = facultyId;
+
+        form.appendChild(actionInput);
+        form.appendChild(idInput);
+        document.body.appendChild(form);
+        form.submit();
+        
+        // Hide the modal
+        $('#verifyDeactivationModal').modal('hide');
+    });
+});

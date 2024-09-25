@@ -14,8 +14,9 @@ $grade = $_GET['grade'] ?? null;
 $status = $_GET['status'] ?? null;
 $search = $_GET['search'] ?? null;
 
+
 // Initial query to fetch faculty members
-$query = "SELECT * FROM users WHERE status != 'deactivated'";
+$query = "SELECT * FROM users WHERE 1=1";
 $params = [];
 
 // Apply grade filter if set
@@ -52,18 +53,32 @@ if ($isAjax) {
         $output .= '<td>' . htmlspecialchars($faculty['gradeLevel']) . '</td>';
         $output .= '<td>' . htmlspecialchars($faculty['section']) . '</td>';
         $output .= '<td>' . htmlspecialchars($faculty['status']) . '</td>';
-        $output .= '<td>
-                       <button class="btn btn-secondary">Edit</button>
-                       <button class="btn btn-danger">Delete</button>
-                   </td>';
+        $output .= '<td>';
+        $output .= '<form method="POST" action="../../src/processes/a/faculty_actions.php" style="display:inline;">';
+        $output .= '<input type="hidden" name="faculty_id" value="' . $faculty['id'] . '">';
+        $output .= '<button type="submit" name="action" value="edit" class="btn btn-warning btn-sm">Edit</button>';
+        $output .= '</form>';
+        if ($faculty['status'] != 'deactivated') {
+            // Show "Deactivate" if the faculty member is active
+            $output .= '<button type="button" class="btn btn-danger btn-sm verifyDeactivationButton" data-faculty-id="' . $faculty['id'] . '">Deactivate</button>';
+        } elseif ($faculty['status'] === 'deactivated') {
+            // Show "Activate" if the faculty member is deactivated
+            $output .= '<button type="button" class="btn btn-success btn-sm verifyActivationButton" data-faculty-id="' . $faculty['id'] . '">Activate</button>';
+        } echo '</td>';
+        $output .= '</td>';
         $output .= '</tr>';
     }
 
-    echo $output; // Return the rows for AJAX
+    echo $output; 
     exit;
 }
 
 $currentDateTime = date('l, d/m/Y h:i:s A'); 
+$successTitle = isset($_SESSION['success_title']) ? $_SESSION['success_title'] : null;
+$successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
+$verificationMessage = isset($_SESSION['verification_message']) ? $_SESSION['verification_message'] : null;
+include '../display_mod.php';
+unset($_SESSION['success_message']);
 ?>
 
 <!DOCTYPE html>
@@ -92,29 +107,29 @@ $currentDateTime = date('l, d/m/Y h:i:s A');
             <div class="row mb-3">
                 <div class="col-md-3">
                     <select id="gradeFilter" class="form-select" onchange="filterFaculty()">
-                        <option value="">All Grades</option>
-                        <option value="Grade 1">Grade 1</option>
-                        <option value="Grade 2">Grade 2</option>
-                        <option value="Grade 3">Grade 3</option>
-                        <option value="Grade 4">Grade 4</option>
-                        <option value="Grade 5">Grade 5</option>
-                        <option value="Grade 6">Grade 6</option>
-                        <option value="SNED">SNED</option>
+                        <option value="" <?= !$grade ? 'selected' : '' ?>>All Grades</option>
+                        <option value="Grade 1" <?= $grade === 'Grade 1' ? 'selected' : '' ?>>Grade 1</option>
+                        <option value="Grade 2" <?= $grade === 'Grade 2' ? 'selected' : '' ?>>Grade 2</option>
+                        <option value="Grade 3" <?= $grade === 'Grade 3' ? 'selected' : '' ?>>Grade 3</option>
+                        <option value="Grade 4" <?= $grade === 'Grade 4' ? 'selected' : '' ?>>Grade 4</option>
+                        <option value="Grade 5" <?= $grade === 'Grade 5' ? 'selected' : '' ?>>Grade 5</option>
+                        <option value="Grade 6" <?= $grade === 'Grade 6' ? 'selected' : '' ?>>Grade 6</option>
+                        <option value="SNED" <?= $grade === 'SNED' ? 'selected' : '' ?>>SNED</option>
                     </select>
                 </div>
                 <div class="col-md-3">
                     <select id="statusFilter" class="form-select" onchange="filterFaculty()">
-                        <option value="">All Statuses</option>
-                        <option value="active">Active</option>
-                        <option value="inactive">Inactive</option>
-                        <option value="deactivated">Deactivated</option>
+                        <option value="" <?= !isset($status) || $status === '' ? 'selected' : '' ?>>All Statuses</option>
+                        <option value="active" <?= isset($status) && $status === 'active' ? 'selected' : '' ?>>Active</option>
+                        <option value="inactive" <?= isset($status) && $status === 'inactive' ? 'selected' : '' ?>>Inactive</option>
+                        <option value="deactivated" <?= isset($status) && $status === 'deactivated' ? 'selected' : '' ?>>Deactivated</option>
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <input type="text" id="searchFaculty" class="form-control" placeholder="Search by name..." onkeyup="searchFaculty()">
+                    <input type="text" id="searchFaculty" class="form-control" placeholder="Search all by name..." onkeyup="searchFaculty()" value="<?= htmlspecialchars($search ?? '') ?>">
                 </div>
                 <div class="col-md-2 text-end">
-                    <button class="btn btn-primary" onclick="window.location.href='add_new_faculty.php'">Add Faculty</button>
+                    <button class="btn btn-primary" onclick="window.location.href='add_user.php'">Add Faculty</button>
                 </div>
             </div>
 
@@ -143,10 +158,20 @@ $currentDateTime = date('l, d/m/Y h:i:s A');
                             echo '<td>' . htmlspecialchars($faculty['gradeLevel']) . '</td>';
                             echo '<td>' . htmlspecialchars($faculty['section']) . '</td>';
                             echo '<td>' . htmlspecialchars($faculty['status']) . '</td>';
-                            echo '<td>
-                                <button class="btn btn-secondary">Edit</button>
-                                <button class="btn btn-danger">Delete</button>
-                            </td>';
+                            echo '<td>';
+                            echo '<form method="POST" action="../../src/processes/a/faculty_actions.php" style="display:inline;">';
+                            echo '<input type="hidden" name="faculty_id" value="' . $faculty['id'] . '">';
+                            echo '<button type="submit" name="action" value="edit" class="btn btn-warning btn-sm">Edit</button>';
+                            echo '</form>';
+                            
+                            if ($faculty['status'] != 'deactivated') {
+                                // Show "Deactivate" if the faculty member is active
+                                echo '<button type="button" class="btn btn-danger btn-sm verifyDeactivationButton" data-faculty-id="' . $faculty['id'] . '">Deactivate</button>';
+                            } elseif ($faculty['status'] === 'deactivated') {
+                                // Show "Activate" if the faculty member is deactivated
+                                echo '<button type="button" class="btn btn-success btn-sm verifyActivationButton" data-faculty-id="' . $faculty['id'] . '">Activate</button>';
+                            } echo '</td>';
+                            
                             echo '</tr>';
                         }
                     } else {
@@ -169,20 +194,20 @@ $currentDateTime = date('l, d/m/Y h:i:s A');
     <script src="../../src/js/verify.js"></script>
     <script src="../../src/js/faculty.js"></script>
     <!-- <script src='../../src/js/notification.js'></script> -->
-    <!-- <script>
+    <script>
         $(window).on('load', function() {
-            <d?php if ($successMessage): ?>
+            <?php if ($successMessage): ?>
                 $('#successModal').modal('show');
                 setTimeout(function() {
                     $('#successModal').modal('hide');
                 }, 4500);
-            <d?php endif; ?>
+            <?php endif; ?>
         });
-                
-        $(document).on('click', '.delete-button', function() {
-            var formId = $(this).data('form-id');
-            confirmDeleteModal(formId, 'Confirm Deletion', 'Are you sure you want to delete this post?', 'Delete');
+
+        $(document).on('click', '.verifyDeactivationButton, .verifyActivationButton', function() {
+            $(this).prop('disabled', true);  // Disable button to prevent duplicate clicks
         });
-    </script> -->
+
+    </script>
 </body>
 </html>
