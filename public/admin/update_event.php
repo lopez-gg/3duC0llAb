@@ -61,14 +61,14 @@ try {
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../src/css/gen.css">
-    <link rel="stylesheet" href="../../src/css/event_form.css">
+    <link rel="stylesheet" href="../../src/css/form.css">
 </head>
 <body>
     <?php include '../nav-sidebar-temp.php'?>
-        <div class="content" id="content">
+    <div class="content" id="content">
+        <h2>Calendar > Edit Event</h2>
 
-            <h2>Calendar > Edit Event</h2>
-
+        <div class="form-container">
             <form id="eventsForm" action="../../src/processes/a/update_event.php" method="POST">
                 <input type="hidden" name="id" value="<?php echo htmlspecialchars($event['id']); ?>">
 
@@ -86,22 +86,27 @@ try {
                             <?php endforeach; ?>
                         </select>
                     </div>
+
                     <div class="form-group">
                         <label for="title">Title:</label>
                         <input type="text" class="form-control" name="title" value="<?php echo htmlspecialchars($event['title']); ?>" required>
                     </div>
+
                     <div class="form-group">
                         <label for="description">Description:</label>
                         <textarea class="form-control" name="description" required><?php echo htmlspecialchars($event['description']); ?></textarea>
                     </div>
+
                     <div class="form-group">
                         <label for="start">Start Date:</label>
                         <input type="date" class="form-control" name="start" value="<?php echo htmlspecialchars($event['start']); ?>" required>
                     </div>
+
                     <div class="form-group">
                         <label for="end">End Date:</label>
                         <input type="date" class="form-control" name="end" value="<?php echo htmlspecialchars($event['end']); ?>" required>
                     </div>
+
                     <div class="form-group">
                         <label for="type">Type:</label>
                         <select class="form-control" name="type" required>
@@ -120,9 +125,9 @@ try {
                 <button type="submit" class="btn btn-primary">Update Event</button>
                 <button type="button" class="btn btn-secondary" onclick="openDiscardChangesModal()">Cancel</button>
             </form>
-
-
         </div>
+    </div>
+
 
         <?php include '../display_mod.php'; ?>
 

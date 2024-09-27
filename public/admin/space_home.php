@@ -110,8 +110,6 @@ unset($_SESSION['success_message']);
                     </div>
                 </section>
                 <hr>
-                <section class="main-sec" id="sec-three">
-                    
                     <div class="task-list-container">
                         <?php if (empty($tasks['tasks'])): ?>
                             <div>No tasks found.</div>
@@ -189,7 +187,7 @@ unset($_SESSION['success_message']);
                             </div>
                         <?php endif; ?>
                     </div>
-
+                <section class="main-sec" id="page-nav">
                     <nav aria-label="Task pagination">
                         <ul class="pagination justify-content-center">
                             <li class="page-item <?php if ($currentPage <= 1) echo 'disabled'; ?>">
