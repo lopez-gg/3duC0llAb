@@ -76,7 +76,7 @@ unset($_SESSION['success_message']);
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
         <link href="../../src/css/gen.css" rel="stylesheet">
         <link rel="stylesheet" href="../../src/css/tasks.css">
-        <!-- <link href="../../src/css/a/dashb.css" rel="stylesheet"> -->
+        <link href="../../src/css/a/dashb.css" rel="stylesheet">
     </head>
     <body>
         <?php include '../nav-sidebar-temp.php'?>
@@ -86,13 +86,13 @@ unset($_SESSION['success_message']);
                 </section>
 
                 <section class="main-sec" id="sec-two">
-                    <div class="s2-e">
+                    <div class="space">
                         <a href="assign_task.php">Assign Task</a>
                     </div>
-                    <div class="s2-e">
+                    <div class="space">
                         <a href="space_forum.php?grade=<?php echo $grade?>">Forum</a>
                     </div>
-                    <div class="s2-e">
+                    <div class="space">
                         <a href=""> <?php echo htmlspecialchars($gradetodisplay); ?> Faculty</a>
                     </div>
                 </section>

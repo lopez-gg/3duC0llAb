@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 17, 2024 at 07:47 PM
+-- Generation Time: Sep 25, 2024 at 07:18 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -50,7 +50,9 @@ CREATE TABLE `archived_tasks` (
 --
 
 INSERT INTO `archived_tasks` (`id`, `assignedBy`, `assignedTo`, `title`, `description`, `taskType`, `tag`, `grade`, `progress`, `status`, `created_at`, `due_date`, `due_time`, `completed_at`, `deleted_at`) VALUES
-(3, 4, 10, 'new', 'jhb', 'assigned', 'Urgent', 'sned', 'pending', '', '2024-09-13 13:22:27', '2024-09-26', NULL, NULL, '2024-09-14 07:19:14');
+(2, 4, 6, 'assigned task 2', 'dfsdd', 'assigned', 'Normal', '1', 'pending', 'archived', '2024-09-06 08:03:10', '2024-09-07', '00:00:00', NULL, '2024-09-24 01:01:04'),
+(3, 4, 10, 'new', 'jhb', 'assigned', 'Urgent', 'sned', 'pending', '', '2024-09-13 13:22:27', '2024-09-26', NULL, NULL, '2024-09-14 07:19:14'),
+(4, 4, 10, 'sned task 2ggggggg', 'ggggggggggggggggg', 'assigned', 'Normal', 'sned', 'in_progress', 'archived', '2024-09-14 05:01:56', '2024-09-28', '21:24:00', NULL, '2024-09-18 13:47:28');
 
 -- --------------------------------------------------------
 
@@ -85,8 +87,7 @@ INSERT INTO `events` (`id`, `title`, `description`, `event_date`, `end_date`, `a
 (21, 'sdkgme', 'erge', '2024-08-29', '2024-08-31', '2024-08-28', 'School', '2027-2028', NULL),
 (22, '27', 'wiefh', '2024-08-30', '2024-08-31', '2024-08-29', 'Holiday', '2027-2028', NULL),
 (23, 'siefjowe', 'wiejewo', '2024-09-04', '2024-09-05', '2024-08-29', 'School', '2023-2024', NULL),
-(26, 'notif test', 'updateee', '2024-08-31', '2024-09-01', '2024-08-30', 'School', '2024-2025', '2024-09-14 15:57:22'),
-(27, 'retest', 'dgsgf', '2024-09-01', '2024-09-01', '2024-08-31', 'Others', '2024-2025', NULL),
+(26, 'notif test edited', 'updateee', '2024-08-31', '2024-09-01', '2024-08-30', 'School', '2024-2025', '2024-09-21 08:43:55'),
 (28, 'tom', 'xfgh', '2024-09-01', '2024-09-02', '2024-08-31', 'School', '2024-2025', NULL),
 (29, 'neww', 'lgfdoklkn', '2024-09-02', '2024-09-02', '2024-09-01', 'School', '2024-2025', NULL);
 
@@ -190,7 +191,12 @@ INSERT INTO `forum_posts` (`id`, `grade`, `title`, `content`, `user_id`, `create
 (62, '1', 'What is your favorite activity?', 'In class, we do a lot of fun activities! What is your favorite one?', 12, '2024-09-16 10:58:05'),
 (63, '1', 'Talking about Science', 'Science is so cool! What is your favorite topic to learn about in science class?', 12, '2024-09-16 10:58:05'),
 (64, '1', 'Our Favorite Classroom Games', 'What games do we play in the classroom that everyone enjoys? Let\'s talk about them!', 12, '2024-09-16 10:58:05'),
-(65, '1', 'Tips for Homework', 'How is everyone doing with their homework? I\'d love to share some tips!', 12, '2024-09-16 10:58:05');
+(65, '1', 'Tips for Homework', 'How is everyone doing with their homework? I\'d love to share some tips!', 12, '2024-09-16 10:58:05'),
+(89, '1', 'hb jhb,jhh,jbh hjhbjhb hjb jhbjbkjkjh hjhghgjg jhgjgkjh jghjkhjg jhgjhgjg jgjjj', 'bjhlh h \r\nnjk\r\nnkjbkjh\r\nbhbvjhbvj\r\nvjhbjhnbjnhbhj\r\nhhhhhhhhhhhhhhhhhhhhhhhhhhhj jjjjjjjjjjjjjjjjjjjjjjjjjjjjjj jjjjjjjjj jjjjjjjj jjjjjjjj jjjjjjjj \r\n jjjhnnnnnnnnnnnnnnnnnnnnnnnn nnnnnnnnnnnn', 4, '2024-09-19 17:53:48'),
+(90, 'general', 'new', 'hhhhhhhhju', 4, '2024-09-20 02:26:11'),
+(91, '<br />\r\n<b', 'jhbgj', 'hbjhb', 4, '2024-09-21 04:37:58'),
+(92, 'general', 'new gen post', 'jkjnl', 4, '2024-09-21 08:05:45'),
+(93, '1', 'fhfgh', 'gncbbbbbbbbb', 4, '2024-09-24 01:01:53');
 
 -- --------------------------------------------------------
 
@@ -204,31 +210,26 @@ CREATE TABLE `forum_replies` (
   `user_id` int(11) NOT NULL,
   `reply_content` text NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `parent_id` int(11) DEFAULT NULL
+  `parent_id` int(11) DEFAULT NULL,
+  `deleted` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `forum_replies`
 --
 
-INSERT INTO `forum_replies` (`id`, `post_id`, `user_id`, `reply_content`, `created_at`, `parent_id`) VALUES
-(104, 11, 4, 'aaaaaaaaaaa', '2024-09-17 15:35:46', 0),
-(105, 11, 4, 'aaaaaaaaaaaaaaaaa', '2024-09-17 15:35:56', 0),
-(106, 11, 4, 'bbbbbbbbbbbbb', '2024-09-17 15:36:52', 0),
-(107, 11, 4, 'asd', '2024-09-17 16:10:27', 0),
-(108, 11, 4, 'srhjkj', '2024-09-17 16:17:13', 0),
-(109, 11, 4, 'srhjkj', '2024-09-17 16:19:16', 0),
-(110, 11, 4, 'ey', '2024-09-17 17:14:52', NULL),
-(111, 11, 4, 'eyy', '2024-09-17 17:15:07', NULL),
-(112, 11, 4, 'yo', '2024-09-17 17:15:42', NULL),
-(113, 12, 4, 'jjj', '2024-09-17 17:18:27', NULL),
-(114, 12, 4, 'kkk', '2024-09-17 17:18:49', NULL),
-(115, 12, 4, 'jhlkh\r\nhjvb,\r\nkjbhl\r\nhvmv', '2024-09-17 17:31:41', NULL),
-(116, 12, 4, 'fefkmd', '2024-09-17 17:35:16', NULL),
-(117, 12, 4, 'eyyy', '2024-09-17 17:41:06', 115),
-(118, 12, 4, 'yooo', '2024-09-17 17:41:21', 117),
-(119, 12, 4, 'heee', '2024-09-17 17:41:40', 115),
-(120, 12, 4, 'wiws', '2024-09-17 17:43:24', 115);
+INSERT INTO `forum_replies` (`id`, `post_id`, `user_id`, `reply_content`, `created_at`, `parent_id`, `deleted`) VALUES
+(197, 92, 4, 'asc', '2024-09-24 03:58:16', NULL, 0),
+(198, 92, 4, 'fgda', '2024-09-24 03:59:19', NULL, 0),
+(199, 92, 4, 'sfhsf', '2024-09-24 03:59:28', 197, 1),
+(200, 92, 4, 'sfghsfh', '2024-09-24 03:59:36', 199, 0),
+(201, 93, 4, 'aaaaaaaaaaaaaa', '2024-09-24 04:50:17', NULL, 0),
+(202, 93, 4, 'bbbbbbbbbbb', '2024-09-24 04:50:25', NULL, 0),
+(203, 93, 4, 'aaaabbbb', '2024-09-24 04:50:36', 202, 1),
+(204, 93, 4, 'abc', '2024-09-24 04:50:50', 203, 0),
+(205, 8, 4, 'a', '2024-09-24 04:52:15', NULL, 0),
+(206, 8, 4, 'b', '2024-09-24 04:52:21', NULL, 1),
+(207, 8, 4, 'ba', '2024-09-24 04:52:30', 206, 0);
 
 -- --------------------------------------------------------
 
@@ -331,7 +332,36 @@ INSERT INTO `logins` (`id`, `user_id`, `login_time`, `success`) VALUES
 (81, 4, '2024-09-16 10:28:00', 1),
 (82, 4, '2024-09-17 07:53:01', 1),
 (83, 4, '2024-09-17 15:11:24', 1),
-(84, 4, '2024-09-17 15:45:19', 1);
+(84, 4, '2024-09-17 15:45:19', 1),
+(85, 6, '2024-09-17 18:43:53', 0),
+(86, 11, '2024-09-17 18:44:02', 1),
+(87, 4, '2024-09-17 18:52:37', 1),
+(88, 4, '2024-09-17 19:17:03', 1),
+(89, 4, '2024-09-18 09:01:03', 1),
+(90, 17, '2024-09-18 09:19:07', 1),
+(91, 4, '2024-09-18 14:25:43', 1),
+(92, 4, '2024-09-18 19:46:53', 1),
+(93, 4, '2024-09-19 15:59:21', 1),
+(94, 4, '2024-09-19 16:07:08', 1),
+(95, 4, '2024-09-19 16:18:27', 1),
+(96, 4, '2024-09-19 17:38:25', 1),
+(97, 4, '2024-09-19 19:00:56', 1),
+(98, 4, '2024-09-20 02:09:01', 1),
+(99, 4, '2024-09-20 07:46:09', 1),
+(100, 4, '2024-09-20 08:25:26', 1),
+(101, 4, '2024-09-21 04:14:06', 1),
+(102, 4, '2024-09-21 10:03:58', 1),
+(103, 4, '2024-09-22 07:10:45', 1),
+(104, 4, '2024-09-22 11:16:53', 1),
+(105, 4, '2024-09-24 00:45:45', 1),
+(106, 4, '2024-09-24 00:54:59', 1),
+(107, 4, '2024-09-24 01:00:37', 1),
+(108, 4, '2024-09-24 05:26:49', 1),
+(109, 4, '2024-09-24 10:54:09', 1),
+(110, 4, '2024-09-25 03:34:12', 1),
+(111, 4, '2024-09-25 05:55:59', 1),
+(112, 4, '2024-09-25 08:15:17', 1),
+(113, 4, '2024-09-25 12:10:12', 1);
 
 -- --------------------------------------------------------
 
@@ -412,12 +442,16 @@ CREATE TABLE `tasks` (
 --
 
 INSERT INTO `tasks` (`id`, `assignedBy`, `assignedTo`, `title`, `description`, `taskType`, `tag`, `grade`, `progress`, `created_at`, `due_date`, `due_time`, `completed_at`, `updated_at`) VALUES
-(1, 4, 5, 'assigned task 1', '', 'assigned', 'Normal', '2', 'pending', '2024-09-06 08:01:43', '2024-09-07', NULL, NULL, NULL),
-(2, 4, 6, 'assigned task 2', 'dfsd', 'assigned', 'Normal', '1', 'pending', '2024-09-06 08:03:10', '2024-09-07', NULL, NULL, NULL),
-(4, 4, 10, 'sned task 2ggggggg', 'ggggggggggggggggg', 'assigned', 'Normal', 'sned', 'in_progress', '2024-09-14 05:01:56', '2024-09-28', '21:24:00', NULL, '2024-09-15 17:54:21'),
+(1, 4, 5, 'assigned task 1', 'jhdbf sdhfdsh fksjdfhkjshdfks fias fia sjdf iash dfisdf aisdh fsdfi sdfi sdfhushdfdfsdhf isudfisfis fishfisdf sdfhohs fo oudvewof 8f shf owef sdf', 'assigned', 'Normal', '2', 'pending', '2024-09-06 08:01:43', '2024-09-07', '17:00:00', NULL, '2024-09-25 17:10:46'),
 (5, 4, 11, 'sned tas 3', 'jhv', 'assigned', 'Important', 'SNED', 'pending', '2024-09-14 14:37:18', '2024-09-19', '14:30:00', NULL, NULL),
 (7, 4, 11, 'grade 5 task', 'sample', 'assigned', 'Normal', '5', 'pending', '2024-09-15 06:02:39', '2024-09-27', '11:30:00', NULL, '2024-09-15 12:16:21'),
-(8, 4, 11, 'grade 5 task 2', 'test', 'assigned', 'Important', '5', 'pending', '2024-09-15 06:03:41', '2024-09-25', '13:30:00', NULL, '2024-09-15 12:17:18');
+(8, 4, 11, 'grade 5 task 2', 'test', 'assigned', 'Important', '5', 'pending', '2024-09-15 06:03:41', '2024-09-25', '13:30:00', NULL, '2024-09-15 12:17:18'),
+(9, 4, 12, 'new', 'jhbjhb', 'assigned', 'Normal', '1', 'pending', '2024-09-24 00:58:52', '2024-10-01', '11:00:00', NULL, NULL),
+(10, 4, 5, 'gr2 task 2', 'updated/edited', 'assigned', 'Urgent', '2', 'pending', '2024-09-25 09:20:35', '2024-09-27', '09:00:00', NULL, '2024-09-25 16:30:49'),
+(11, 4, 5, 'gr2 task 3', 'edited', 'assigned', 'Important', '2', 'pending', '2024-09-25 13:50:19', '2024-10-07', '12:00:00', NULL, '2024-09-25 17:10:09'),
+(12, 4, 5, 'gr2 task 4', 'hjhvj', 'assigned', 'Normal', '2', 'pending', '2024-09-25 13:50:57', '0000-00-00', '23:00:00', NULL, '2024-09-25 17:12:09'),
+(13, 4, 10, 'sned task', 'test', 'assigned', 'Urgent', 'SNED', 'pending', '2024-09-25 16:37:34', '2024-10-04', '17:00:00', NULL, NULL),
+(14, 4, 5, 'hhhh', '', 'assigned', 'Important', '2', 'completed', '2024-09-25 17:12:42', '2024-11-12', '11:00:00', NULL, '2024-09-25 17:15:13');
 
 -- --------------------------------------------------------
 
@@ -433,7 +467,7 @@ CREATE TABLE `users` (
   `gradeLevel` varchar(20) NOT NULL,
   `section` varchar(30) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `status` enum('active','inactive','suspended') NOT NULL DEFAULT 'inactive',
+  `status` enum('active','inactive','deactivated') NOT NULL DEFAULT 'inactive',
   `accType` enum('USER','ADMIN') DEFAULT 'USER',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -443,18 +477,20 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `firstname`, `lastname`, `gradeLevel`, `section`, `password`, `status`, `accType`, `created_at`) VALUES
-(4, 'admintest', 'admin', 'test', 'Grade 1', 'test', '$2y$10$AejWqKaXEPWFsJEa0YYEq./SBDNG3htMmHM4NPGw48R5zfvoHOmJ.', 'active', 'ADMIN', '2024-07-26 08:58:37'),
-(5, 'usertest', 'user', 'test', 'Grade 2', 'test', '$2y$10$LDw4kSr6WkVv1jZhFFYPvuqqI/c6E4kopojrW/W6YAnYiBVn.mupK', 'active', 'USER', '2024-07-26 09:25:29'),
+(4, 'admintest', 'admin', 'testing', 'Grade 1', 'none', '$2y$10$AejWqKaXEPWFsJEa0YYEq./SBDNG3htMmHM4NPGw48R5zfvoHOmJ.', 'active', 'ADMIN', '2024-07-26 08:58:37'),
+(5, 'usertest', 'user', 'test', 'Grade 2', 'test', '$2y$10$LDw4kSr6WkVv1jZhFFYPvuqqI/c6E4kopojrW/W6YAnYiBVn.mupK', 'deactivated', 'USER', '2024-07-26 09:25:29'),
 (6, 'newuser', 'new', 'user', 'Grade 3', 'test', '$2y$10$N75cH127LXgKVYhJQpKo5.aXTUSnRLLgTC8Mo7HRqy.L0dAVsgl5y', 'active', 'USER', '2024-07-26 09:34:28'),
 (7, 'an', 'an', 'an', 'Grade 4', 'jhgv', '$2y$10$tPAqP5ETQ.F.nCxK8XR2lOIcrFNe/hiTyW9aazNs66zKUIY5/IfNi', 'active', 'USER', '2024-08-24 07:10:44'),
 (10, 'user', 'fname', 'lname', 'SNED', 'sec', '$2y$10$OLTI4QId2YXVq8KJUVhJmOeJPm2Du.vWzK9COl4VNyVihAuDMWi9W', 'inactive', 'USER', '2024-08-24 07:20:53'),
-(11, 'one', 'one', 'one', 'Grade 5', 'one', '$2y$10$rBxlKb0aeb5LbO5JSV1.AuDc5EQcv.3CqOlCpZuRFzoft9pdw47we', 'inactive', 'USER', '2024-08-24 07:22:12'),
+(11, 'one', 'one', 'one', 'Grade 5', 'one', '$2y$10$rBxlKb0aeb5LbO5JSV1.AuDc5EQcv.3CqOlCpZuRFzoft9pdw47we', 'active', 'USER', '2024-08-24 07:22:12'),
 (12, 'two', 'two', 'two', 'Grade 1', 'two', '$2y$10$s6IG5/bDo1/leNTkyKXtZ.aUWyKsBBxhRnYZfjkBiHHsnItbhsWTm', 'inactive', 'USER', '2024-08-24 07:35:44'),
 (13, 'three', 'three', 'three', 'Grade 2', 'three', '$2y$10$Sc.6vo5LpLIPPsWmP.WoEuuYxNH0Gb1YgkjGUxaSsh3EVNVeABpNW', 'inactive', 'USER', '2024-08-24 07:39:11'),
 (14, 'heheh', 'hehehe', 'hehehe', 'Grade 5', 'Subject Teacher', '$2y$10$Bi0zGBR9ghFs5BpR9qWx..Zb.oCub/v28x7ifnHczE9BaUQW6STsS', 'inactive', 'USER', '2024-09-15 10:58:05'),
-(15, 'user A', 'skdn', 'sdf', 'Grade 1', 'Sunflower', '$2y$10$y23XXXprzldk9CzcEHtZkuHZO8xDBXEFx1QqGwtZB3kQ4.E3DtLNK', 'inactive', 'USER', '2024-09-16 11:00:50'),
-(16, 'userb', 'dfg', 'erg', 'Grade 1', 'Lemon', '$2y$10$So1p99C2S1PtCe9U1WS0Du3aMs97ciiyH6OvQbcrkkSMjlgo./nOe', 'inactive', 'USER', '2024-09-16 11:01:26'),
-(17, 'userc', 'mck', 'kxcmv', 'Grade 1', 'Citrus', '$2y$10$5gzjmWO2t40B8VW62y9dcuXw2w0qV9QCPcSPN3D2AMDAug9zBCDLy', 'inactive', 'USER', '2024-09-16 11:01:52');
+(15, 'user A', 'skdn', 'sdf', 'Grade 1', 'Sunflower', '$2y$10$y23XXXprzldk9CzcEHtZkuHZO8xDBXEFx1QqGwtZB3kQ4.E3DtLNK', 'deactivated', 'USER', '2024-09-16 11:00:50'),
+(16, 'userb', 'dfg', 'erge', 'Grade 1', 'Lemon', '$2y$10$So1p99C2S1PtCe9U1WS0Du3aMs97ciiyH6OvQbcrkkSMjlgo./nOe', 'deactivated', 'USER', '2024-09-16 11:01:26'),
+(17, 'userc', 'mck', 'kxcmv', 'Grade 1', 'Citrus', '$2y$10$5gzjmWO2t40B8VW62y9dcuXw2w0qV9QCPcSPN3D2AMDAug9zBCDLy', 'deactivated', 'ADMIN', '2024-09-16 11:01:52'),
+(18, 'userd', 'user', 'd', 'Grade 3', 'Subject Teacher', '$2y$10$K7dgsvDD0ucM34xXaH5q2OfbUXgyG//NsI125Ew.nI.TPPw7p9PF.', 'inactive', 'USER', '2024-09-25 08:03:11'),
+(19, 'usere', 'user', 'e', 'Grade 3', 'Ice creaam', '$2y$10$LCZpf.7.Qs7ulK7fXFynEOQFPVmpcEp7GcOl35JIlG7vWmLVEKxJ2', 'inactive', 'USER', '2024-09-25 08:05:25');
 
 --
 -- Indexes for dumped tables
@@ -548,19 +584,19 @@ ALTER TABLE `event_types`
 -- AUTO_INCREMENT for table `forum_posts`
 --
 ALTER TABLE `forum_posts`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=94;
 
 --
 -- AUTO_INCREMENT for table `forum_replies`
 --
 ALTER TABLE `forum_replies`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=121;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=208;
 
 --
 -- AUTO_INCREMENT for table `logins`
 --
 ALTER TABLE `logins`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=85;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=114;
 
 --
 -- AUTO_INCREMENT for table `notifications`
@@ -578,13 +614,13 @@ ALTER TABLE `sy`
 -- AUTO_INCREMENT for table `tasks`
 --
 ALTER TABLE `tasks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- Constraints for dumped tables

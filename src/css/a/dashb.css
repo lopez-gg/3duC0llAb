@@ -1,5 +1,5 @@
 /* dashboard sections */
-#sec-four{
+#sec-four, #sec-two{
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     gap: 20px;
@@ -18,21 +18,131 @@
     background-color: #f2f2f2; 
     padding: 20px;
     text-align: center;
-    border-radius: 5px;
+    border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     font-size: 16px;
 }
 
 
-.s2-e{
-    display: block;
-    justify-content: center;
+
+/* Main section for upcoming events and reminders */
+#sec-three {
+    display: flex;
+    gap: 10px;
+    padding: 1.5rem;
+}
+
+/* Main container for events */
+.d-events-main-container {
+    flex: 1;
+    min-width: 300px; /* Set the minimum width for the upcoming events card */
+    max-width: 350px; /* Optionally set a maximum width */
+    min-height: 400px; /* Set a minimum height for the container */
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden; /* Ensures content stays within the container */
+    position: relative; /* Position for fixed header */
+}
+
+/* Fixed header for the month */
+#events-heading {
+    position: sticky; /* Keeps the heading fixed */
+    top: 0;
+    background-color: #fff;
+    padding: 1.5rem;
     text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    z-index: 1; /* Ensures the heading stays on top during scroll */
+    border-bottom: 1px solid #ddd; 
+    margin: 0;
+}
+
+/* Events list container */
+.d-events-list-container {
+    max-height: 350px; /* Sets a max height for the list */
+    overflow-y: scroll; /* Allows vertical scrolling */
+    padding: 10px;
+    
+    /* Hides scrollbar in WebKit browsers (Chrome, Safari, etc.) */
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none; /* For Internet Explorer and Edge */
+}
+
+.d-events-list-container::-webkit-scrollbar {
+    display: none; /* Hides scrollbar in WebKit browsers */
+}
+
+/* Individual event cards */
+#upcoming-events {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+#upcoming-events li {
+    display: block;
+    margin-bottom: 1px;
+}
+
+
+/* Event card styling */
+#upcoming-events .space {
+    background-color: #f2f2f2;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-size: 14px;
+    min-height: 80px;
+    margin: 0;
+}
+/* Event card styling */
+.event-card {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: #f9f9f9;
     border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    gap: 15px; /* Space between date and details */
+    min-height: 80px; /* Minimum height of the event card */
+}
+
+/* Date box styling */
+.event-date {
+    background-color: #ddd; /* Grey background for the date box */
+    color: #333;
+    font-size: 20px;
+    font-weight: bold;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    text-align: center;
+}
+
+/* Event details styling */
+.event-details {
+    flex: 1; /* Ensures the details take up the remaining space */
+}
+
+/* Title styling */
+.event-details strong {
     font-size: 16px;
-    padding: 1rem;
-    min-width: 80px;
-    max-width: 150px;
-    background-color: rgb(178, 178, 178);
-    height: 40px;
+}
+
+/* Description styling */
+.event-description {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* Ensures long text is truncated */
 }
