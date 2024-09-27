@@ -17,6 +17,10 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $userId = ($_SESSION['user_id']);
+$dashb = '';
+$my_space = '';
+$calendr = 'calendar';
+$gen_forum ='';
 
 // Set timezone
 date_default_timezone_set('Asia/Manila'); 

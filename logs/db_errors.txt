@@ -13,3 +13,10 @@ Connection failed: SQLSTATE[HY000] [1049] Unknown database 'educollab'
 Connection failed: SQLSTATE[HY000] [1049] Unknown database 'educollab'
 Connection failed: SQLSTATE[HY000] [1049] Unknown database 'educollab'
 Connection failed: SQLSTATE[HY000] [1049] Unknown database 'educollab'
+Connection failed: SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it
+Connection failed: SQLSTATE[HY000] [2006] MySQL server has gone away
+Connection failed: SQLSTATE[HY000] [2006] MySQL server has gone away
+Connection failed: SQLSTATE[HY000] [2002] No connection could be made because the target machine actively refused it
+Connection failed: SQLSTATE[HY000] [1049] Unknown database 'educollab'
+Connection failed: SQLSTATE[HY000] [1049] Unknown database 'educollab'
+Connection failed: SQLSTATE[HY000] [1049] Unknown database 'educollab'

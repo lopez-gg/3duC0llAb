@@ -26,7 +26,6 @@
             <div class="user-profile" id="userProfile">
                 <div class="user-icon" onclick="toggleDropdown()">U</div>
                 <div class="dropdown" id="dropdown">
-                    <a href="#">Settings</a>
                     <form action="../../src/processes/logout.php" method="post">
                         <input type="submit" name="logout" value="Logout">
                     </form>
@@ -40,8 +39,10 @@
      <div class="sidebar" id="sidebar">
             <div class="logo"></div> 
             <div class="nav-links">
-                <a href="dashboard.php">Dashboard</a>
-                <a href="calendar.php">Calendar</a>
+                <a class="<?= getNavState($my_space) ?: '' ?>" href="my_space.php">My Space</a>
+                <a class="<?= getNavState($dashb) ?: '' ?>" href="dashboard.php">Dashboard</a>
+                <a class="<?= getNavState($calendr) ?: '' ?>" href="calendar.php">Calendar</a>
+                <a class="<?= getNavState($gen_forum) ?: '' ?>" href="general_forum.php">General Forum</a>
             </div>
         </div>
 

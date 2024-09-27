@@ -15,6 +15,10 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Set default values for the variables
+$dashb = '';
+$my_space = '';
+$calendr = '';
+$gen_forum ='gen';
 $csrf_token = $_SESSION['csrf_token'];
 $grade = 'general';
 $currentDateTime = date('l, d/m/Y h:i:s A'); 

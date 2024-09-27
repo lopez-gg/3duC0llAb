@@ -40,7 +40,7 @@
 /* 1st row */
 .r1 {
     display: grid;
-    grid-template-columns: 30px 4fr 20px 40px;
+    grid-template-columns: 30px 4fr 25px 25px;
     padding: 1rem;
     background-color: rgb(185, 185, 185);
     border-top-right-radius: 10px;
@@ -52,29 +52,36 @@
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    align-self: center; 
+    align-self: flex-start; 
 }
 
 /* Task Title: Second column (more space) */
 .task-title {
     font-size: 1rem;
     font-weight: bold;
-    align-self: center; /* Center it vertically */
+    align-self: flex-start; /* Center it vertically */
 }
 
 /* Lock Icon: Third column (top-right corner) */
 .task-lock {
-    align-self: center;
+    align-self: flex-start;
     font-size: 1.3rem;
+    padding-left: 5px;
+    margin-right: 5px;
 }
 
 .edit-button {
     pointer-events: auto;
     cursor: pointer;
+    align-self: flex-start;
+    padding-left: 5px;
+    margin-left: 5px;
+    padding-top: 2px;
 }
 
 .bi-pencil-square{
     font-size: 1.2rem;
+    justify-self: center;
 }
   
 
@@ -168,6 +175,51 @@
     
 }
 
+.task-data-select {
+    border: none; /* Remove the border */
+    background-color: transparent; /* Set the background transparent (optional) */
+    appearance: none; /* Remove default arrow styling (if needed) */
+    -webkit-appearance: none; /* Remove default arrow on WebKit browsers */
+    -moz-appearance: none; /* Remove default arrow on Firefox */
+    width: 100%;
+}
+
+.task-data-select:focus {
+    outline: none; /* Remove the focus outline */
+}
+
+.tp-opt{
+    padding: 1rem;
+    margin: 12px;
+}
+
+.task-upd-f{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.btn-add-cont{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 380px;
+    margin: 0.3rem;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+.btn-add-bottom{
+    font-size: 3rem;
+    border-radius: 50%;
+    box-shadow: 0px 0px 8px 5px rgb(0 0 0 / 13%);
+    background-color: transparent;
+    color: #229bff;
+    transition: transform 0.3s ease-in-out;
+}
 
 
-
+/* Scale up on hover */
+.btn-add-bottom:hover{
+    transform: scale(1.1); /* Makes it 10% bigger */
+}

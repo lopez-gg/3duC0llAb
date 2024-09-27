@@ -43,7 +43,7 @@ function getTaskType($task_type) {
     switch($task_type) {
         case 'assigned':
             return $task_type_icon = "bi bi-people-fill";
-        case 'personal':
+        case 'private':
             return $task_type_icon = "bi bi-person-fill-lock";
         default:
             return $task_type_icon = "bi bi-question-circle";
@@ -56,6 +56,21 @@ function getCurrentYearRange() {
     $currentYear = date('Y');
     $nextYear = $currentYear + 1;
     return "$currentYear-$nextYear";
+}
+
+function getNavState($currNav) {
+    switch($currNav){
+        case 'dashboard':
+            return $dashb = 'active';
+        case 'my_space':
+            return $my_space = 'active';
+        case 'calendar':
+            return $calendr = 'active';
+        case 'gen_forum':
+            return $gen_forum = 'active';
+        default:
+        return '';
+    }
 }
 
 ?>

@@ -18,6 +18,11 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+$dashb = '';
+$my_space = '';
+$calendr = 'calendar';
+$gen_forum ='';
+
 date_default_timezone_set('Asia/Manila'); 
 $currentDateTime = date('l, d/m/Y h:i:s A'); 
 
