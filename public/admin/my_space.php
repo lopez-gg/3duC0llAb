@@ -58,129 +58,131 @@ unset($_SESSION['success_message']);
         <link href="../../src/css/action_nav.css" rel="stylesheet">
     </head>
     <body>
-        <div class="content" id="content">
-            <section class='main-sec' id='sec-one'>
-                <h2>My Personal Tasks</h2>
-            </section>
+        <?php include '../nav-sidebar-temp.php'?>
+            <div class="content" id="content">
+                <section class='main-sec' id='sec-one'>
+                    <h2>My Personal Tasks</h2>
+                </section>
 
-            <hr>
-            <section class="actions-section">
-                <div class="right-section-actions">
-                    <div class="rs-a">
-                        <button class="btn-sort dropdown-toggle" id="sortIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Sort order">
-                            <i class="bi bi-funnel"></i>
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="sortIcon">
-                            <a class="dropdown-item sort-option" data-order="asc">Ascending</a>
-                            <a class="dropdown-item sort-option" data-order="desc">Descending</a>
-                        </div>
-                    </div>
-                    <div class="rs-a">
-                        <button class="btn-filter dropdown-toggle" id="filterIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Filter tasks">
-                            <i class="bi bi-filter"></i>
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="filterIcon">
-                            <a class="dropdown-item filter-option" data-progress="">All</a>
-                            <a class="dropdown-item filter-option" data-progress="pending">Pending</a>
-                            <a class="dropdown-item filter-option" data-progress="in_progress">In Progress</a>
-                            <a class="dropdown-item filter-option" data-progress="completed">Completed</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="left-section-actions">
-                    <div class="ls-a">
-                    <div class="search-bar">
-                        <input type="text" id="taskSearch" placeholder="Search tasks..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
-                        <button id="searchButton"><i class="bi bi-search"></i></button>
-                    </div>
-                    </div>
-                    <div class="ls-a">
-                    <div class="btn-add">
-                        <a href="add_task.php?_personal" title="Add new personal task"><i class="bi bi-plus-circle"></i></a>
-                    </div>
-                    </div>
-                </div>
-            </section>
-            <hr>
-            <div class="task-list-container">
-                <?php if (empty($tasks)): ?>
-                    <div>No personal tasks found.</div>
-                <?php else: ?>
-                    <div class="task-grid">
-                        <?php foreach ($tasks as $task): ?>
-                            <div class="task-card">
-                                <div class="r1">
-                                    <?php $color = isset($task['tag']) ? getUrgencyColor($task['tag']) : 'gray'; ?>
-                                    <?php $task_type = isset($task['taskType']) ? getTaskType($task['taskType']) : '';?>
-                                    <div class="urgency-circle" style="background-color: <?= htmlspecialchars($color) ?>" title="<?= htmlspecialchars($task['tag'] ?? '') ?>"></div>
-                                    <div class="task-title"><?= htmlspecialchars($task['title'] ?? 'Untitled Task') ?></div>
-                                    <div class="task-lock"><i class="<?php echo htmlspecialchars($task_type)?>" title="<?php echo htmlspecialchars($task['taskType'])?>"></i></div>
-                                    <div class="edit-button">
-                                        <a href="update_tasks.php?id=<?= $task['id'] ?>" class=""><i class="bi bi-pencil-square"></i></a>
-                                    </div>
-                                </div>
-
-                                <div class="r2">
-                                    <div class="task-label">Due Date</div>
-                                    <div class="task-due-date" title="Due date"><?= $task['due_date'] ? date('F j', strtotime($task['due_date'])) : 'None' ?></div>
-                                    <div class="task-due-time" title="Due time"><?= $task['due_time'] ? date('h:i A', strtotime($task['due_time'])) : 'None' ?></div>
-                                </div>
-
-                                <div class="r3">
-                                    <div class="task-label">Progress</div>
-                                    <div class="task-data">
-                                        <form action="update_task_progress.php" class="task-upd-f" method="post">    
-                                            <select class="task-data-select" data-task-id="<?= $task['id'] ?>" >
-                                                    <option value="<?= htmlspecialchars($task['progress'], ENT_QUOTES, 'UTF-8') ?>" selected>
-                                                        <?= htmlspecialchars($task['progress'], ENT_QUOTES, 'UTF-8') ?>
-                                                    </option>
-                                                    <option value="pending" <?= $task['progress'] == 'pending' ? 'selected' : '' ?>>Pending</option>
-                                                    <option value="in_progress" <?= $task['progress'] == 'in_progress' ? 'selected' : '' ?>>In Progress</option>
-                                                    <option value="completed" <?= $task['progress'] == 'completed' ? 'selected' : '' ?>>Completed</option>      
-                                            </select>
-                                        </form>
-                                    </div>
-                                </div>
-
-                                <div class="r4">
-                                    <div class="task-label-r4">Description</div>
-                                    <div class="task-data"><?= htmlspecialchars($task['description'] ?? 'None') ?></div>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-
-                        <div class="btn-add-cont">
-                            <div class="btn-add-bottom">
-                                <a href="add_task.php?_personal" title="Add new personal task"><i class="bi bi-plus-circle"></i></a>
+                <hr>
+                <section class="actions-section">
+                    <div class="right-section-actions">
+                        <div class="rs-a">
+                            <button class="btn-sort dropdown-toggle" id="sortIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Sort order">
+                                <i class="bi bi-funnel"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="sortIcon">
+                                <a class="dropdown-item sort-option" data-order="asc">Ascending</a>
+                                <a class="dropdown-item sort-option" data-order="desc">Descending</a>
                             </div>
                         </div>
-
+                        <div class="rs-a">
+                            <button class="btn-filter dropdown-toggle" id="filterIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Filter tasks">
+                                <i class="bi bi-filter"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="filterIcon">
+                                <a class="dropdown-item filter-option" data-progress="">All</a>
+                                <a class="dropdown-item filter-option" data-progress="pending">Pending</a>
+                                <a class="dropdown-item filter-option" data-progress="in_progress">In Progress</a>
+                                <a class="dropdown-item filter-option" data-progress="completed">Completed</a>
+                            </div>
+                        </div>
                     </div>
-                <?php endif; ?>
-            </div>
+                    <div class="left-section-actions">
+                        <div class="ls-a">
+                        <div class="search-bar">
+                            <input type="text" id="taskSearch" placeholder="Search tasks..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+                            <button id="searchButton"><i class="bi bi-search"></i></button>
+                        </div>
+                        </div>
+                        <div class="ls-a">
+                        <div class="btn-add">
+                            <a href="add_task.php?_personal" id="taskEdit" title="Add new personal task"><i class="bi bi-plus-circle"></i></a>
+                        </div>
+                        </div>
+                    </div>
+                </section>
+                <hr>
+                <div class="task-list-container">
+                    <?php if (empty($tasks)): ?>
+                        <div>No personal tasks found.</div>
+                    <?php else: ?>
+                        <div class="task-grid">
+                            <?php foreach ($tasks as $task): ?>
+                                <div class="task-card">
+                                    <div class="r1">
+                                        <?php $color = isset($task['tag']) ? getUrgencyColor($task['tag']) : 'gray'; ?>
+                                        <?php $task_type = isset($task['taskType']) ? getTaskType($task['taskType']) : '';?>
+                                        <div class="urgency-circle" style="background-color: <?= htmlspecialchars($color) ?>" title="<?= htmlspecialchars($task['tag'] ?? '') ?>"></div>
+                                        <div class="task-title"><?= htmlspecialchars($task['title'] ?? 'Untitled Task') ?></div>
+                                        <div class="task-lock"><i class="<?php echo htmlspecialchars($task_type)?>" title="<?php echo htmlspecialchars($task['taskType'])?>"></i></div>
+                                        <div class="edit-button">
+                                            <a href="update_my_task.php?id=<?= $task['id'] ?>" title="Edit task"><i class="bi bi-pencil-square"></i></a>
+                                        </div>
+                                    </div>
 
-            <section class="main-sec" id="page-nav">
-                <nav aria-label="Task pagination">
-                    <ul class="pagination justify-content-center">
-                        <li class="page-item <?= $currentPage <= 1 ? 'disabled' : '' ?>">
-                            <a class="page-link" href="?page=<?= $currentPage - 1 ?>" aria-label="Previous">
-                                <span aria-hidden="true">&laquo;</span>
-                            </a>
-                        </li>
-                        <?php for ($page = 1; $page <= $totalPages; $page++): ?>
-                            <li class="page-item <?= $page == $currentPage ? 'active' : '' ?>">
-                                <a class="page-link" href="?page=<?= $page ?>"><?= $page ?></a>
+                                    <div class="r2">
+                                        <div class="task-label">Due Date</div>
+                                        <div class="task-due-date" title="Due date"><?= $task['due_date'] ? date('F j', strtotime($task['due_date'])) : 'None' ?></div>
+                                        <div class="task-due-time" title="Due time"><?= $task['due_time'] ? date('h:i A', strtotime($task['due_time'])) : 'None' ?></div>
+                                    </div>
+
+                                    <div class="r3">
+                                        <div class="task-label">Progress</div>
+                                        <div class="task-data">
+                                            <form action="update_task_progress.php" class="task-upd-f" method="post">    
+                                                <select class="task-data-select" data-task-id="<?= $task['id'] ?>" >
+                                                        <option value="<?= htmlspecialchars($task['progress'], ENT_QUOTES, 'UTF-8') ?>" selected>
+                                                            <?= htmlspecialchars($task['progress'], ENT_QUOTES, 'UTF-8') ?>
+                                                        </option>
+                                                        <option value="pending" <?= $task['progress'] == 'pending' ? 'selected' : '' ?>>Pending</option>
+                                                        <option value="in_progress" <?= $task['progress'] == 'in_progress' ? 'selected' : '' ?>>In Progress</option>
+                                                        <option value="completed" <?= $task['progress'] == 'completed' ? 'selected' : '' ?>>Completed</option>      
+                                                </select>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <div class="r4">
+                                        <div class="task-label-r4">Description</div>
+                                        <div class="task-data"><?= htmlspecialchars($task['description'] ?? 'None') ?></div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+
+                            <div class="btn-add-cont">
+                                <div class="btn-add-bottom">
+                                    <a href="add_task.php?_personal" title="Add new personal task"><i class="bi bi-plus-circle"></i></a>
+                                </div>
+                            </div>
+
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <section class="main-sec" id="page-nav">
+                    <nav aria-label="Task pagination">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item <?= $currentPage <= 1 ? 'disabled' : '' ?>">
+                                <a class="page-link" href="?page=<?= $currentPage - 1 ?>" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
                             </li>
-                        <?php endfor; ?>
-                        <li class="page-item <?= $currentPage >= $totalPages ? 'disabled' : '' ?>">
-                            <a class="page-link" href="?page=<?= $currentPage + 1 ?>" aria-label="Next">
-                                <span aria-hidden="true">&raquo;</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </section>
+                            <?php for ($page = 1; $page <= $totalPages; $page++): ?>
+                                <li class="page-item <?= $page == $currentPage ? 'active' : '' ?>">
+                                    <a class="page-link" href="?page=<?= $page ?>"><?= $page ?></a>
+                                </li>
+                            <?php endfor; ?>
+                            <li class="page-item <?= $currentPage >= $totalPages ? 'disabled' : '' ?>">
+                                <a class="page-link" href="?page=<?= $currentPage + 1 ?>" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </section>
 
+            </div>
         </div>
 
         <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>

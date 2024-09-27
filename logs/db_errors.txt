@@ -20,3 +20,4 @@ Connection failed: SQLSTATE[HY000] [2002] No connection could be made because th
 Connection failed: SQLSTATE[HY000] [1049] Unknown database 'educollab'
 Connection failed: SQLSTATE[HY000] [1049] Unknown database 'educollab'
 Connection failed: SQLSTATE[HY000] [1049] Unknown database 'educollab'
+Error updating task: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
