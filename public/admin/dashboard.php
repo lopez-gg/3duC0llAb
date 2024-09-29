@@ -43,6 +43,7 @@ $currentYear = date('Y');
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="stylesheet" href="../../src/css/gen.css">
     <link rel="stylesheet" href="../../src/css/a/dashb.css">
+    <link rel="stylesheet" href="../../src/css/message.css">
 
     <title>Dashboard</title>
 
@@ -173,12 +174,15 @@ $currentYear = date('Y');
         </div>
 
     </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 
     <!-- js scripts -->
     <script src='../../src/js/datetime.js'></script>
     <script src='../../src/js/notification.js'></script>
     <script src='../../src/js/toggleSidebar.js'></script>
+    <script src='../../src/js/message.js'></script>
     
 
 </body>

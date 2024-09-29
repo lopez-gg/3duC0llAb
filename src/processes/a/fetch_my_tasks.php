@@ -15,7 +15,7 @@ function fetch_my_tasks($userId, $order = 'desc', $progress = '', $search = '', 
         $query = "
             SELECT t.id, t.title, t.description, t.taskType, t.tag, t.grade, t.progress, t.due_date, t.due_time 
             FROM tasks t
-            WHERE t.assignedBy = :userId AND t.assignedTo = :userId AND t.progress != 'completed'";
+            WHERE t.assignedTo = :userId OR (t.assignedBy = :userId AND t.assignedTo = :userId) AND t.progress != 'completed'";
 
         if (!empty($progress)) {
             $query .= " AND t.progress = :progress";

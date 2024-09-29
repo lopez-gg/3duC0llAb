@@ -127,7 +127,7 @@ unset($_SESSION['success_message']);
                                             <div class="task-title"><?php echo htmlspecialchars($task['title'] ?? 'Untitled Task'); ?></div>
                                             <div class="task-lock"><i class="<?php echo htmlspecialchars($task_type)?>" title="<?php echo htmlspecialchars($task['taskType'])?>"></i></div>
                                             <div class="edit-button">
-                                                <a href="update_tasks.php?grade=<?=$grade?>&id=<?=$task['id'] ?>" class="btn btn-normal"><i class="bi bi-pencil-square"></i></a>
+                                                <a href="update_tasks.php?grade=<?=$grade?>&id=<?=$task['id'] ?>"><i class="bi bi-pencil-square"></i></a>
                                             </div>
                                         </div>
 

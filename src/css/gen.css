@@ -166,17 +166,18 @@ body {
 .right-section {
     display: flex;
     align-items: center;
+    gap: 15px;
 }
 
 /* Notification bell styles */
 .notification-bell {
     position: relative;
-    margin-right: 20px;
+    margin-right: 10px;
     cursor: pointer;
 }
 
 .notification-bell i {
-    font-size: 20px;
+    font-size: 1.3rem;
     color: #fff;
 }
 
@@ -241,8 +242,8 @@ body {
 }
 
 .user-icon {
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     background-color: #575757;
     border-radius: 50%;
     display: flex;
@@ -324,8 +325,8 @@ body {
     top: 60px; /* Adjusted to start below the top nav */
     bottom: 0;
     transition: transform 0.3s ease;
-    transform: translateX(0); /* Start with the sidebar visible */
-    overflow-y: auto; /* Allow sidebar content to scroll if it overflows */
+    transform: translateX(0);
+    overflow-y: auto; 
 }
 
 .sidebar.hidden {
@@ -415,10 +416,6 @@ body {
 } */
 
 
-/* tasks display */
-/* .task-container li {
-    list-style-type: none;
-} */
 
 
 
@@ -438,4 +435,32 @@ body {
 }
 .search-result-item:hover {
     background-color: #f1f1f1;
+}
+
+
+
+
+
+
+/* Entire scrollbar */
+::-webkit-scrollbar {
+    width: 10px; /* Width of the scrollbar */
+    height: 12px; /* Height of the scrollbar for horizontal bars */
+}
+
+/* Track (the background of the scrollbar) */
+::-webkit-scrollbar-track {
+    background: #aeaeae; 
+    border-radius: 10px;
+}
+
+/* Handle (the draggable part of the scrollbar) */
+::-webkit-scrollbar-thumb {
+    background: #4d4d4d; 
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #393939; 
 }
