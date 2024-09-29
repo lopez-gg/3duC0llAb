@@ -92,6 +92,7 @@ unset($_SESSION['success_message']);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link href="../../src/css/a/h-e-gen.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../src/css/message.css">
     <style>
         .table {
             max-width: 1800px;
@@ -194,6 +195,7 @@ unset($_SESSION['success_message']);
     <script src="../../src/js/verify.js"></script>
     <script src="../../src/js/faculty.js"></script>
     <script src='../../src/js/notification.js'></script>
+    <script src='../../src/js/message.js'></script>
     <script>
         $(window).on('load', function() {
             <?php if ($successMessage): ?>

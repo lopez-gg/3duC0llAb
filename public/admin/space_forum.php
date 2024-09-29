@@ -71,13 +71,14 @@ unset($_SESSION['success_message']);
     <link href="../../src/css/gen.css" rel="stylesheet">
     <link href="../../src/css/forum_post.css" rel="stylesheet">
     <link href="../../src/css/a/dashb.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../src/css/message.css">
     
 </head>
 <body>
     <?php include '../nav-sidebar-temp.php'?>
         <div class="content" id="content">
 
-            <div class="container mt-5">
+            <div class="container">
                 <h2 class="mb-4">Forum for Grade <?= htmlspecialchars($grade) ?></h2>
 
                 <div class="mb-4 text-end">
@@ -161,6 +162,7 @@ unset($_SESSION['success_message']);
     <script src="../../src/js/verify.js"></script>
     <script src="../../src/js/new_sy.js"></script>
     <script src='../../src/js/notification.js'></script>
+    <script src='../../src/js/message.js'></script>
 
     <script>
         $(window).on('load', function() {

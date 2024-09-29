@@ -17,6 +17,11 @@ if (!isset($_SESSION['user_id'])) {
     $userID = $_SESSION['user_id'];
 }
 
+$dashb = '';
+$my_space = 'my_space';
+$calendr = '';
+$gen_forum ='';
+
 // Handle Pagination Variables
 $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1; 
 $itemsPerPage = 10; 
@@ -56,6 +61,7 @@ unset($_SESSION['success_message']);
         <link href="../../src/css/gen.css" rel="stylesheet">
         <link rel="stylesheet" href="../../src/css/tasks.css">
         <link href="../../src/css/action_nav.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../src/css/message.css">
     </head>
     <body>
         <?php include '../nav-sidebar-temp.php'?>
@@ -189,6 +195,11 @@ unset($_SESSION['success_message']);
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
         <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+        
+        <script src='../../src/js/datetime.js'></script>
+        <script src='../../src/js/notification.js'></script>
+        <script src='../../src/js/toggleSidebar.js'></script>
+        <script src='../../src/js/message.js'></script>
 
         <script>
             $(window).on('load', function() {

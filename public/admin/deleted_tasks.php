@@ -66,6 +66,7 @@ unset($_SESSION['success_message']);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../src/css/gen.css" rel="stylesheet">
     <link href="../../src/css/a/dashb.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../src/css/message.css">
 </head>
 <body>
     <?php include '../nav-sidebar-temp.php'?>
@@ -160,6 +161,10 @@ unset($_SESSION['success_message']);
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
     <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+    
+    <script src='../../src/js/message.js'></script>
+    
     <script>
         $(document).ready(function() {
             $('.sort-option').on('click', function() {

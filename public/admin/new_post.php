@@ -49,6 +49,7 @@ unset($_SESSION['error_message']);
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <link href="../../src/css/gen.css" rel="stylesheet">
     <link href="../../src/css/form.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../src/css/message.css">
 </head>
 <body>
     <?php include '../nav-sidebar-temp.php'?>
@@ -88,6 +89,9 @@ unset($_SESSION['error_message']);
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    
+    <script src='../../src/js/message.js'></script>
+    
     <script>
          $(window).on('load', function() {
                 <?php if ($successMessage): ?>

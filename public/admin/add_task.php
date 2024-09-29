@@ -13,7 +13,10 @@ if (!isset($_SESSION['user_id'])) {
 
 // Check if the user is admin
 check_access('ADMIN');
-
+$dashb = '';
+$my_space = 'my_space';
+$calendr = '';
+$gen_forum ='';
 // Set timezone
 date_default_timezone_set('Asia/Manila'); 
 
@@ -38,6 +41,7 @@ unset($_SESSION['success_message']);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../src/css/gen.css">
     <link rel="stylesheet" href="../../src/css/form.css">
+    <link rel="stylesheet" href="../../src/css/message.css">
 </head>
 <body>
     <?php include '../nav-sidebar-temp.php'; ?>
@@ -104,5 +108,6 @@ unset($_SESSION['success_message']);
     <script src="../../src/js/toggleSidebar.js"></script>
     <script src="../../src/js/verify.js"></script>
     <script src='../../src/js/datetime.js'></script>
+    <script src='../../src/js/message.js'></script>
 </body>
 </html>

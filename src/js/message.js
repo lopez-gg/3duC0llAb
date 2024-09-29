@@ -6,6 +6,14 @@ $(document).on('click', function(event) {
 
 let currentChatUserId = null; // Store the current chat user ID
 let pollingInterval; // Variable to store the polling interval ID
+    const options = { 
+        month: 'short', // Full month name
+        day: 'numeric', // Day of the month
+        hour: '2-digit', // Two-digit hour
+        minute: '2-digit', // Two-digit minutes
+        hour12: false // Use 24-hour format (set to true for 12-hour format)
+    };
+   
 
 function hideUserList() {
     $('#user-list').hide(); // jQuery hide method
@@ -87,11 +95,13 @@ function loadMessageList() {
             } else {
                 messageList.html('');
                 response.forEach(chat => {
-                    // Append each chat to the message list
+                    const timestamp = new Date(chat.created_at);
+                    const formattedDate = timestamp.toLocaleString('en-US', options).replace(',', ' at');
+
                     messageList.append(`
                         <div class="message-entry" data-userid="${chat.user_id}" data-username="${chat.chat_username}" data-gradelevel="${chat.gradeLevel}" data-section="${chat.section}">
                               <div class="username">${chat.chat_username}</div>
-                            <div class="timestamp">${chat.created_at}</div>
+                <div class="timestamp">${formattedDate}</div>
                             <div class="message-content">${chat.message_text}</div>
                         </div>
                     `);

@@ -11,7 +11,10 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: /public/login.php'); 
     exit;
 }
-
+$dashb = '';
+$my_space = 'my_space';
+$calendr = '';
+$gen_forum ='';
 
 date_default_timezone_set('Asia/Manila'); 
 $currentDateTime = date('l, d/m/Y h:i:s A'); 
@@ -60,6 +63,7 @@ $progressStatuses = ['completed', 'in_progress', 'pending'];
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../src/css/gen.css">
     <link rel="stylesheet" href="../../src/css/form.css">
+    <link rel="stylesheet" href="../../src/css/message.css">
 </head>
 <body>
     <?php include '../nav-sidebar-temp.php'?>
@@ -134,10 +138,11 @@ $progressStatuses = ['completed', 'in_progress', 'pending'];
 
         
         <script src='../../src/js/datetime.js'></script>
-        <!-- <script src="../../src/js/toggleSidebar.js"></script> -->
+        <script src="../../src/js/toggleSidebar.js"></script>
         <script src="../../src/js/verify.js"></script>
         <script src="../../src/js/new_sy.js"></script>
         <script src='../../src/js/notification.js'></script>
+        <script src='../../src/js/message.js'></script>
 
         <script>
             function openDiscardChangesModal() {

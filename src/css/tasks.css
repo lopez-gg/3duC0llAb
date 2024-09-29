@@ -202,6 +202,7 @@
 .btn-add-cont{
     display: flex;
     justify-content: center;
+    align-items: center;
     width: 100%;
     max-width: 380px;
     margin: 0.3rem;
@@ -216,6 +217,7 @@
     background-color: transparent;
     color: #229bff;
     transition: transform 0.3s ease-in-out;
+    height: 48px;
 }
 
 

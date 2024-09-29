@@ -67,6 +67,7 @@ try {
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../src/css/gen.css">
     <link rel="stylesheet" href="../../src/css/form.css">
+    <link rel="stylesheet" href="../../src/css/message.css">
 </head>
 <body>
     <?php include '../nav-sidebar-temp.php'?>
@@ -143,6 +144,7 @@ try {
         <script src="../../src/js/verify.js"></script>
         <script src='../../src/js/notification.js'></script>
         <script src='../../src/js/datetime.js'></script>
+        <script src='../../src/js/message.js'></script>
     </div>
     
     <script>

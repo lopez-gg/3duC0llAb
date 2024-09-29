@@ -64,7 +64,7 @@ unset($_SESSION['success_message']);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="../../src/css/gen.css" rel="stylesheet">
     <link href="../../src/css/forum_post.css" rel="stylesheet">
-    <!-- <link href="../../src/css/a/dashb.css" rel="stylesheet"> -->
+    <link rel="stylesheet" href="../../src/css/message.css">
     
     <style>
         /* Styling for the card header and content */
@@ -81,7 +81,7 @@ unset($_SESSION['success_message']);
     <?php include '../nav-sidebar-temp.php'?>
 
         <div class="content" id="content">
-            <div class="container mt-5">
+            <div class="container">
                 <h1 class="mb-4">PSCS General Forum</h1>
 
                 <div class="mb-4 text-end">
@@ -167,6 +167,7 @@ unset($_SESSION['success_message']);
     <script src="../../src/js/verify.js"></script>
     <script src="../../src/js/new_sy.js"></script>
     <script src='../../src/js/notification.js'></script>
+    <script src='../../src/js/message.js'></script>
 
     <script>
         $(window).on('load', function() {

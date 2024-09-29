@@ -25,6 +25,7 @@ unset($_SESSION['success_message']);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../src/css/gen.css">
     <link rel="stylesheet" href="../../src/css/form.css">
+    <link rel="stylesheet" href="../../src/css/message.css">
 
     <title>Add New User</title>
 </head>
@@ -86,6 +87,7 @@ unset($_SESSION['success_message']);
     <script src='../../src/js/notification.js'></script>
     <script src='../../src/js/toggleSidebar.js'></script>
     <script src='../../src/js/datetime.js'></script>
+    <script src='../../src/js/message.js'></script>
     <script>
         function openDiscardChangesModal() {
             $('#discardChangesModal').modal('show');

@@ -32,10 +32,10 @@ $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Initialize $cur
 $itemsPerPage = $data['itemsPerPage'] ?? 10; 
 $index = ($currentPage - 1) * $itemsPerPage + 1; 
 $params = [
-    'grade' => $grade, // Grade is mandatory for displaying tasks
-    'order' => isset($_GET['order']) ? $_GET['order'] : 'desc', // Sort order (optional)
-    'progress' => isset($_GET['progress']) ? $_GET['progress'] : '', // Task progress (optional)
-    'page' => isset($_GET['page']) ? $_GET['page'] : 1 // Pagination (optional)
+    'grade' => $grade, 
+    'order' => isset($_GET['order']) ? $_GET['order'] : 'desc',
+    'progress' => isset($_GET['progress']) ? $_GET['progress'] : '', 
+    'page' => isset($_GET['page']) ? $_GET['page'] : 1 
 ];
 
 // Build the query string
@@ -77,6 +77,7 @@ unset($_SESSION['success_message']);
         <link href="../../src/css/gen.css" rel="stylesheet">
         <link rel="stylesheet" href="../../src/css/tasks.css">
         <link href="../../src/css/a/dashb.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../src/css/message.css">
     </head>
     <body>
         <?php include '../nav-sidebar-temp.php'?>
@@ -142,9 +143,21 @@ unset($_SESSION['success_message']);
                                         </div>
 
                                         <div class="r3">
-                                            <div class="task-label">Progress</div>
-                                            <div class="task-data"><?php echo htmlspecialchars($task['progress'] ?? ''); ?></div>
+                                        <div class="task-label">Progress</div>
+                                        <div class="task-data">
+                                            <form action="update_task_progress.php" class="task-upd-f" method="post"> 
+                                                <input type="hidden" name="grade" value="<?= $task['grade']?>">   
+                                                <select class="task-data-select" data-task-id="<?= $task['id'] ?>" >
+                                                        <option value="<?= htmlspecialchars($task['progress'], ENT_QUOTES, 'UTF-8') ?>" selected>
+                                                            <?= htmlspecialchars($task['progress'], ENT_QUOTES, 'UTF-8') ?>
+                                                        </option>
+                                                        <option value="pending" <?= $task['progress'] == 'pending' ? 'selected' : '' ?>>Pending</option>
+                                                        <option value="in_progress" <?= $task['progress'] == 'in_progress' ? 'selected' : '' ?>>In Progress</option>
+                                                        <option value="completed" <?= $task['progress'] == 'completed' ? 'selected' : '' ?>>Completed</option>      
+                                                </select>
+                                            </form>
                                         </div>
+                                    </div>
 
                                         <div class="r3">
                                             <div class="task-label">Assigned To</div>
@@ -225,6 +238,7 @@ unset($_SESSION['success_message']);
         <script src="../../src/js/verify.js"></script>
         <script src="../../src/js/new_sy.js"></script>
         <script src='../../src/js/notification.js'></script>
+        <script src='../../src/js/message.js'></script>
 
 
         <script>

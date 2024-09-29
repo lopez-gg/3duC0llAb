@@ -40,6 +40,7 @@ $currentMonth = date('F Y'); // e.g., July 2024
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css' rel='stylesheet' />
     <link href="../../src/css/custom-calendar.css" rel="stylesheet" />
     <link href="../../src/css/gen.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../src/css/message.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
@@ -86,6 +87,7 @@ $currentMonth = date('F Y'); // e.g., July 2024
         <script src="../../src/js/calendar.js"></script>
         <script src="../../src/js/toggleSidebar.js"></script>
         <script src='../../src/js/notification.js'></script>
+        <script src='../../src/js/message.js'></script>
     </div>
 
     

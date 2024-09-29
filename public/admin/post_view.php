@@ -152,6 +152,7 @@ unset($_SESSION['success_message']);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="../../src/css/gen.css" rel="stylesheet">
     <link href="../../src/css/forum_post.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../src/css/message.css">
 
 </head>
 <body>
@@ -246,6 +247,7 @@ unset($_SESSION['success_message']);
     <script src="../../src/js/verify.js"></script>
     <script src="../../src/js/datetime.js"></script>
     <script src="../../src/js/toggleSidebar.js"></script>
+    <script src='../../src/js/message.js'></script>
     
     <script>
         

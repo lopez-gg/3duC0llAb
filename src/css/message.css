@@ -276,7 +276,6 @@
     margin: 0; /* Space between the icon and the message */
     flex-shrink: 0; /* Prevents the icon from shrinking */
     padding-top: 0;
-    padding-left: 5px;
 }
 
 /* Timestamp styling */

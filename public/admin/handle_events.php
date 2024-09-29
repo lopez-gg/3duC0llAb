@@ -89,7 +89,7 @@ unset($_SESSION['success_message']);
     <title>Manage Events</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css' rel='stylesheet' />
-    <!-- <link href="../../src/css/custom-calendar.css" rel="stylesheet" /> -->
+    <link rel="stylesheet" href="../../src/css/message.css">
     <link href="../../src/css/gen.css" rel="stylesheet" />
 </head>
 <body>
@@ -233,6 +233,7 @@ unset($_SESSION['success_message']);
     <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
     <script src="../../src/js/toggleSidebar.js"></script>
     <script src="../../src/js/verify.js"></script>
+    <script src='../../src/js/message.js'></script>
 
 
     <script>

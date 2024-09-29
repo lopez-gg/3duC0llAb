@@ -69,6 +69,7 @@ include '../display_mod.php';
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../src/css/a/h-e-gen.css">
+    <link rel="stylesheet" href="../../src/css/message.css">
 </head>
 <body>
 
@@ -121,6 +122,7 @@ include '../display_mod.php';
     <script src='../../src/js/notification.js'></script>
     <script src='../../src/js/toggleSidebar.js'></script>
     <script src='../../src/js/datetime.js'></script>
+    <script src='../../src/js/message.js'></script>
     <script>
         function openDiscardChangesModal() {
             $('#discardChangesModal').modal('show');
