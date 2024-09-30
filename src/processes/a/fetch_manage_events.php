@@ -9,7 +9,7 @@ $input = json_decode(file_get_contents('php://input'), true);
 $yearRange = isset($input['year_range']) ? $input['year_range'] : (isset($_GET['year_range']) ? $_GET['year_range'] : '');
 $order = isset($input['order']) ? ($input['order'] === 'desc' ? 'DESC' : 'ASC') : (isset($_GET['order']) ? ($_GET['order'] === 'desc' ? 'DESC' : 'ASC') : 'ASC');
 $page = isset($input['page']) ? (int)$input['page'] : (isset($_GET['page']) ? (int)$_GET['page'] : 1);
-$itemsPerPage = 15;
+$itemsPerPage = 20;
 $offset = ($page - 1) * $itemsPerPage;
 
 // Determine the current year range if not specified
@@ -52,39 +52,39 @@ if (empty($yearRange)) {
     $yearRange = $currentYearRange;
 }
 
-// Build the query to fetch events and their associated colors
-$query = "
-    SELECT events.*, event_types.color 
-    FROM events 
-    JOIN event_types ON events.event_type = event_types.type
-    WHERE events.year_range = :year_range 
-    ORDER BY event_date $order 
-    LIMIT :offset, :itemsPerPage";
-$stmt = $pdo->prepare($query);
-$stmt->bindParam(':year_range', $yearRange, PDO::PARAM_STR);
-$stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-$stmt->bindParam(':itemsPerPage', $itemsPerPage, PDO::PARAM_INT);
-$stmt->execute();
-$events = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Build the query to fetch events and their associated colors
+    $query = "
+        SELECT events.*, event_types.color 
+        FROM events 
+        JOIN event_types ON events.event_type = event_types.type
+        WHERE events.year_range = :year_range 
+        ORDER BY event_date $order 
+        LIMIT :offset, :itemsPerPage";
+    $stmt = $pdo->prepare($query);
+    $stmt->bindParam(':year_range', $yearRange, PDO::PARAM_STR);
+    $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+    $stmt->bindParam(':itemsPerPage', $itemsPerPage, PDO::PARAM_INT);
+    $stmt->execute();
+    $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Count total events for pagination
-$countQuery = "SELECT COUNT(*) FROM events WHERE year_range = :year_range";
-$countStmt = $pdo->prepare($countQuery);
-$countStmt->bindParam(':year_range', $yearRange, PDO::PARAM_STR);
-$countStmt->execute();
-$totalItems = $countStmt->fetchColumn();
-$totalPages = ceil($totalItems / $itemsPerPage);
+    // Count total events for pagination
+    $countQuery = "SELECT COUNT(*) FROM events WHERE year_range = :year_range";
+    $countStmt = $pdo->prepare($countQuery);
+    $countStmt->bindParam(':year_range', $yearRange, PDO::PARAM_STR);
+    $countStmt->execute();
+    $totalItems = $countStmt->fetchColumn();
+    $totalPages = ceil($totalItems / $itemsPerPage);
 
-// Prepare data for JSON response
-$response = [
-    'events' => $events,
-    'currentPage' => $page,
-    'totalPages' => $totalPages,
-    'itemsPerPage' => $itemsPerPage,
-    'currentYearRange' => $yearRange
-];
+    // Prepare data for JSON response
+    $response = [
+        'events' => $events,
+        'currentPage' => $page,
+        'totalPages' => $totalPages,
+        'itemsPerPage' => $itemsPerPage,
+        'currentYearRange' => $yearRange
+    ];
 
-// Output JSON response
-header('Content-Type: application/json');
-echo json_encode($response);
-?>
+    // Output JSON response
+    header('Content-Type: application/json');
+    echo json_encode($response);
+    ?>

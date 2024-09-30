@@ -100,9 +100,10 @@ $currentYear = date('Y');
                                                             echo "<div class='event-details'>";
                                                             echo "<strong>{$event['title']}</strong><br>";
                                                             echo "Upcoming<br>";
-                                                            echo "<p class='event-description'";
+                                                            echo "<p class='event-description'>";
                                                             echo substr($event['description'], 0, 50) . (strlen($event['description']) > 50 ? '...' : '');
                                                             echo "</p>";
+
                                                             echo "</div>";
                                                         } elseif ($eventEndDate < $currentDate) {
                                                             echo '<div class="event-date">';
@@ -114,7 +115,7 @@ $currentYear = date('Y');
                                                             // echo "<strong>{$startDateFormatted}</strong><br>";
                                                             echo "<div class='event-details'>";
                                                             echo "<strong>{$event['title']}</strong><br>";
-                                                            echo "<p class='event-description'";
+                                                            echo "<p class='event-description'>";
                                                             echo "{$daysPassed} days ago<br>";
                                                             echo "</p>";
                                                             echo "</div>";

@@ -3,8 +3,6 @@
 require_once __DIR__ . '/../config/db_config.php'; // Load database configuration
 require_once __DIR__ . '/../config/session_config.php'; // Load session configuration
 
-file_put_contents('debug.log', print_r($_POST, true), FILE_APPEND);
-
 // Ensure the user is logged in before proceeding
 if (!isset($_SESSION['user_id'])) {
     die(json_encode(['error' => 'User not logged in.']));

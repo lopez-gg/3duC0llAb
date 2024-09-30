@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 25, 2024 at 07:18 PM
+-- Generation Time: Sep 29, 2024 at 10:53 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -361,7 +361,87 @@ INSERT INTO `logins` (`id`, `user_id`, `login_time`, `success`) VALUES
 (110, 4, '2024-09-25 03:34:12', 1),
 (111, 4, '2024-09-25 05:55:59', 1),
 (112, 4, '2024-09-25 08:15:17', 1),
-(113, 4, '2024-09-25 12:10:12', 1);
+(113, 4, '2024-09-25 12:10:12', 1),
+(114, 4, '2024-09-27 08:32:35', 1),
+(115, 4, '2024-09-27 09:10:16', 1),
+(116, 4, '2024-09-27 09:13:44', 1),
+(117, 4, '2024-09-27 09:15:57', 1),
+(118, 4, '2024-09-27 09:20:12', 1),
+(119, 4, '2024-09-27 09:25:57', 0),
+(120, 4, '2024-09-27 09:26:08', 1),
+(121, 4, '2024-09-27 09:48:52', 1),
+(122, 4, '2024-09-27 10:41:40', 1),
+(123, 4, '2024-09-27 10:43:36', 1),
+(124, 4, '2024-09-27 11:06:29', 1),
+(125, 4, '2024-09-27 11:09:17', 1),
+(126, 4, '2024-09-27 12:54:22', 1),
+(127, 4, '2024-09-27 13:01:48', 1),
+(128, 4, '2024-09-27 16:02:10', 1),
+(129, 4, '2024-09-27 17:18:20', 1),
+(130, 4, '2024-09-28 02:49:02', 1),
+(131, 4, '2024-09-28 03:11:45', 1),
+(132, 4, '2024-09-28 10:07:38', 1),
+(133, 17, '2024-09-28 10:12:45', 1),
+(134, 4, '2024-09-28 13:35:59', 1),
+(135, 4, '2024-09-28 22:40:30', 1),
+(136, 17, '2024-09-29 04:43:35', 1),
+(137, 17, '2024-09-29 06:57:42', 1),
+(138, 4, '2024-09-29 06:57:59', 1),
+(139, 4, '2024-09-29 07:37:25', 1),
+(140, 17, '2024-09-29 07:48:56', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `messages`
+--
+
+CREATE TABLE `messages` (
+  `id` int(11) NOT NULL,
+  `sender_id` int(11) NOT NULL,
+  `recipient_id` int(11) NOT NULL,
+  `message_text` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `messages`
+--
+
+INSERT INTO `messages` (`id`, `sender_id`, `recipient_id`, `message_text`, `created_at`, `updated_at`) VALUES
+(1, 4, 17, 'msg sent byyyy me jndfkjdsnkjnkjans kasndf asdfn askdnflaks fka sdfsdadg kjdsfnkasjdnf', '2024-09-28 10:49:30', '2024-09-29 06:24:43'),
+(2, 17, 4, 'msg sent to meee', '2024-09-28 10:50:01', '2024-09-29 03:54:40'),
+(3, 4, 17, 'msg sent by me', '2024-09-28 22:59:57', '2024-09-29 03:54:02'),
+(4, 17, 4, 'msg sent to me', '2024-09-28 22:59:57', '2024-09-29 03:54:18'),
+(5, 16, 4, 'dfs', '2024-09-29 01:35:57', '2024-09-29 01:35:57'),
+(6, 12, 4, 'sdfg', '2024-09-29 01:35:57', '2024-09-29 01:35:57'),
+(7, 4, 11, 'adf', '2024-09-29 01:35:57', '2024-09-29 01:35:57'),
+(8, 4, 11, 'asdcvcv2', '2024-09-29 01:35:57', '2024-09-29 01:35:57'),
+(9, 4, 17, 'sending test', '2024-09-29 04:43:08', '2024-09-29 04:43:08'),
+(10, 17, 4, 'reply to send test', '2024-09-29 04:44:17', '2024-09-29 04:44:17'),
+(11, 4, 7, 'asasasd', '2024-09-29 05:14:36', '2024-09-29 05:14:36'),
+(12, 4, 17, 'polling test', '2024-09-29 06:09:31', '2024-09-29 06:09:31'),
+(13, 17, 4, 'p2', '2024-09-29 06:10:40', '2024-09-29 06:10:40'),
+(14, 17, 4, 'asd', '2024-09-29 06:17:13', '2024-09-29 06:17:13'),
+(15, 4, 11, 'jhbjh', '2024-09-29 06:26:33', '2024-09-29 06:26:33'),
+(16, 4, 13, 'gsahj', '2024-09-29 06:29:48', '2024-09-29 06:29:48'),
+(17, 4, 15, 'sdfa', '2024-09-29 06:30:08', '2024-09-29 06:30:08'),
+(18, 4, 17, 'asdfas\nsd\nsd\ns\ns\ns', '2024-09-29 06:35:33', '2024-09-29 06:35:33'),
+(19, 4, 11, 'v', '2024-09-29 07:14:08', '2024-09-29 07:14:08'),
+(20, 17, 4, 'jhbjhb', '2024-09-29 07:49:21', '2024-09-29 07:49:21');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `message_tags`
+--
+
+CREATE TABLE `message_tags` (
+  `id` int(11) NOT NULL,
+  `message_id` int(11) NOT NULL,
+  `tagged_user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -451,7 +531,11 @@ INSERT INTO `tasks` (`id`, `assignedBy`, `assignedTo`, `title`, `description`, `
 (11, 4, 5, 'gr2 task 3', 'edited', 'assigned', 'Important', '2', 'pending', '2024-09-25 13:50:19', '2024-10-07', '12:00:00', NULL, '2024-09-25 17:10:09'),
 (12, 4, 5, 'gr2 task 4', 'hjhvj', 'assigned', 'Normal', '2', 'pending', '2024-09-25 13:50:57', '0000-00-00', '23:00:00', NULL, '2024-09-25 17:12:09'),
 (13, 4, 10, 'sned task', 'test', 'assigned', 'Urgent', 'SNED', 'pending', '2024-09-25 16:37:34', '2024-10-04', '17:00:00', NULL, NULL),
-(14, 4, 5, 'hhhh', '', 'assigned', 'Important', '2', 'completed', '2024-09-25 17:12:42', '2024-11-12', '11:00:00', NULL, '2024-09-25 17:15:13');
+(14, 4, 5, 'hhhh', '', 'assigned', 'Important', '2', 'completed', '2024-09-25 17:12:42', '2024-11-12', '11:00:00', NULL, '2024-09-25 17:15:13'),
+(15, 4, 4, 'T1', 'personal task #1-test', 'private', '', NULL, 'in_progress', '2024-09-27 10:44:33', '2024-10-03', '17:00:00', NULL, '2024-09-27 13:29:22'),
+(16, 4, 4, 'Task 2', 'test', 'private', 'Important', NULL, 'pending', '2024-09-27 10:57:47', '2024-09-28', '18:57:00', NULL, NULL),
+(17, 4, 4, 'Task 3', 'test', 'private', 'Urgent', NULL, 'completed', '2024-09-27 10:58:15', '2024-10-11', '13:00:00', NULL, '2024-09-27 13:15:45'),
+(18, 17, 4, 'aaaaaaaaaaaa abbbbbbbbbb eyybcccccccccc cdddddd deeeeeeeee', 'nfksd', 'assigned', 'Important', NULL, 'in_progress', '2024-09-27 13:31:43', '2024-10-10', '11:00:00', NULL, '2024-09-27 15:48:15');
 
 -- --------------------------------------------------------
 
@@ -538,6 +622,20 @@ ALTER TABLE `logins`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `messages`
+--
+ALTER TABLE `messages`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `message_tags`
+--
+ALTER TABLE `message_tags`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `message_id` (`message_id`),
+  ADD KEY `tagged_user_id` (`tagged_user_id`);
+
+--
 -- Indexes for table `notifications`
 --
 ALTER TABLE `notifications`
@@ -596,7 +694,19 @@ ALTER TABLE `forum_replies`
 -- AUTO_INCREMENT for table `logins`
 --
 ALTER TABLE `logins`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=114;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
+
+--
+-- AUTO_INCREMENT for table `messages`
+--
+ALTER TABLE `messages`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+
+--
+-- AUTO_INCREMENT for table `message_tags`
+--
+ALTER TABLE `message_tags`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `notifications`
@@ -614,7 +724,7 @@ ALTER TABLE `sy`
 -- AUTO_INCREMENT for table `tasks`
 --
 ALTER TABLE `tasks`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -644,6 +754,13 @@ ALTER TABLE `forum_replies`
 --
 ALTER TABLE `logins`
   ADD CONSTRAINT `logins_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+--
+-- Constraints for table `message_tags`
+--
+ALTER TABLE `message_tags`
+  ADD CONSTRAINT `message_tags_ibfk_1` FOREIGN KEY (`message_id`) REFERENCES `messages` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `message_tags_ibfk_2` FOREIGN KEY (`tagged_user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
 -- Constraints for table `notifications`

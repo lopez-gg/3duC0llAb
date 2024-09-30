@@ -19,13 +19,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$username]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            // Debug: Check if user data is fetched correctly
-            if ($user) {
-                echo 'User found: ';
-                print_r($user);
-            } else {
-                echo 'User not found.';
-            }
+            // if ($user) {
+            //     echo 'User found: ';
+            //     print_r($user);
+            // } else {
+            //     echo 'User not found.';
+            // }
 
             // Track login attempt
             $loginSuccess = 0; // Default to failure

@@ -16,9 +16,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $urgency = $_POST['urgency'];
         $due_date = $_POST['due_date'];
         $due_time = $_POST['due_time'];
-        $assignedTo = $_SESSION['user_id'];  // Admin is assigning to themselves
+        $assignedTo = $_SESSION['user_id'];  
         $assignedBy = $_SESSION['user_id'];
-        $taskType = 'private';  // Task is for personal use
+        $taskType = 'private'; 
 
         // Prepare SQL query to insert the task
         $query = "

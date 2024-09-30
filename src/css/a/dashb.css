@@ -112,6 +112,11 @@
     min-height: 80px; /* Minimum height of the event card */
 }
 
+.event-info{
+    display: grid;
+    grid-template-columns: 60px auto;
+}
+
 /* Date box styling */
 .event-date {
     background-color: #ddd; /* Grey background for the date box */
@@ -129,7 +134,8 @@
 
 /* Event details styling */
 .event-details {
-    flex: 1; /* Ensures the details take up the remaining space */
+    flex: 1; 
+    text-align: left;
 }
 
 /* Title styling */
