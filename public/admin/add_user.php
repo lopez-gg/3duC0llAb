@@ -1,10 +1,8 @@
 <?php
+require_once __DIR__ . '/../../src/config/access_control.php'; // Include access control script
 require_once __DIR__ . '/../../src/config/session_config.php';
-require_once __DIR__ . '/../../src/config/access_control.php';
-require_once __DIR__ . '/../../src/config/db_config.php';
-require_once __DIR__ . '/../../src/config/config.php';
 require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
-require_once __DIR__ . '/../../src/processes/check_new_messages.php';
+require_once __DIR__ . '/../../src/processes/check_new_messages.php'; 
 
 $events = require_once __DIR__ . '/../../src/processes/fetch_upcoming_events.php'; 
 
@@ -86,7 +84,11 @@ unset($_SESSION['success_message']);
 
     <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <?php include '../../src/config/js_custom_scripts.php';?>
+
+    <script src='../../src/js/notification.js'></script>
+    <script src='../../src/js/toggleSidebar.js'></script>
+    <script src='../../src/js/datetime.js'></script>
+    <script src='../../src/js/message.js'></script>
     <script>
         function openDiscardChangesModal() {
             $('#discardChangesModal').modal('show');

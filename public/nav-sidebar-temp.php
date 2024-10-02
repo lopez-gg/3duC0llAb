@@ -1,8 +1,3 @@
-<div id="page-main-container" style="display:none;"> 
-
-    <div id="loading-message">Loading...</div>
-
-
     <!-- top navigation -->
     <div class="top-nav">
         <div class="left-section">
