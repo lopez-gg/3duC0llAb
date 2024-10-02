@@ -4,6 +4,7 @@ require_once __DIR__ . '/../../src/config/access_control.php';
 require_once __DIR__ . '/../../src/config/db_config.php';
 require_once __DIR__ . '/../../src/config/config.php';
 require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
+require_once __DIR__ . '/../../src/processes/check_new_messages.php'; 
 
 
 $events = require_once __DIR__ . '/../../src/processes/fetch_upcoming_events.php'; 

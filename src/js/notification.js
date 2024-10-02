@@ -1,16 +1,27 @@
 document.addEventListener('DOMContentLoaded', function() {
-    let currentPage = 1; // Start with page 1
-    const limit = 10; // Number of notifications per page
+    let currentPage = 1; 
+    const limit = 10; 
 
     const notificationBell = document.querySelector('.notification-bell');
     const seeMoreButton = document.querySelector('.see-more');
+    const dropdown = document.querySelector('.notification-dropdown');
 
     if (notificationBell) {
         notificationBell.addEventListener('click', function() {
-            const dropdown = document.querySelector('.notification-dropdown');
+            const sidebar = document.getElementById('message-sidebar');
+
+              // Close message sidebar if it is open
+              if (sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+                document.getElementById('message-icon').classList.remove('active'); // Remove active class from message icon
+            }
+
             dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
             if (dropdown.style.display === 'block') {
+                notificationBell.classList.add('active');
                 fetchNotifications();
+            } else if (dropdown.style.display === 'none')  {
+                notificationBell.classList.remove('active');
             }
         });
     }
@@ -18,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (seeMoreButton) {
         seeMoreButton.addEventListener('click', function() {
             currentPage++;
-            fetchNotifications(true); // Load more notifications
+            fetchNotifications(true); 
         });
     }
 
@@ -29,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const notifications = data.notifications;
                 const notificationList = document.querySelector('.notification-list');
     
-                console.log(notifications); // Debug: Check notification data
+                // console.log(notifications);
     
                 if (!isLoadMore) {
                     notificationList.innerHTML = ''; // Clear notifications if not loading more
@@ -37,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
                 if (Array.isArray(notifications)) {
                     notifications.forEach(notification => {
-                        console.log(`Processing notification ID: ${notification.id}, Status: ${notification.status}`); // Debug: Check status
+                        // console.log(`Processing notification ID: ${notification.id}, Status: ${notification.status}`); // Debug: Check status
     
                         const li = document.createElement('li');
                         li.classList.add('notification-item');
@@ -56,15 +67,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
     
                         // Create the mark as read icon
-                        const markAsReadIcon = document.createElement('i');
-                        markAsReadIcon.classList.add('bi', notification.status === 'read' ? 'bi-check-square-fill' : 'bi-check-square');
-                        markAsReadIcon.style.cursor = 'pointer';
+                        // const markAsReadIcon = document.createElement('i');
+                        // markAsReadIcon.classList.add('bi', notification.status === 'read' ? 'bi-check-square-fill' : 'bi-check-square');
+                        // markAsReadIcon.style.cursor = 'pointer';
     
-                        markAsReadIcon.addEventListener('click', function() {
-                            if (notification.status !== 'read') {
-                                markNotificationAsRead(notification.id, markAsReadIcon, li);
-                            }
-                        });
+                        // markAsReadIcon.addEventListener('click', function() {
+                        //     if (notification.status !== 'read') {
+                        //         markNotificationAsRead(notification.id, markAsReadIcon, li);
+                        //     }
+                        // });
     
                         // Create a div for the notification content
                         const notificationContent = document.createElement('div');
@@ -84,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         notificationContent.appendChild(timeAgo);
     
                         // Append the icon and content to the list item
-                        li.appendChild(markAsReadIcon);
+                        // li.appendChild(markAsReadIcon);
                         li.appendChild(notificationContent);
     
                         notificationList.appendChild(li);

@@ -14,12 +14,8 @@ function timeAgo($timestamp) {
     $current_time = time(); // Get the current time
     $time_difference = $current_time - $timestamp; // Time difference in seconds
 
-    error_log("Timestamp: " . date('Y-m-d H:i:s', $timestamp)); // Log the timestamp
-    error_log("Current Time: " . date('Y-m-d H:i:s', $current_time)); // Log the current time
-    error_log("Time Difference: " . $time_difference . " seconds"); // Log the time difference
-
     if ($time_difference < 0) {
-        return 'In the future'; // Should not happen
+        return 'In the future'; 
     } elseif ($time_difference < 60) {
         return $time_difference . ' seconds ago';
     } elseif ($time_difference < 3600) {
@@ -38,6 +34,7 @@ function timeAgo($timestamp) {
 }
 
 try {
+    // Query to fetch the notifications
     $query = "
         SELECT id, notif_content, created_at,
             CASE 
@@ -71,10 +68,29 @@ try {
     if (empty($notifications)) {
         $notifications = ['message' => 'No recent notifications'];
     }
+
+    // Query to count unread notifications
+    $unreadCountQuery = "
+        SELECT COUNT(*) AS unread_count
+        FROM notifications
+        WHERE (user_id = :user_id OR user_id IS NULL)
+        AND read_at IS NULL
+    ";
+
+    $unreadStmt = $pdo->prepare($unreadCountQuery);
+    $unreadStmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+    $unreadStmt->execute();
+
+    $unreadCount = $unreadStmt->fetch(PDO::FETCH_ASSOC)['unread_count'];
+
 } catch (PDOException $e) {
     log_error('Database query failed: ' . $e->getMessage(), 'db_errors.txt');
     $notifications = ['message' => 'Error fetching notifications'];
+    $unreadCount = 0;
 }
 
-echo json_encode(['notifications' => $notifications]);
+echo json_encode([
+    'notifications' => $notifications,
+    'unread_count' => $unreadCount 
+]);
 ?>

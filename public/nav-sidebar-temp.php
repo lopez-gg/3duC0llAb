@@ -11,6 +11,7 @@
         <div class="right-section">
             <div class="msg-message-icon" onclick="toggleMessageSidebar()">
                 <i id="message-icon" class="bi bi-chat-right-dots-fill"></i>
+                <span class="message-count"><?php echo $unreadCount; ?></span>
             </div>
             <!-- Bell icon with notification count -->
             <div class="notification-bell">
@@ -19,7 +20,7 @@
             </div>
             
             <!-- Notification dropdown-->
-            <div class="notification-dropdown">
+            <div class="notification-dropdown" style="display:none;">
                 <ul class="notification-list"> 
                     <!-- Notifications will be appended here by JavaScript -->
                 </ul>
@@ -27,8 +28,8 @@
             </div>
 
             <div class="user-profile" id="userProfile">
-                <div class="user-icon" onclick="toggleDropdown()">U</div>
-                <div class="dropdown" id="dropdown">
+                <div class="user-icon" onclick="toggleUserProfileDropdown(event)">U</div>
+                <div class="dropdown" id="dropdown" style="display: none;">
                     <form action="../../src/processes/logout.php" method="post">
                         <input type="submit" name="logout" value="Logout">
                     </form>
@@ -64,6 +65,7 @@
             </div>
 
             <div id="message-list">
+            <div id="loading-message" style="display: none;">Loading...</div>
                 <!-- Dynamically chat lists here -->
             </div>
 

@@ -1,9 +1,10 @@
 <?php
 // dashboard.php
-
+require_once __DIR__ . '/../../src/config/db_config.php';
 require_once __DIR__ . '/../../src/config/access_control.php'; 
 require_once __DIR__ . '/../../src/config/session_config.php';
 require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
+require_once __DIR__ . '/../../src/processes/check_new_messages.php'; 
 
 
 $events = require_once __DIR__ . '/../../src/processes/fetch_upcoming_events.php'; 
@@ -178,13 +179,11 @@ $currentYear = date('Y');
     
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-
-    <!-- js scripts -->
     <script src='../../src/js/datetime.js'></script>
     <script src='../../src/js/notification.js'></script>
     <script src='../../src/js/toggleSidebar.js'></script>
     <script src='../../src/js/message.js'></script>
     
-
+</div>
 </body>
 </html>

@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__ . '/../../src/config/session_config.php'; 
-require_once __DIR__ . '/../../src/config/db_config.php'; 
+require_once __DIR__ . '/../../src/config/db_config.php';
+require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
+require_once __DIR__ . '/../../src/processes/check_new_messages.php';  
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: /public/login.php');
