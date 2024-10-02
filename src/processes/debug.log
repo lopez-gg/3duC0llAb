@@ -93,3 +93,8 @@ Array
     [recipientId] => 17
     [message] => asd
 )
+Array
+(
+    [recipientId] => 4
+    [message] => jjj
+)

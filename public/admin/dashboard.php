@@ -1,11 +1,10 @@
 <?php
-// dashboard.php
-
-require_once __DIR__ . '/../../src/config/access_control.php'; 
 require_once __DIR__ . '/../../src/config/session_config.php';
+require_once __DIR__ . '/../../src/config/access_control.php';
+require_once __DIR__ . '/../../src/config/db_config.php';
+require_once __DIR__ . '/../../src/config/config.php';
 require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
-
-
+require_once __DIR__ . '/../../src/processes/check_new_messages.php';
 $events = require_once __DIR__ . '/../../src/processes/fetch_upcoming_events.php'; 
 
 // Check if the user is admin
@@ -179,11 +178,8 @@ $currentYear = date('Y');
 
 
     <!-- js scripts -->
-    <script src='../../src/js/datetime.js'></script>
-    <script src='../../src/js/notification.js'></script>
-    <script src='../../src/js/toggleSidebar.js'></script>
-    <script src='../../src/js/message.js'></script>
+    <?php include '../../src/config/js_custom_scripts.php';?>
     
-
+</div>
 </body>
 </html>

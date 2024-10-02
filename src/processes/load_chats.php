@@ -28,7 +28,8 @@ try {
                     m1.sender_id, 
                     m1.recipient_id,
                     m1.message_text,
-                    m1.created_at
+                    m1.created_at,
+                    m1.read_at
                 FROM messages m1
                 INNER JOIN (
                     SELECT 

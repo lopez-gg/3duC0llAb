@@ -1,9 +1,10 @@
 <?php
-
 require_once __DIR__ . '/../../src/config/session_config.php';
 require_once __DIR__ . '/../../src/config/access_control.php';
 require_once __DIR__ . '/../../src/config/db_config.php';
 require_once __DIR__ . '/../../src/config/config.php';
+require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
+require_once __DIR__ . '/../../src/processes/check_new_messages.php';
 
 check_access('ADMIN');
 
@@ -135,14 +136,7 @@ $progressStatuses = ['completed', 'in_progress', 'pending'];
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
         <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-
-        
-        <script src='../../src/js/datetime.js'></script>
-        <script src="../../src/js/toggleSidebar.js"></script>
-        <script src="../../src/js/verify.js"></script>
-        <script src="../../src/js/new_sy.js"></script>
-        <script src='../../src/js/notification.js'></script>
-        <script src='../../src/js/message.js'></script>
+        <?php include '../../src/config/js_custom_scripts.php';?>
 
         <script>
             function openDiscardChangesModal() {

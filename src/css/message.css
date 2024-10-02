@@ -7,7 +7,27 @@
     padding: 5px;
     margin-top: 5px;
     transition: color 0.3s ease;
+    position: relative;
+    margin-right: 10px;
+    cursor: pointer;
 }
+
+.message-count {
+    height: 15px;
+    width: 15px;
+    font-size: 12px;
+    background-color: rgb(255, 62, 62);
+    border-radius: 50px;
+    position: absolute;
+    top: -4px;
+    right: -10px;
+    padding: 2px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+
 #message-sidebar {
     height: calc(100vh - 60px); /* Takes full height minus navbar */
     display: flex;
@@ -21,7 +41,7 @@
     width: 100%;
 }
 
-#message-icon.active {
+#message-icon.active, .notification-bell.active i {
     color: #00ffbb; 
 }
   
@@ -33,7 +53,6 @@
     top: 60px;
     padding-bottom: 10px;
     background-color: #333;
-    /* box-shadow: -4px 11px 10px 0px rgba(0, 0, 0, 0.5); */
     transform: translateX(100%);
     transition: transform 0.3s ease; /* Smooth transition for the transform property */
     z-index: 2000;
@@ -61,7 +80,8 @@
 }
 
 .message-entry:hover {
-    background-color: #f2f2f2;
+    background-color: #898989;
+    columns: black;
 }
 
 .message-entry .username {
@@ -109,7 +129,7 @@
     flex-wrap: wrap;
 }
 
-.unread .message-content {
+.message-entry.unread .message-content {
     font-weight: bold; 
 }
 

@@ -1,3 +1,5 @@
+fetchUnreadMessageCount()
+
 $(document).on('click', function(event) {
     if (!$(event.target).closest('.search-container').length) {
         hideUserList(); // Hide the list when clicking outside the search container
@@ -25,7 +27,6 @@ function showUserList() {
 
 function scrollToBottom() {
     var chatContainer = document.getElementById('chat-history');
-    console.log('Scrolling to bottom of:', chatContainer); 
     chatContainer.scrollTop = chatContainer.scrollHeight;
 }
 
@@ -45,6 +46,12 @@ function exitPrivateChat(){
 function toggleMessageSidebar() {
     const sidebar = document.getElementById('message-sidebar');
     const messageIcon = document.getElementById('message-icon'); 
+    const dropdown = document.querySelector('.notification-dropdown'); 
+
+    if (dropdown.style.display === 'block') {
+        dropdown.style.display = 'none';
+        document.querySelector('.notification-bell').classList.remove('active'); // Remove active class from notification bell
+    }
     
     sidebar.classList.toggle('open');
 
@@ -62,6 +69,10 @@ function toggleMessageBar() {
 
 // Function to load the list of recent chats 
 function loadMessageList() {
+    const loadingMessage = $('#loading-message'); 
+
+    loadingMessage.hide();
+
     $.ajax({
         url: '../../src/processes/load_chats.php', 
         type: 'GET',
@@ -69,11 +80,12 @@ function loadMessageList() {
             const messageList = $('#message-list');
             const chatInterface = $('#chat-interface');
             const chatInput = $('#chat-input-maincon');
-        
-            // Hide the initial messages list and show the private chat interface
-
+            
+            
+            loadingMessage.hide();
             chatInterface.hide(); 
             chatInput.hide();
+            
             // startPolling();
             let response;
 
@@ -81,6 +93,7 @@ function loadMessageList() {
                 try {
                     response = JSON.parse(data); 
                 } catch (e) {
+                    loadingMessage.hide();
                     console.error('Failed to parse JSON:', e);
                     return;
                 }
@@ -88,18 +101,19 @@ function loadMessageList() {
                 response = data;
             }
 
-            console.log(response);
-
             if (response.message) {
                 messageList.html(`<div class="no-chats-message">${response.message}</div>`);
             } else {
                 messageList.html('');
                 response.forEach(chat => {
+                    const isRead = chat.read_at !== null;
                     const timestamp = new Date(chat.created_at);
                     const formattedDate = timestamp.toLocaleString('en-US', options).replace(',', ' at');
 
+                    const messageClass = isRead ? 'message-entry read' : 'message-entry unread';
+
                     messageList.append(`
-                        <div class="message-entry" data-userid="${chat.user_id}" data-username="${chat.chat_username}" data-gradelevel="${chat.gradeLevel}" data-section="${chat.section}">
+                        <div class="${messageClass}" data-userid="${chat.user_id}" data-username="${chat.chat_username}" data-gradelevel="${chat.gradeLevel}" data-section="${chat.section}">
                               <div class="username">${chat.chat_username}</div>
                 <div class="timestamp">${formattedDate}</div>
                             <div class="message-content">${chat.message_text}</div>
@@ -245,7 +259,7 @@ function loadPrivateChat(selectedUserId) {
     $.ajax({
         url: '../../src/processes/load_private_chat.php',
         type: 'POST',
-        data: { userId: selectedUserId }, // Only send the selected user ID
+        data: { userId: selectedUserId }, 
         success: function(data) {
             // console.log('Raw response:', data); 
             const chatHistory = $('#chat-history');
@@ -288,6 +302,8 @@ function loadPrivateChat(selectedUserId) {
                     
                 });
                 scrollToBottom();
+                markAsRead(selectedUserId);
+                fetchUnreadMessageCount();
             }
         },
         error: function(xhr, status, error) {
@@ -295,8 +311,6 @@ function loadPrivateChat(selectedUserId) {
         }
     });
 }
-
-
 
 function sendMessage(recipientId) {
     const message = document.getElementById('chat-input').value.trim();
@@ -328,10 +342,6 @@ function sendMessage(recipientId) {
         });
     }
 }
-
-
-
-
 
 function autoExpandTextArea() {
     const chatInput = document.getElementById('chat-input');
@@ -373,6 +383,21 @@ function sendMessage(recipientId) {
     }
 }
 
+function fetchUnreadMessageCount() {
+    $.ajax({
+        url: '../../src/processes/check_new_messages.php', // Create this script to return the unread count
+        method: 'GET',
+        success: function(data) {
+            // Update the message count in the UI
+            $('.message-count').text(data.unread_count);
+        }
+    });
+}
+
+// Call this function periodically
+setInterval(fetchUnreadMessageCount, 500000); 
+
+
 
 
 
@@ -390,4 +415,24 @@ function sendMessage(recipientId) {
 //     }, 5000); // Poll every 5 seconds
 // }
 
-
+function markAsRead(selectedUserId) {
+    // Perform an AJAX request to mark messages as read
+    fetch('../../src/processes/mark_msg_as_read.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ senderId: selectedUserId }), // Correctly format the body as JSON
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'Messages marked as read') {
+            // console.log('Messages marked as read successfully');
+        } else {
+            // console.error('Error:', data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}

@@ -11,7 +11,7 @@ try {
     $tomorrow_date = $tomorrow->format('Y-m-d');
 
     // Prepare and execute the query to fetch events happening tomorrow
-    $stmt = $pdo->prepare("SELECT title FROM events WHERE event_date = :tomorrow_date");
+    $stmt = $pdo->prepare("SELECT id, title, event_date, end_date FROM events WHERE event_date = :tomorrow_date");
     $stmt->execute(['tomorrow_date' => $tomorrow_date]);
 
     $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -20,48 +20,51 @@ try {
         $message = "No events found for tomorrow.<br>";
     } else {
         foreach ($events as $event) {
+            $event_id = $event['id'];
             $title = $event['title'];
-            $message = "Tomorrow's event: '{$title}'.";
+            $start_date = $event['event_date'];
+            $end_date = $event['end_date'] ?? $start_date; // Default to start_date if no end_date is provided
 
-            // Check if a notification with the same title and date already exists (ignoring time)
+            $message = "Tomorrow's event: '{$title}' ({$start_date} to {$end_date})";
+
+            // Check if a notification with the same event_id already exists
             $stmt = $pdo->prepare("
                 SELECT COUNT(*) FROM notifications 
-                WHERE notif_content = :message 
-                AND type = 'calendar_event' 
-                AND DATE(created_at) = :today_date
+                WHERE event_id = :event_id
             ");
             $stmt->execute([
-                'message' => $message,
-                'today_date' => $today->format('Y-m-d')
+                'event_id' => $event_id
             ]);
-            
+
             $notificationExists = $stmt->fetchColumn() > 0;
 
             if (!$notificationExists) {
-                // Insert a general notification if it does not already exist
+                // Insert a new notification for the event
                 $stmt = $pdo->prepare("
-                    INSERT INTO notifications (notif_content, type, created_at) 
-                    VALUES (:message, 'calendar_event', NOW())
+                    INSERT INTO notifications (event_id, notif_content, type, event_start_date, event_end_date, created_at) 
+                    VALUES (:event_id, :message, 'calendar_event', :start_date, :end_date, NOW())
                 ");
-                $stmt->execute(['message' => $message]);
-                // echo "Notification inserted: " . $message . "<br>";
-            } else {
-                // echo "Notification already exists for: " . $message . "<br>";
+                $stmt->execute([
+                    'event_id' => $event_id,
+                    'message' => $message,
+                    'start_date' => $start_date,
+                    'end_date' => $end_date
+                ]);
+                // Notification inserted
             }
         }
     }
 
-    // Mark notifications for past events as read
+    // Mark notifications for past events as 'read' where the event date has passed
     $stmt = $pdo->prepare("
         UPDATE notifications 
         SET read_at = NOW() 
         WHERE type = 'calendar_event' 
-          AND notif_content LIKE '%event:%'
-          AND EXISTS (
-              SELECT 1 FROM events 
-              WHERE events.title = SUBSTRING_INDEX(notif_content, ':', -1) 
-                AND events.event_date < CURDATE()
-          )
+        AND EXISTS (
+            SELECT 1 FROM events 
+            WHERE events.id = notifications.event_id
+            AND events.event_date < CURDATE()
+        )
     ");
     $stmt->execute();
 
