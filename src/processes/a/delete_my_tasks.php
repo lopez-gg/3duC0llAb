@@ -44,7 +44,6 @@ if ($taskId) {
         // Handle the error
         log_error('Error deleting task: ' . $e->getMessage(), 'db_errors.txt');
         $_SESSION['error_message'] = 'An error occurred while deleting the task.';
-        header('Location: ../../../public/admin/my_space.php');
     }
 }
 ?>

@@ -79,7 +79,7 @@
     padding-top: 2px;
 }
 
-.bi-pencil-square{
+.bi-pencil-square, .bi-trash3, .bi-bell{
     font-size: 1.2rem;
     justify-self: center;
 }
@@ -160,12 +160,6 @@
 }
 
 
-
-.task-action-delete {
-    grid-column: 3 / span 1;
-    width: 20px;
-    
-}
 /* general */
 
 .task-label {
@@ -227,5 +221,40 @@
 
 /* Scale up on hover */
 .btn-add-bottom:hover{
-    transform: scale(1.1); /* Makes it 10% bigger */
+    transform: scale(1.1); 
+}
+
+
+
+/* personal task action */
+.p-task-action-con{
+    display: grid;
+    grid-template-columns: 1fr 25px 25px;
+    align-items: center;
+    padding: 15px;
+}
+
+
+.task-action-delete{
+    /* padding: 0.3rem; */
+    grid-column: 2 / span 1; 
+    align-self: start;
+    box-sizing: border-box;
+    font-size: 1rem;
+    height: 26px;
+}
+
+.task-action-reminder{
+    /* padding: 0.3rem; */
+    grid-column: 3 / span 1; 
+    align-self: start;
+    box-sizing: border-box;
+    font-size: 1rem;
+    margin-left: 5px;
+    height: 26px;
+}
+
+.p-task-action-con button.btn{
+    margin: 0;
+    padding: 0;
 }

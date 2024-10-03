@@ -44,10 +44,10 @@ $tasks = $tasksData['tasks'] ?? [];
 $totalPages = $tasksData['totalPages'] ?? 1;
 
 
+$successTitle = isset($_SESSION['success_title']) ? $_SESSION['success_title'] : null;
 $successMessage = $_SESSION['success_message'] ?? null;
 include '../display_mod.php';
 unset($_SESSION['success_message']);
-
 ?>
 
 <!DOCTYPE html>
@@ -155,12 +155,31 @@ unset($_SESSION['success_message']);
                                         <div class="task-data"><?= htmlspecialchars($task['description'] ?? 'None') ?></div>
                                     </div>
 
-                                    <div class="r5">
+                                    <div class="p-task-action-con">
                                         <div class="task-action-delete">
-                                            <form action="../../src/processes/a/delete_my_tasks.php" method="POST">
+                                            <form action="../../src/processes/a/delete_my_tasks.php" method="POST" id="delete-button">
                                                 <input type="hidden" name="id" value="<?= htmlspecialchars($task['id'] ?? '');?>">
-                                                <button type="submit" title="Edit task" class="btn btn-normal" style="display: inline;"><i class="bi bi-trash3"></i></button>
+                                                <button type="button" title="Delete task" class="btn delete-button" data-form-id="delete-button" style="display: inline;" onclick="confirmDeleteModal()">
+                                                    <i class="bi bi-trash3"></i>
+                                                </button>
                                             </form>
+                                        </div>
+                                        <div class="task-action-reminder">
+                                        <form action="../../src/processes/a/remind_me.php" method="POST">
+                                            <input type="hidden" name="id" value="<?= htmlspecialchars($task['id'] ?? '');?>">
+                                            <input type="hidden" name="rtype" value="<?= htmlspecialchars($task['taskType'] ?? '');?>">
+                                            <input type="hidden" name="utyp" value="am">
+                                            <button type="button" title="Set reminder for this task" class="btn" style="display: inline;" 
+                                                data-bs-toggle="modal" data-bs-target="#setReminderModal"
+                                                data-task-title="<?= htmlspecialchars($task['title'] ?? ''); ?>"
+                                                data-task-due="<?= htmlspecialchars($task['due_date'] ?? ''); ?>"
+                                                data-task-id="<?= htmlspecialchars($task['id'] ?? ''); ?>"
+                                                data-task-rtype="<?= htmlspecialchars($task['taskType'] ?? ''); ?>"
+                                                data-task-utyp="am">
+                                                    <i class="bi bi-bell"></i>
+                                            </button>
+                                        </form>
+
                                         </div>
                                     </div>
                                 </div>
@@ -210,6 +229,8 @@ unset($_SESSION['success_message']);
         <script src='../../src/js/notification.js'></script>
         <script src='../../src/js/toggleSidebar.js'></script>
         <script src='../../src/js/message.js'></script>
+        <script src='../../src/js/verify.js'></script>>
+        <script src='../../src/js/reminder.js'></script>
 
         <script>
             $(window).on('load', function() {
@@ -220,6 +241,11 @@ unset($_SESSION['success_message']);
                     }, 4500);
                 <?php endif; ?>
             });
+
+            $(document).on('click', '.delete-button', function() {
+                var formId = $(this).data('form-id');
+                confirmDeleteModal(formId, 'Confirm Deletion', 'Are you sure you want to delete this task?', 'Delete');
+             });
 
             $(document).ready(function () {
             // Handle sorting

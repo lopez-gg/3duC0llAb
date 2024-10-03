@@ -69,7 +69,7 @@ unset($_SESSION['success_message']);
                 <!-- Urgency Selection -->
                 <div class="t-urgency-container">
                     <label class='t-urgency-e'>
-                        <input type='radio' name='urgency' value='Normal' default/> Normal
+                        <input type='radio' name='urgency' value='Normal' checked/> Normal
                     </label>
                     <label class='t-urgency-e'>
                         <input type='radio' name='urgency' value='Urgent'/> Urgent

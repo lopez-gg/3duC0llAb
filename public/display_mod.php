@@ -151,3 +151,39 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
         </div>
     </div>
 </div>
+
+
+<!-- Set Reminder Modal -->
+<div class="modal fade" id="setReminderModal" tabindex="-1" aria-labelledby="setReminderLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header"><h5 class="modal-title" id="setReminderLabel">Set Reminder for <span id="taskTitle">Task</span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- Display Task Due Date -->
+                <p><strong>Due Date:</strong> <span id="taskDueDate">Not set</span></p>
+                
+                <form id="reminderForm" action="../../src/processes/a/remind_me.php" method="POST">
+                    <input type="hidden" name="id" id="task_id" value="<?= htmlspecialchars($task['id'] ?? ''); ?>">
+                    <input type="hidden" name="utyp" value="">
+                    <input type="hidden" name="rtype" value="<?= htmlspecialchars($task['taskType'] ?? ''); ?>">
+
+                    <div class="mb-3">
+                        <label for="reminderDate" class="form-label">Reminder Date</label>
+                        <input type="date" class="form-control" id="reminderDate" name="reminder_date" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="reminderMessage" class="form-label">Message (Optional)</label>
+                        <textarea class="form-control" id="reminderMessage" name="reminder_message" rows="3" placeholder="Add a message for your reminder"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary" form="reminderForm">Set Reminder</button>
+            </div>
+        </div>
+    </div>
+</div>

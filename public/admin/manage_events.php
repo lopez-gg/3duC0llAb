@@ -199,7 +199,6 @@ unset($_SESSION['success_message']);
                                 <button type="button" class="btn btn-danger" title="Delete event" onclick="openVerificationModal('deleteForm_<?php echo htmlspecialchars($event['id'] ?? ''); ?>', 'Confirm Deletion', 'Are you sure you want to delete this event?', 'Delete', 'manage_events.php', '1')">
                                     <i class="bi bi-trash3"></i>
                                 </button>
-
                             </td>
                         </tr>
                     <?php endforeach; ?>
