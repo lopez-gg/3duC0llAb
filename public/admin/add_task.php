@@ -30,6 +30,7 @@ $currentYear = date('Y');
 $successTitle = isset($_SESSION['success_title']) ? $_SESSION['success_title'] : null;
 $successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
 $verificationMessage = isset($_SESSION['verification_message']) ? $_SESSION['verification_message'] : null;
+include '../display_mod.php';
 unset($_SESSION['success_message']);
 ?>
 

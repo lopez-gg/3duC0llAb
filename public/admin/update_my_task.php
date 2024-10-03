@@ -47,13 +47,6 @@ if ($id) {
 $tags = ['Normal', 'Urgent', 'Important', 'Urgent and Important'];
 $progressStatuses = ['completed', 'in_progress', 'pending'];
 
-// debug
-// if ($id && $grade) {
-//     echo "Task ID: " . htmlspecialchars($id) . "<br>";
-//     echo "Grade: " . htmlspecialchars($grade) . "<br>";
-// } else {
-//     echo "Missing task ID or grade.";
-// }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -123,7 +116,7 @@ $progressStatuses = ['completed', 'in_progress', 'pending'];
                     </div>
 
                     <button type="submit" class="btn btn-primary">Update Task</button>
-                    <button type="button" class="btn btn-secondary" onclick="window.location.href='space_home.php?grade=<?= $grade?>'">Cancel</button>
+                    <button type="button" class="btn btn-secondary" onclick="openDiscardChangesModal()">Cancel</button>
                 </form>
             </div>
         </div>
@@ -152,7 +145,7 @@ $progressStatuses = ['completed', 'in_progress', 'pending'];
             }
 
             $('#confirmDiscardButton').on('click', function() {
-                window.location.href = 'manage_events.php'; 
+                window.location.href = 'my_space.php'; 
             });
 
         </script>

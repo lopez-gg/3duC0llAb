@@ -4,6 +4,7 @@ require_once __DIR__ . '/../../config/db_config.php';
 require_once __DIR__ . '/../../config/config.php';    
 require_once __DIR__ . '/../../config/session_config.php';
 
+
 function fetch_my_tasks($userId, $order = 'desc', $progress = '', $search = '', $page = 1, $itemsPerPage = 10) {
     global $pdo;
 

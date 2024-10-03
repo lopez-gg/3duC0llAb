@@ -135,8 +135,9 @@ unset($_SESSION['success_message']);
 
                                     <div class="r3">
                                         <div class="task-label">Progress</div>
-                                        <div class="task-data">
-                                            <form action="update_task_progress.php" class="task-upd-f" method="post">    
+                                        <div class="task-data progress-input">
+                                            <form action="update_task_progress.php" class="task-upd-f" method="post"> 
+                                                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">   
                                                 <select class="task-data-select" data-task-id="<?= $task['id'] ?>" >
                                                         <option value="<?= htmlspecialchars($task['progress'], ENT_QUOTES, 'UTF-8') ?>" selected>
                                                             <?= htmlspecialchars($task['progress'], ENT_QUOTES, 'UTF-8') ?>
@@ -152,6 +153,15 @@ unset($_SESSION['success_message']);
                                     <div class="r4">
                                         <div class="task-label-r4">Description</div>
                                         <div class="task-data"><?= htmlspecialchars($task['description'] ?? 'None') ?></div>
+                                    </div>
+
+                                    <div class="r5">
+                                        <div class="task-action-delete">
+                                            <form action="../../src/processes/a/delete_my_tasks.php" method="POST">
+                                                <input type="hidden" name="id" value="<?= htmlspecialchars($task['id'] ?? '');?>">
+                                                <button type="submit" title="Edit task" class="btn btn-normal" style="display: inline;"><i class="bi bi-trash3"></i></button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             <?php endforeach; ?>

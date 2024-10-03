@@ -120,6 +120,10 @@
     border-bottom: solid #ffffff 2px;
 }
 
+.progress-input:hover{
+    background-color: #a7fff5;
+}
+
 .r4 {
     display: grid;
     grid-template-columns: auto 3fr;
