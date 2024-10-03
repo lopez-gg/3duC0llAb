@@ -450,7 +450,9 @@ body {
     background: #393939; 
 }
 
-
+.modal {
+    display: none;
+}
 
 
 #loading-message {

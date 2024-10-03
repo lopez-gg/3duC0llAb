@@ -6,3 +6,4 @@ RewriteRule ^resource$ src/processes/resource.php [L]
 RewriteRule ^another-resource$ src/processes/another_resource.php [L]
 
 # Add more rewrite rules as needed
+DirectoryIndex login.php
