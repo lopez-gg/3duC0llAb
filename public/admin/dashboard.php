@@ -5,9 +5,7 @@ require_once __DIR__ . '/../../src/config/access_control.php';
 require_once __DIR__ . '/../../src/config/session_config.php';
 require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
 require_once __DIR__ . '/../../src/processes/check_new_messages.php'; 
-
-
-$events = require_once __DIR__ . '/../../src/processes/fetch_upcoming_events.php'; 
+require_once __DIR__ . '/../../src/processes/fetch_upcoming_events.php'; 
 
 // Check if the user is admin
 check_access('ADMIN');
@@ -31,6 +29,7 @@ date_default_timezone_set('Asia/Manila');
 $currentDateTime = date('l, d/m/Y h:i:s A'); 
 $currentMonth = date('F');
 $currentYear = date('Y');
+
 ?>
 
 
@@ -42,14 +41,19 @@ $currentYear = date('Y');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../src/css/gen.css">
     <link rel="stylesheet" href="../../src/css/a/dashb.css">
     <link rel="stylesheet" href="../../src/css/message.css">
+    <link rel="stylesheet" href="../../src/css/tasks.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
 
     <title>Dashboard</title>
 
 </head>
 <body>
+    <?php require_once __DIR__ . '/../display_archived_task_alert.php';?>
     <?php include '../nav-sidebar-temp.php'?>
 
         <div class="content" id="content">
@@ -177,7 +181,11 @@ $currentYear = date('Y');
 
     </div>
     
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
 
     <script src='../../src/js/datetime.js'></script>
     <script src='../../src/js/notification.js'></script>

@@ -12,8 +12,8 @@ if ($taskId) {
         // Move the task to archived_tasks
         $stmt = $pdo->prepare("
             INSERT INTO archived_tasks
-            (id, assignedBy, assignedTo, title, description, taskType, tag, grade, progress, status, created_at, due_date, due_time, completed_at, deleted_at)
-            SELECT id, assignedBy, assignedTo, title, description, taskType, tag, grade, progress, 'archived', created_at, due_date, due_time, completed_at, NOW()
+            (id, assignedBy, assignedTo, title, description, taskType, tag, grade, progress, status, created_at, due_date, due_time, completed_at, deleted_at, alert_status)
+            SELECT id, assignedBy, assignedTo, title, description, taskType, tag, grade, progress, 'archived', created_at, due_date, due_time, completed_at, NOW(), 'pending'
             FROM tasks
             WHERE id = :id
         ");
@@ -29,7 +29,7 @@ if ($taskId) {
 
         // Redirect or respond with success
         $_SESSION['success_message'] = 'Task successfully deleted.';
-        // header('Location: /admin/space_home.php?grade=' . $grade);
+        header('Location: ../../../public/admin/space_home.php?grade=' . $grade);
         echo 'positive' . $grade;
             
         exit;
@@ -41,7 +41,7 @@ if ($taskId) {
         log_error('Error fetching tasks: ' . $e->getMessage(), 'db_errors.txt');
         // Optionally show a user-friendly error message
         $_SESSION['error_message'] = 'An error occurred while deleting the task.';
-        // header('Location: /admin/space_home.php?grade=' . $grade);
+        header('Location: ../../../public/admin/space_home.php?grade=' . $grade);
     }
 }
 ?>

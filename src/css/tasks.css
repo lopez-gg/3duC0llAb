@@ -14,7 +14,13 @@
 }
 
 
-
+.modal-body.archived-alert {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+   
+}
 
 /* Container for each task card */
 .task-card {
@@ -244,7 +250,7 @@
     height: 26px;
 }
 
-.task-action-reminder{
+.task-action-reminder, .task-action-deactivate{
     /* padding: 0.3rem; */
     grid-column: 3 / span 1; 
     align-self: start;

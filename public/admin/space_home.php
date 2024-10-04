@@ -6,13 +6,14 @@ require_once __DIR__ . '/../../src/config/session_config.php';
 require_once __DIR__ . '/../../src/config/db_config.php'; 
 require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
 require_once __DIR__ . '/../../src/processes/check_new_messages.php'; 
+require_once __DIR__ . '/../../src/processes/check_del_assgnd_tasks.php'; 
 
 // Check if the user is admin
 check_access('ADMIN');
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: /public/login.php');
+    header('Location: ../login.php');
     exit;
 } else {
     $grade = isset($_GET['grade']) ? trim($_GET['grade']) : '';
@@ -144,21 +145,21 @@ unset($_SESSION['success_message']);
                                         </div>
 
                                         <div class="r3">
-                                        <div class="task-label">Progress</div>
-                                        <div class="task-data">
-                                            <form action="update_task_progress.php" class="task-upd-f" method="post"> 
-                                                <input type="hidden" name="grade" value="<?= $task['grade']?>">   
-                                                <select class="task-data-select" data-task-id="<?= $task['id'] ?>" >
-                                                        <option value="<?= htmlspecialchars($task['progress'], ENT_QUOTES, 'UTF-8') ?>" selected>
-                                                            <?= htmlspecialchars($task['progress'], ENT_QUOTES, 'UTF-8') ?>
-                                                        </option>
-                                                        <option value="pending" <?= $task['progress'] == 'pending' ? 'selected' : '' ?>>Pending</option>
-                                                        <option value="in_progress" <?= $task['progress'] == 'in_progress' ? 'selected' : '' ?>>In Progress</option>
-                                                        <option value="completed" <?= $task['progress'] == 'completed' ? 'selected' : '' ?>>Completed</option>      
-                                                </select>
-                                            </form>
+                                            <div class="task-label">Progress</div>
+                                            <div class="task-data">
+                                                <form action="update_task_progress.php" class="task-upd-f" method="post"> 
+                                                    <input type="hidden" name="grade" value="<?= $task['grade']?>">   
+                                                    <select class="task-data-select" data-task-id="<?= $task['id'] ?>" >
+                                                            <option value="<?= htmlspecialchars($task['progress'], ENT_QUOTES, 'UTF-8') ?>" selected>
+                                                                <?= htmlspecialchars($task['progress'], ENT_QUOTES, 'UTF-8') ?>
+                                                            </option>
+                                                            <option value="pending" <?= $task['progress'] == 'pending' ? 'selected' : '' ?>>Pending</option>
+                                                            <option value="in_progress" <?= $task['progress'] == 'in_progress' ? 'selected' : '' ?>>In Progress</option>
+                                                            <option value="completed" <?= $task['progress'] == 'completed' ? 'selected' : '' ?>>Completed</option>      
+                                                    </select>
+                                                </form>
+                                            </div>
                                         </div>
-                                    </div>
 
                                         <div class="r3">
                                             <div class="task-label">Assigned To</div>
@@ -187,15 +188,17 @@ unset($_SESSION['success_message']);
                                             <div class="task-data"><?php echo htmlspecialchars($task['description'] ?? 'None');?></div>
                                         </div>
 
-                                        <!-- <div class="r5">
-                                            <div class="task-action-delete">
-                                                <form action="../../src/processes/a/delete_task.php" method="GET">
-                                                    <input type="hidden" name="id" value="<n?= htmlspecialchars($task['id'] ?? '');?>">
-                                                    <input type="hidden" name="grade" value="<n?= htmlspecialchars($task['grade']) ?? ''?>">
-                                                    <button type="submit" title="Edit task" class="btn btn-normal" style="display: inline;"><i class="bi bi-trash3"></i></button>
+                                        <div class="p-task-action-con">
+                                            <div class="task-action-deactivate">
+                                                <form action="../../src/processes/a/delete_task.php" method="POST">
+                                                    <input type="hidden" name="id" value="<?= htmlspecialchars($task['id'] ?? '');?>">
+                                                    <input type="hidden" name="grade" value="<?= htmlspecialchars($task['grade']) ?? ''?>">
+                                                    <button type="submit" title="Discard Task" class="btn btn-normal" style="display: inline;">
+                                                        <i class="bi bi-trash3"></i>
+                                                    </button>
                                                 </form>
                                             </div>
-                                        </div> -->
+                                        </div>
                                     </div>
                                 <?php endforeach; ?>
                             </div>
@@ -240,6 +243,7 @@ unset($_SESSION['success_message']);
         <script src="../../src/js/new_sy.js"></script>
         <script src='../../src/js/notification.js'></script>
         <script src='../../src/js/message.js'></script>
+        <script src='../../src/js/arch_tasks_alert.js'></script>
 
 
         <script>
