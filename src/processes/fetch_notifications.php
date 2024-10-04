@@ -1,96 +1,107 @@
 <?php
-// fetch_notifications.php
+// Include database and session configurations
+require_once __DIR__ . '/../config/db_config.php'; 
+require_once __DIR__ . '/../config/session_config.php'; 
 
-require_once __DIR__ . '/../config/db_config.php';
-require_once __DIR__ . '/../config/config.php'; 
-require_once __DIR__ . '/../config/session_config.php';
+// Fetch the current user's ID from the session
+$sessionUserId = $_SESSION['user_id']; // Ensure the session has the user's ID
 
-header('Content-Type: application/json'); // Ensure the content type is JSON
-
-$user_id = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null; // Get the user_id from the session
-
+// Function to calculate time passed (e.g., "5 days ago")
+// Function to calculate time passed (e.g., "5 days ago")
 function timeAgo($timestamp) {
-    $timestamp = strtotime($timestamp);
-    $current_time = time(); // Get the current time
-    $time_difference = $current_time - $timestamp; // Time difference in seconds
+    $time = strtotime($timestamp);
+    $timeDiff = time() - $time;
 
-    if ($time_difference < 0) {
-        return 'In the future'; 
-    } elseif ($time_difference < 60) {
-        return $time_difference . ' seconds ago';
-    } elseif ($time_difference < 3600) {
-        return floor($time_difference / 60) . ' minutes ago';
-    } elseif ($time_difference < 86400) {
-        return floor($time_difference / 3600) . ' hours ago';
-    } elseif ($time_difference < 604800) {
-        return floor($time_difference / 86400) . ' days ago';
-    } elseif ($time_difference < 2419200) {
-        return floor($time_difference / 604800) . ' weeks ago';
-    } elseif ($time_difference < 29030400) {
-        return floor($time_difference / 2419200) . ' months ago';
-    } else {
-        return floor($time_difference / 29030400) . ' years ago';
+    if ($timeDiff < 60) {
+        return 'Just now';
+    } elseif ($timeDiff < 3600) {
+        $minutes = floor($timeDiff / 60);
+        return $minutes . ' minute' . ($minutes === 1 ? '' : 's') . ' ago'; // Fixed here
+    } elseif ($timeDiff < 86400) {
+        $hours = floor($timeDiff / 3600);
+        return $hours . ' hour' . ($hours === 1 ? '' : 's') . ' ago'; // Fixed here
+    } elseif ($timeDiff < 604800) {
+        $days = floor($timeDiff / 86400);
+        return $days . ' day' . ($days === 1 ? '' : 's') . ' ago'; // Fixed here
     }
+    return date('M d, Y', $time); // Show the actual date if more than 7 days ago
 }
 
 try {
-    // Query to fetch the notifications
+    // Define the time limit for fetching recent notifications (e.g., 6 months)
+    $timeLimit = date('Y-m-d H:i:s', strtotime('-6 months'));
+
+    // Prepare query to fetch recent notifications (both general and private for the user)
     $query = "
-        SELECT id, notif_content, created_at,
-            CASE 
-                WHEN type = 'calendar_event' AND DATE(created_at) < CURDATE() THEN 'past'
-                WHEN read_at IS NULL THEN 'unread'
-                ELSE 'read'
-            END AS status
-        FROM notifications 
-        WHERE (user_id = :user_id OR user_id IS NULL)
-        ORDER BY created_at DESC
-        LIMIT :limit OFFSET :offset
+        SELECT n.id, n.type, n.notif_content, n.created_at, n.read_at, n.status, 
+               e.event_date, e.end_date 
+        FROM notifications n
+        LEFT JOIN events e ON n.event_id = e.id
+        WHERE (n.user_id = :user_id OR n.type = 'calendar_event') 
+          AND n.created_at >= :time_limit
+        ORDER BY n.created_at DESC
     ";
-
     $stmt = $pdo->prepare($query);
-    $limit = $_GET['limit'];
-    $offset = ($_GET['page'] - 1) * $limit;
-
-    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-    $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
-    $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
-
-    $stmt->execute();
-    
+    $stmt->execute(['user_id' => $sessionUserId, 'time_limit' => $timeLimit]);
     $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Add "time ago" calculation to each notification
-    foreach ($notifications as &$notification) {
-        $notification['time_ago'] = timeAgo($notification['created_at']);
-    }
-
-    if (empty($notifications)) {
-        $notifications = ['message' => 'No recent notifications'];
-    }
-
-    // Query to count unread notifications
+    // Prepare query to count unread notifications
     $unreadCountQuery = "
-        SELECT COUNT(*) AS unread_count
-        FROM notifications
-        WHERE (user_id = :user_id OR user_id IS NULL)
-        AND read_at IS NULL
+        SELECT COUNT(*) AS unread_count 
+        FROM notifications 
+        WHERE (user_id = :user_id OR user_id IS NULL) 
+          AND status = 'unread'
+          AND created_at >= :time_limit
     ";
+    $unreadCountStmt = $pdo->prepare($unreadCountQuery);
+    $unreadCountStmt->execute(['user_id' => $sessionUserId, 'time_limit' => $timeLimit]);
+    $unreadCountResult = $unreadCountStmt->fetch(PDO::FETCH_ASSOC);
+    $unreadCount = $unreadCountResult['unread_count'];
 
-    $unreadStmt = $pdo->prepare($unreadCountQuery);
-    $unreadStmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-    $unreadStmt->execute();
+    $updatedNotifications = [];
 
-    $unreadCount = $unreadStmt->fetch(PDO::FETCH_ASSOC)['unread_count'];
+    foreach ($notifications as &$notif) {
+        // Check if the event has passed and update the notification status if needed
+        if ($notif['type'] === 'calendar_event') {
+            $eventPassed = false;
+            $currentDate = time();
+
+            // Only check the event dates if they exist
+            if ($notif['event_date'] !== null || $notif['end_date'] !== null) {
+                $eventEndDate = $notif['end_date'] ? strtotime($notif['end_date']) : null;
+                $eventStartDate = strtotime($notif['event_date']);
+
+                if ($eventEndDate && $eventEndDate < $currentDate) {
+                    $eventPassed = true;
+                } elseif (!$eventEndDate && $eventStartDate < $currentDate) {
+                    $eventPassed = true;
+                }
+            }
+
+            // Update notification status to 'past' if the event has passed
+            if ($eventPassed && $notif['status'] !== 'past') {
+                $updateStmt = $pdo->prepare("UPDATE notifications SET status = 'past', read_at = NOW() WHERE id = :id");
+                $updateStmt->execute(['id' => $notif['id']]);
+                $notif['status'] = 'past'; // Update local status
+            }
+        } // No else condition needed; task notifications remain 'unread'
+
+        // Calculate how long ago the notification was created
+        $notif['time_ago'] = timeAgo($notif['created_at']);
+
+        // Add the notification to the result set
+        $updatedNotifications[] = $notif;
+    }
+
+    // Return notifications and unread count as JSON response
+    echo json_encode([
+        'notifications' => $updatedNotifications,
+        'unread_count' => $unreadCount
+    ]);
 
 } catch (PDOException $e) {
-    log_error('Database query failed: ' . $e->getMessage(), 'db_errors.txt');
-    $notifications = ['message' => 'Error fetching notifications'];
-    $unreadCount = 0;
+    // Log any database errors
+    log_error('Failed to fetch notifications: ' . $e->getMessage(), 'db_errors.txt');
+    echo json_encode(['error' => 'Failed to fetch notifications.']);
 }
-
-echo json_encode([
-    'notifications' => $notifications,
-    'unread_count' => $unreadCount 
-]);
 ?>

@@ -7,7 +7,13 @@ require_once __DIR__ . '/../../src/processes/check_new_messages.php';
 $events = require_once __DIR__ . '/../../src/processes/fetch_upcoming_events.php'; 
 
 
-//Check if the user is an admin
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../login.php');
+    exit;
+}
+
+// Check if the user is admin
 check_access('ADMIN');
 
 $successTitle = isset($_SESSION['success_title']) ? $_SESSION['success_title'] : null;

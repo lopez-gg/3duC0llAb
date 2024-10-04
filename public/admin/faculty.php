@@ -8,6 +8,13 @@ require_once __DIR__ . '/../../src/processes/check_new_messages.php';
 
 check_access('ADMIN');
 
+
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../login.php');
+    exit;
+}
+
 // Check if the request is an AJAX request
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 

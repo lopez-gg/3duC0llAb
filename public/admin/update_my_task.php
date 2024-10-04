@@ -10,7 +10,7 @@ require_once __DIR__ . '/../../src/processes/check_new_messages.php';
 check_access('ADMIN');
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: /public/login.php'); 
+    header('Location: ../login.php'); 
     exit;
 }
 $dashb = '';

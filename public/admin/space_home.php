@@ -243,7 +243,6 @@ unset($_SESSION['success_message']);
         <script src="../../src/js/new_sy.js"></script>
         <script src='../../src/js/notification.js'></script>
         <script src='../../src/js/message.js'></script>
-        <script src='../../src/js/arch_tasks_alert.js'></script>
 
 
         <script>

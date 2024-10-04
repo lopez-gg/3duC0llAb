@@ -7,6 +7,12 @@ require_once __DIR__ . '/../../src/processes/check_new_messages.php';
 
 check_access('ADMIN');
 
+// Check if the user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../login.php');
+    exit;
+}
+
 // Check if ID is set in the query string
 if (!isset($_GET['id'])) {
     // Redirect or handle the error

@@ -15,9 +15,10 @@ try {
     $stmt->execute(['tomorrow_date' => $tomorrow_date]);
 
     $events = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $messages = [];
 
     if (empty($events)) {
-        $message = "No events found for tomorrow.<br>";
+        $message[] = "No events found for tomorrow.<br>";
     } else {
         foreach ($events as $event) {
             $event_id = $event['id'];
@@ -26,47 +27,26 @@ try {
             $end_date = $event['end_date'] ?? $start_date; // Default to start_date if no end_date is provided
 
             $message = "Tomorrow's event: '{$title}' ({$start_date} to {$end_date})";
+            $messages[] = $message;
 
             // Check if a notification with the same event_id already exists
-            $stmt = $pdo->prepare("
-                SELECT COUNT(*) FROM notifications 
-                WHERE event_id = :event_id
-            ");
-            $stmt->execute([
-                'event_id' => $event_id
-            ]);
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM notifications WHERE event_id = :event_id");
+            $stmt->execute(['event_id' => $event_id]);
 
-            $notificationExists = $stmt->fetchColumn() > 0;
-
-            if (!$notificationExists) {
+            if ($stmt->fetchColumn() === 0) {
                 // Insert a new notification for the event
                 $stmt = $pdo->prepare("
-                    INSERT INTO notifications (event_id, notif_content, type, event_start_date, event_end_date, created_at) 
-                    VALUES (:event_id, :message, 'calendar_event', :start_date, :end_date, NOW())
+                    INSERT INTO notifications (event_id, notif_content, type, created_at) 
+                    VALUES (:event_id, :message, 'calendar_event', NOW())
                 ");
                 $stmt->execute([
                     'event_id' => $event_id,
-                    'message' => $message,
-                    'start_date' => $start_date,
-                    'end_date' => $end_date
+                    'message' => $message
                 ]);
-                // Notification inserted
             }
         }
     }
 
-    // Mark notifications for past events as 'read' where the event date has passed
-    $stmt = $pdo->prepare("
-        UPDATE notifications 
-        SET read_at = NOW() 
-        WHERE type = 'calendar_event' 
-        AND EXISTS (
-            SELECT 1 FROM events 
-            WHERE events.id = notifications.event_id
-            AND events.event_date < CURDATE()
-        )
-    ");
-    $stmt->execute();
 
 } catch (PDOException $e) {
     log_error('Database query failed: ' . $e->getMessage(), 'db_errors.txt');

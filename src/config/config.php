@@ -50,6 +50,7 @@ function getTaskType($task_type) {
     }
 }
 
+date_default_timezone_set('Asia/Manila'); 
 $currentDateTime = date('l, d/m/Y h:i:s A'); 
 
 function getCurrentYearRange() {

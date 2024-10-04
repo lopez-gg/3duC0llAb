@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $assignedBy = $_SESSION['user_id'];
 
     try {
+        // Insert task into the tasks table
         $stmt = $pdo->prepare("
             INSERT INTO tasks (assignedBy, assignedTo, grade, title, description, taskType, tag, progress, created_at, due_date, due_time)
             VALUES (:assignedBy, :assignedTo, :grade, :title, :description, :taskType, :urgency, 'pending', NOW(), :due_date, :due_time)
@@ -31,6 +32,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bindParam(':due_time', $due_time);
 
         if ($stmt->execute()) {
+            // Retrieve the last inserted task ID
+            $taskId = $pdo->lastInsertId();
+
+            // Insert notification into the notifications table
+            $notifContent = "You have been assigned a new task: " . htmlspecialchars($title);
+            $notifType = 'info'; // You can change this based on your notification types
+            
+            $notifStmt = $pdo->prepare("
+                INSERT INTO notifications (user_id, type, notif_content, created_at, status, event_id)
+                VALUES (:user_id, :type, :notif_content, NOW(), 'unread', :event_id)
+            ");
+            $notifStmt->bindParam(':event_id', $taskId); // Use the retrieved task ID
+            $notifStmt->bindParam(':user_id', $assignedTo);
+            $notifStmt->bindParam(':type', $notifType);
+            $notifStmt->bindParam(':notif_content', $notifContent);
+            $notifStmt->execute();
+
+            // Set success message and redirect
             $_SESSION['success_title'] = "Success";
             $_SESSION['success_message'] = "Task posted successfully!";
             header("Location: ../../../public/admin/space_home.php?grade=" . urlencode($grade));
@@ -47,3 +66,4 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     header("Location: ../../../public/space_home.php?grade=" . urlencode($grade));
     exit;
 }
+?>

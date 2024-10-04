@@ -26,7 +26,7 @@ try {
     $stmt->bindParam(':recipient_id', $recipient_id, PDO::PARAM_INT);
     $stmt->execute();
     $unreadCount = $stmt->fetchColumn();
-    // echo json_encode(['unread                    _count' => (int)$unreadCount]);
+    echo json_encode(['unread_count' => (int)$unreadCount]);
 
 } catch (PDOException $e) {
     error_log('Database query failed: ' . $e->getMessage(), 3, 'db_errors.log');

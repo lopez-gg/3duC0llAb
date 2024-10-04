@@ -6,16 +6,7 @@ $(document).on('click', function(event) {
     }
 });
 
-let currentChatUserId = null; // Store the current chat user ID
-let pollingInterval; // Variable to store the polling interval ID
-    const options = { 
-        month: 'short', // Full month name
-        day: 'numeric', // Day of the month
-        hour: '2-digit', // Two-digit hour
-        minute: '2-digit', // Two-digit minutes
-        hour12: false // Use 24-hour format (set to true for 12-hour format)
-    };
-   
+
 
 function hideUserList() {
     $('#user-list').hide(); // jQuery hide method
@@ -35,9 +26,6 @@ function exitPrivateChat(){
     $('#chat-interface').hide();
     $('#chat-input-maincon').hide();
 
-    // clearInterval(pollingInterval); 
-    currentChatUserId = null;
-
     $('.search-container').show();
     $('#message-list').show();
     loadMessageList();
@@ -50,14 +38,15 @@ function toggleMessageSidebar() {
 
     if (dropdown.style.display === 'block') {
         dropdown.style.display = 'none';
-        document.querySelector('.notification-bell').classList.remove('active'); // Remove active class from notification bell
+        document.querySelector('.notification-bell').classList.remove('active'); 
     }
     
     sidebar.classList.toggle('open');
 
     if (sidebar.classList.contains('open')) {
         messageIcon.classList.add('active');
-        loadMessageList(); // Load messages when sidebar opens
+        loadMessageList(); 
+        fetchUnreadMessageCount();
     } else {
         messageIcon.classList.remove('active');
     }
@@ -86,7 +75,6 @@ function loadMessageList() {
             chatInterface.hide(); 
             chatInput.hide();
             
-            // startPolling();
             let response;
 
             if (typeof data === 'string') {
@@ -218,7 +206,6 @@ function selectUser(userId, username, gradeLevel, section) {
     messageListcon.hide();
     chatInterface.show(); 
     chatInput.show();
-    // startPolling();
 
         // Build the chat interface for the selected user
     chatInterface.html(`
@@ -385,35 +372,30 @@ function sendMessage(recipientId) {
 
 function fetchUnreadMessageCount() {
     $.ajax({
-        url: '../../src/processes/check_new_messages.php', // Create this script to return the unread count
-        method: 'GET',
+        url: '../../src/processes/check_new_messages.php', // Update to your actual endpoint
+        type: 'GET',
         success: function(data) {
-            // Update the message count in the UI
-            $('.message-count').text(data.unread_count);
+            const response = JSON.parse(data);
+            const unreadCount = response.unreadCount; // Adjust according to your response structure
+
+            const countElement = $('#unread-message-count');
+            if (unreadCount > 0) {
+                countElement.text(unreadCount).show(); // Show count if greater than 0
+            } else {
+                countElement.hide(); // Hide count if 0
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error fetching unread message count:', error);
         }
     });
 }
 
+
+
 // Call this function periodically
 setInterval(fetchUnreadMessageCount, 500000); 
 
-
-
-
-
-// function startPolling() {
-//     // Clear any existing intervals to prevent multiple polling
-//     if (pollingInterval) {
-//         clearInterval(pollingInterval);
-//     }
-
-//     // Set up polling
-//     pollingInterval = setInterval(() => {
-//         if (currentChatUserId) {
-//             loadPrivateChat(currentChatUserId); // Load messages for the current chat
-//         }
-//     }, 5000); // Poll every 5 seconds
-// }
 
 function markAsRead(selectedUserId) {
     // Perform an AJAX request to mark messages as read

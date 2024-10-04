@@ -14,9 +14,9 @@
                 <span class="message-count"><?php echo $unreadCount; ?></span>
             </div>
             <!-- Bell icon with notification count -->
-            <div class="notification-bell">
+            <div class="notification-bell" >
                 <i class="bi bi-bell-fill"></i>
-                <span class="notification-count">0</span>
+                <div id="unread-count" style="display:none;">0</div>
             </div>
             
             <!-- Notification dropdown-->
@@ -24,7 +24,6 @@
                 <ul class="notification-list"> 
                     <!-- Notifications will be appended here by JavaScript -->
                 </ul>
-                <button class="see-more" style="display: none;">See More...</button>
             </div>
 
             <div class="user-profile" id="userProfile">

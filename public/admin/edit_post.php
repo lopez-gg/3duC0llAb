@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../src/processes/check_upcoming_events.php';
 require_once __DIR__ . '/../../src/processes/check_new_messages.php';  
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: /public/login.php');
+    header('Location: ../login.php');
     exit;
 } else {
     $grade = isset($_GET['grade']) ? trim($_GET['grade']) : '';

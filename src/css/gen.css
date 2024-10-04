@@ -50,14 +50,14 @@ a {
     border-bottom: none; /* Remove border for last item */
 }
 
-.notification-list li.unread {
-    font-weight: bold;
-    background-color: #e9f7ef; /* Light green background for unread */
+.notification.unread {
+    background-color: #f8f9fa; /* Light background for unread notifications */
+    font-weight: bold; /* Bold text for emphasis */
 }
 
-.notification-list li.read {
-    font-weight: normal;
-    background-color: #ffffff; /* White background for read notifications */
+.notification.read {
+    background-color: #e9ecef; /* Slightly darker background for read notifications */
+    color: #6c757d; /* Muted text color for read notifications */
 }
 
 .notification-list li.past {
@@ -185,7 +185,7 @@ body {
     width: 15px;
     align-items: center;
     justify-content: center;
-    display: flex;
+    display: none;
 }
 
 /* Notification dropdown styles */
