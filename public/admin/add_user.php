@@ -14,6 +14,12 @@ if (!isset($_SESSION['user_id'])) {
 
 // Check if the user is admin
 check_access('ADMIN');
+$dashb = '';
+$my_space = '';
+$calendr = '';
+$gen_forum = '';
+$faculty = 'faculty';
+
 
 $successTitle = isset($_SESSION['success_title']) ? $_SESSION['success_title'] : null;
 $successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;

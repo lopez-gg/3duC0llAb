@@ -13,7 +13,11 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: ../login.php');
     exit;
 }
-
+$faculty = 'faculty';
+$dashb = '';
+$my_space = '';
+$calendr = '';
+$gen_forum = '';
 // Check if the request is an AJAX request
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
@@ -53,7 +57,7 @@ $facultyMembers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 if ($isAjax) {
     $output = '';
     foreach ($facultyMembers as $index => $faculty) {
-        $output .= '<tr>';
+        $output .= '<tr class="faculty-list">';
         $output .= '<td>' . ($index + 1) . '</td>';
         $output .= '<td>' . htmlspecialchars($faculty['username']) . '</td>';
         $output .= '<td>' . htmlspecialchars($faculty['firstname']) . '</td>';
@@ -99,7 +103,7 @@ unset($_SESSION['success_message']);
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="../../src/css/a/h-e-gen.css" rel="stylesheet" />
+    <link href="../../src/css/gen.css" rel="stylesheet" />
     <link rel="stylesheet" href="../../src/css/message.css">
     <style>
         .table {
@@ -109,86 +113,87 @@ unset($_SESSION['success_message']);
 </head>
 <body>
     <?php include '../nav-sidebar-temp.php' ?>
-    <div class="content" id="content">
-        <div class="container mt-4">
-            <h2>Manage Faculty Members</h2>
+        <div class="content" id="content">
+            <div class="container mt-4">
+                <h2>Manage Faculty Members</h2>
 
-            <div class="row mb-3">
-                <div class="col-md-3">
-                    <select id="gradeFilter" class="form-select" onchange="filterFaculty()">
-                        <option value="" <?= !$grade ? 'selected' : '' ?>>All Grades</option>
-                        <option value="Grade 1" <?= $grade === 'Grade 1' ? 'selected' : '' ?>>Grade 1</option>
-                        <option value="Grade 2" <?= $grade === 'Grade 2' ? 'selected' : '' ?>>Grade 2</option>
-                        <option value="Grade 3" <?= $grade === 'Grade 3' ? 'selected' : '' ?>>Grade 3</option>
-                        <option value="Grade 4" <?= $grade === 'Grade 4' ? 'selected' : '' ?>>Grade 4</option>
-                        <option value="Grade 5" <?= $grade === 'Grade 5' ? 'selected' : '' ?>>Grade 5</option>
-                        <option value="Grade 6" <?= $grade === 'Grade 6' ? 'selected' : '' ?>>Grade 6</option>
-                        <option value="SNED" <?= $grade === 'SNED' ? 'selected' : '' ?>>SNED</option>
-                    </select>
+                <div class="row mb-3">
+                    <div class="col-md-3">
+                        <select id="gradeFilter" class="form-select" onchange="filterFaculty()">
+                            <option value="" <?= !$grade ? 'selected' : '' ?>>All Grades</option>
+                            <option value="Grade 1" <?= $grade === 'Grade 1' ? 'selected' : '' ?>>Grade 1</option>
+                            <option value="Grade 2" <?= $grade === 'Grade 2' ? 'selected' : '' ?>>Grade 2</option>
+                            <option value="Grade 3" <?= $grade === 'Grade 3' ? 'selected' : '' ?>>Grade 3</option>
+                            <option value="Grade 4" <?= $grade === 'Grade 4' ? 'selected' : '' ?>>Grade 4</option>
+                            <option value="Grade 5" <?= $grade === 'Grade 5' ? 'selected' : '' ?>>Grade 5</option>
+                            <option value="Grade 6" <?= $grade === 'Grade 6' ? 'selected' : '' ?>>Grade 6</option>
+                            <option value="SNED" <?= $grade === 'SNED' ? 'selected' : '' ?>>SNED</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select id="statusFilter" class="form-select" onchange="filterFaculty()">
+                            <option value="" <?= !isset($status) || $status === '' ? 'selected' : '' ?>>All Statuses</option>
+                            <option value="active" <?= isset($status) && $status === 'active' ? 'selected' : '' ?>>Active</option>
+                            <option value="inactive" <?= isset($status) && $status === 'inactive' ? 'selected' : '' ?>>Inactive</option>
+                            <option value="deactivated" <?= isset($status) && $status === 'deactivated' ? 'selected' : '' ?>>Deactivated</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" id="searchFaculty" class="form-control" placeholder="Search all by name..." onkeyup="searchFaculty()" value="<?= htmlspecialchars($search ?? '') ?>">
+                    </div>
+                    <div class="col-md-2 text-end ">
+                        <button class="btn" onclick="window.location.href='add_user.php'" title="Add new faculty member" style="padding:0;"><i class="bi bi-plus-square" style="font-size:2rem; color:blue; align-items: start; display: flex; padding: 0; margin: 0;"></i></button>
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <select id="statusFilter" class="form-select" onchange="filterFaculty()">
-                        <option value="" <?= !isset($status) || $status === '' ? 'selected' : '' ?>>All Statuses</option>
-                        <option value="active" <?= isset($status) && $status === 'active' ? 'selected' : '' ?>>Active</option>
-                        <option value="inactive" <?= isset($status) && $status === 'inactive' ? 'selected' : '' ?>>Inactive</option>
-                        <option value="deactivated" <?= isset($status) && $status === 'deactivated' ? 'selected' : '' ?>>Deactivated</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <input type="text" id="searchFaculty" class="form-control" placeholder="Search all by name..." onkeyup="searchFaculty()" value="<?= htmlspecialchars($search ?? '') ?>">
-                </div>
-                <div class="col-md-2 text-end">
-                    <button class="btn btn-primary" onclick="window.location.href='add_user.php'">Add Faculty</button>
-                </div>
-            </div>
 
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Username</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Grade Level</th>
-                        <th>Section</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="facultyList">
-                    <?php
-                    if (!empty($facultyMembers)) {
-                        foreach ($facultyMembers as $index => $faculty) {
-                            echo '<tr>';
-                            echo '<td>' . ($index + 1) . '</td>';
-                            echo '<td>' . htmlspecialchars($faculty['username']) . '</td>';
-                            echo '<td>' . htmlspecialchars($faculty['firstname']) . '</td>';
-                            echo '<td>' . htmlspecialchars($faculty['lastname']) . '</td>';
-                            echo '<td>' . htmlspecialchars($faculty['gradeLevel']) . '</td>';
-                            echo '<td>' . htmlspecialchars($faculty['section']) . '</td>';
-                            echo '<td>' . htmlspecialchars($faculty['status']) . '</td>';
-                            echo '<td>';
-                            echo '<form method="POST" action="../../src/processes/a/faculty_actions.php" style="display:inline;">';
-                            echo '<input type="hidden" name="faculty_id" value="' . $faculty['id'] . '">';
-                            echo '<button type="submit" name="action" value="edit" class="btn btn-warning btn-sm">Edit</button>';
-                            echo '</form>';
-                            
-                            if ($faculty['status'] != 'deactivated') {
-                                // Show "Deactivate" if the faculty member is active
-                                echo '<button type="button" class="btn btn-danger btn-sm verifyDeactivationButton" data-faculty-id="' . $faculty['id'] . '">Deactivate</button>';
-                            } elseif ($faculty['status'] === 'deactivated') {
-                                // Show "Activate" if the faculty member is deactivated
-                                echo '<button type="button" class="btn btn-success btn-sm verifyActivationButton" data-faculty-id="' . $faculty['id'] . '">Activate</button>';
-                            } echo '</td>';
-                            
-                            echo '</tr>';
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Username</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Grade Level</th>
+                            <th>Section</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="facultyList">
+                        <?php
+                        if (!empty($facultyMembers)) {
+                            foreach ($facultyMembers as $index => $faculty) {
+                                echo '<tr class="faculty-list">';
+                                echo '<td>' . ($index + 1) . '</td>';
+                                echo '<td>' . htmlspecialchars($faculty['username']) . '</td>';
+                                echo '<td>' . htmlspecialchars($faculty['firstname']) . '</td>';
+                                echo '<td>' . htmlspecialchars($faculty['lastname']) . '</td>';
+                                echo '<td>' . htmlspecialchars($faculty['gradeLevel']) . '</td>';
+                                echo '<td>' . htmlspecialchars($faculty['section']) . '</td>';
+                                echo '<td>' . htmlspecialchars($faculty['status']) . '</td>';
+                                echo '<td>';
+                                echo '<form method="POST" action="../../src/processes/a/faculty_actions.php" style="display:inline;">';
+                                echo '<input type="hidden" name="faculty_id" value="' . $faculty['id'] . '">';
+                                echo '<button type="submit" name="action" value="edit" class="btn btn-outline-warning btn-sm">Edit</button>';
+                                echo '</form>';
+                                
+                                if ($faculty['status'] != 'deactivated') {
+                                    // Show "Deactivate" if the faculty member is active
+                                    echo '<button type="button" class="btn btn-outline-danger btn-sm verifyDeactivationButton" data-faculty-id="' . $faculty['id'] . '">Deactivate</button>';
+                                } elseif ($faculty['status'] === 'deactivated') {
+                                    // Show "Activate" if the faculty member is deactivated
+                                    echo '<button type="button" class="btn btn-outline-success btn-sm verifyActivationButton" data-faculty-id="' . $faculty['id'] . '">Activate</button>';
+                                } echo '</td>';
+                                
+                                echo '</tr>';
+                            }
+                        } else {
+                            echo '<tr><td colspan="8">No faculty members found.</td></tr>';
                         }
-                    } else {
-                        echo '<tr><td colspan="8">No faculty members found.</td></tr>';
-                    }
-                    ?>
-                </tbody>
-            </table>
+                        ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 

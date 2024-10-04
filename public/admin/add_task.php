@@ -14,10 +14,8 @@ if (!isset($_SESSION['user_id'])) {
 
 // Check if the user is admin
 check_access('ADMIN');
-$dashb = '';
 $my_space = 'my_space';
-$calendr = '';
-$gen_forum ='';
+
 // Set timezone
 date_default_timezone_set('Asia/Manila'); 
 

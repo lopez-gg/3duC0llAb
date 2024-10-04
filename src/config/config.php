@@ -59,6 +59,12 @@ function getCurrentYearRange() {
     return "$currentYear-$nextYear";
 }
 
+$dashb = '';
+$my_space = '';
+$calendr = '';
+$gen_forum ='';
+$faculty = '';
+
 function getNavState($currNav) {
     switch($currNav){
         case 'dashboard':
@@ -69,8 +75,10 @@ function getNavState($currNav) {
             return $calendr = 'active';
         case 'gen_forum':
             return $gen_forum = 'active';
+        case 'faculty':
+            return $faculty = 'active';
         default:
-        return '';
+        return 'none';
     }
 }
 

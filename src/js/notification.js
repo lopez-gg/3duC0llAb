@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (unreadCountElement) {
                         const unreadCount = unreadNotificationIds.length; // line 94
                         unreadCountElement.textContent = unreadCount > 0 ? `${unreadCount}` : '';
-                        unreadCountElement.style.display = unreadCount > 0 ? 'block' : 'none';
+                        unreadCountElement.style.display = unreadCount > 0 ? 'flex' : 'none';
                     } else {
                         console.error('Notification count element not found!');
                     }

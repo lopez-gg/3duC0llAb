@@ -21,9 +21,16 @@
             
             <!-- Notification dropdown-->
             <div class="notification-dropdown" style="display:none;">
-                <ul class="notification-list"> 
-                    <!-- Notifications will be appended here by JavaScript -->
-                </ul>
+                <div class="n-wind">
+                    <div class="notif-head">
+                        <h2>Notifications</h2>
+                    </div>
+                    <div class="n-list-con">
+                        <ul class="notification-list">  
+                            <!-- Notifications will be appended here by JavaScript -->
+                        </ul>
+                    </div>
+                </div>
             </div>
 
             <div class="user-profile" id="userProfile">
@@ -42,10 +49,11 @@
     <div class="sidebar" id="sidebar">
         <div class="logo"></div> 
         <div class="nav-links">
-            <a class="<?= getNavState($my_space) ?: '' ?>" href="my_space.php">My Space</a>
-            <a class="<?= getNavState($dashb) ?: '' ?>" href="dashboard.php">Dashboard</a>
-            <a class="<?= getNavState($calendr) ?: '' ?>" href="calendar.php">Calendar</a>
-            <a class="<?= getNavState($gen_forum) ?: '' ?>" href="general_forum.php">General Forum</a>
+            <a class="<?= getNavState($my_space) ?: '' ?>" href="my_space.php"><i class="bi bi-person-workspace"></i>My Space</a>
+            <a class="<?= getNavState($dashb) ?: '' ?>" href="dashboard.php"><i class="bi bi-speedometer"></i>Dashboard</a>
+            <a class="<?= getNavState($calendr) ?: '' ?>" href="calendar.php"><i class="bi bi-calendar"></i>Calendar</a>
+            <a class="<?= getNavState($faculty) ?: '' ?>" href="faculty.php"><i class="bi bi-people"></i>Faculty</a>
+            <a class="<?= getNavState($gen_forum) ?: '' ?>" href="general_forum.php"><i class="bi bi-megaphone"></i>General Forum</a>
         </div>
     </div>
     <div id="message-sidebar" class="msg-sidebar">      

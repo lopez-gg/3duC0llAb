@@ -16,10 +16,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Set default values for the variables
-$dashb = '';
-$my_space = '';
-$calendr = '';
-$gen_forum ='gen';
+$gen_forum ='gen_forum';
 $csrf_token = $_SESSION['csrf_token'];
 $grade = 'general';
 $currentDateTime = date('l, d/m/Y h:i:s A'); 
@@ -100,29 +97,6 @@ unset($_SESSION['success_message']);
                                 </div>
                                 <div>
                                     <a href="post_view.php?grade=<?=$grade?>&id=<?= $post['id'] ?>" class="btn btn-sm btn-outline-secondary">See full post</a>
-                                </div>
-                                <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-three-dots-vertical"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <!-- Edit Option -->
-                                        <li>
-                                            <a class="dropdown-item" href="edit_post.php?grade=<?= $grade ?>&id=<?= $post['id'] ?>">
-                                                <i class="bi bi-pencil-square"></i> Edit Post
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <form id="delete_post_<?= $post['id'] ?>" action="../../src/processes/a/delete_post.php" method="post" class="dropdown-item p-0">
-                                                <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
-                                                <input type="hidden" name="grade" value="<?= $grade ?>">
-                                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
-                                                <button type="submit" class="btn btn-link text-danger p-0 delete-button" style="display:inline;">
-                                                    <i class="bi bi-trash3"></i> Delete Post
-                                                </button>
-                                            </form>
-                                        </li>
-                                    </ul>
                                 </div>
                             </div>
                             <div class="card-body">

@@ -17,10 +17,8 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: ../login.php'); 
     exit;
 }
-$dashb = '';
-$my_space = '';
 $calendr = 'calendar';
-$gen_forum ='';
+
 
 include '../display_mod.php';
 date_default_timezone_set('Asia/Manila'); 
