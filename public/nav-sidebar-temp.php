@@ -11,7 +11,7 @@
         <div class="right-section">
             <div class="msg-message-icon" onclick="toggleMessageSidebar()">
                 <i id="message-icon" class="bi bi-chat-right-dots-fill"></i>
-                <span class="message-count"><?php echo $unreadCount; ?></span>
+                <span class="message-count">0</span>
             </div>
             <!-- Bell icon with notification count -->
             <div class="notification-bell" >

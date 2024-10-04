@@ -3,7 +3,6 @@
 require_once __DIR__ . '/../../src/config/access_control.php';
 require_once __DIR__ . '/../../src/config/session_config.php';
 require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
-require_once __DIR__ . '/../../src/processes/check_new_messages.php'; 
 
 // Admin access check
 check_access('ADMIN');
