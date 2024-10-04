@@ -11,7 +11,7 @@
         <div class="right-section">
             <div class="msg-message-icon" onclick="toggleMessageSidebar()">
                 <i id="message-icon" class="bi bi-chat-right-dots-fill"></i>
-                <span class="message-count">0</span>
+                <span class="message-count" style="display:none;">0</span>
             </div>
             <!-- Bell icon with notification count -->
             <div class="notification-bell" >
@@ -59,9 +59,9 @@
     <div id="message-sidebar" class="msg-sidebar">      
         <div class="msg-mini-wind"> 
             <div class="msg-head">
-                <button class="btn" onclick="toggleMessageBar()" title="View in full screen::Not Yet Available">
+                <!-- <button class="btn" onclick="toggleMessageBar()" title="View in full screen::Not Yet Available">
                     <i id="msg-full-scrn-icon" class="bi bi-fullscreen"></i>
-                </button>
+                </button> -->
                 <h2>Messages</h2>
             </div>
             <div class="search-container">
