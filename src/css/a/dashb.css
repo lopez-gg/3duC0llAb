@@ -21,6 +21,7 @@
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     font-size: 16px;
+    font-weight: 600;
 }
 
 
@@ -117,6 +118,11 @@
     grid-template-columns: 60px auto;
 }
 
+.event-info strong{
+    font-weight: 600;
+    text-align: left;
+}
+
 /* Date box styling */
 .event-date {
     background-color: #ddd; /* Grey background for the date box */
@@ -141,6 +147,13 @@
 /* Title styling */
 .event-details strong {
     font-size: 16px;
+    font-weight: bold;
+}
+
+p#event-status{
+    font-size: 16px;
+    font-weight: 300;
+
 }
 
 /* Description styling */
@@ -151,4 +164,5 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis; /* Ensures long text is truncated */
+    font-weight: 100;
 }

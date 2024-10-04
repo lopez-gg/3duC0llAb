@@ -4,7 +4,6 @@ require_once __DIR__ . '/../../src/config/db_config.php';
 require_once __DIR__ . '/../../src/config/access_control.php'; 
 require_once __DIR__ . '/../../src/config/session_config.php';
 require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
-// require_once __DIR__ . '/../../src/processes/check_new_messages.php'; 
 require_once __DIR__ . '/../../src/processes/fetch_upcoming_events.php'; 
 
 // Check if the user is admin
@@ -18,9 +17,6 @@ if (!isset($_SESSION['user_id'])) {
 
 $userId = ($_SESSION['user_id']);
 $dashb = 'dashboard';
-$my_space = '';
-$calendr = '';
-$gen_forum ='';
 
 // Set timezone
 date_default_timezone_set('Asia/Manila'); 
@@ -29,7 +25,7 @@ date_default_timezone_set('Asia/Manila');
 $currentDateTime = date('l, d/m/Y h:i:s A'); 
 $currentMonth = date('F');
 $currentYear = date('Y');
-
+$currentDate = new DateTime();
 ?>
 
 
@@ -72,67 +68,42 @@ $currentYear = date('Y');
 
             <hr>
 
+
             <section class='main-sec' id='sec-three'> 
-                <!-- events -->
-                <?php
-                // Filter events to only include those in the current month
-                $filteredEvents = array_filter($events, function($event) use ($currentMonth, $currentYear) {
-                    $eventStartDate = new DateTime($event['event_date']);
-                    return $eventStartDate->format('F') === $currentMonth && $eventStartDate->format('Y') === $currentYear;
-                });
-                ?>
                 <div class="d-events-main-container">
-                    <h1 id="events-heading"><?php echo $currentMonth; ?> Events</h1>
+                    <h1 id="events-heading"><?php echo date('F'); ?> Events</h1>
                     <div class="d-events-list-container">
                         <ul id="upcoming-events">
-                            <?php if (!empty($filteredEvents)): ?>
-                                <?php foreach ($filteredEvents as $event): ?>
+                            <?php if (!empty($events)): ?>
+                                <?php foreach ($events as $event): ?>
+                                    <?php
+                                    $eventStartDate = new DateTime($event['event_date']);
+                                    $eventEndDate = new DateTime($event['end_date']);
+                                    
+                                    // Determine event status based on $currentDate
+                                    $status = '';
+                                    if ($eventStartDate > $currentDate) {
+                                        $status = 'Upcoming';
+                                    } elseif ($eventEndDate < $currentDate) {
+                                        $status = 'Ended';
+                                    } elseif ($eventStartDate->format('Y-m-d') === $currentDate->format('Y-m-d')) {
+                                        $status = 'Today';
+                                    }
+                                    ?>
                                     <li>
                                         <a href='calendar.php'>
                                             <div class='space event-card'>
-                                                <div class="event-info">
-                                                    <?php
-                                                        $eventStartDate = new DateTime($event['event_date']);
-                                                        $eventEndDate = new DateTime($event['end_date']);
-                                                        $currentDate = new DateTime();
-                                                        $startDateFormatted = $eventStartDate->format('F d');
-
-                                                        if ($eventStartDate > $currentDate) {
-                                                            echo '<div class="event-date">';
-                                                                $eventStartDate = new DateTime($event['event_date']);
-                                                                echo $eventStartDate->format('d'); // Format: Month day
-                                                            echo '</div>';
-                                                            echo "<div class='event-details'>";
-                                                            echo "<strong>{$event['title']}</strong><br>";
-                                                            echo "Upcoming<br>";
-                                                            echo "<p class='event-description'>";
-                                                            echo substr($event['description'], 0, 50) . (strlen($event['description']) > 50 ? '...' : '');
-                                                            echo "</p>";
-
-                                                            echo "</div>";
-                                                        } elseif ($eventEndDate < $currentDate) {
-                                                            echo '<div class="event-date">';
-                                                                $eventStartDate = new DateTime($event['event_date']);
-                                                                echo $eventStartDate->format('d'); // Format: Month day
-                                                            echo '</div>';
-                                                            $interval = $eventEndDate->diff($currentDate);
-                                                            $daysPassed = $interval->format('%a'); //105
-                                                            // echo "<strong>{$startDateFormatted}</strong><br>";
-                                                            echo "<div class='event-details'>";
-                                                            echo "<strong>{$event['title']}</strong><br>";
-                                                            echo "<p class='event-description'>";
-                                                            echo "{$daysPassed} days ago<br>";
-                                                            echo "</p>";
-                                                            echo "</div>";
-                                                        } else {
-                                                            echo '<div class="event-date">';
-                                                                $eventStartDate = new DateTime($event['event_date']);
-                                                                echo $eventStartDate->format('d'); // Format: Month day
-                                                            echo '</div>';
-                                                            echo "<strong>{$event['title']}<strong><br>";
-                                                            echo substr($event['description'], 0, 50) . (strlen($event['description']) > 50 ? '...' : '');
-                                                        }
-                                                    ?>
+                                                <div class='event-info'>
+                                                    <div class='event-date'>
+                                                        <?php echo $eventStartDate->format('d'); // Display the event day ?>
+                                                    </div>
+                                                    <div class='event-details'>
+                                                        <strong><?php echo $event['title']; ?></strong><br>
+                                                        <p class='event-status'><?php echo $status; ?></p>
+                                                        <p class='event-description'>
+                                                            <?php echo substr($event['description'], 0, 50) . (strlen($event['description']) > 50 ? '...' : ''); ?>
+                                                        </p>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </a>
@@ -144,8 +115,6 @@ $currentYear = date('Y');
                         </ul>
                     </div>
                 </div>
-
-                <!-- Reminders will go here soon -->
             </section>
 
 

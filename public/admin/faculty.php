@@ -114,7 +114,7 @@ unset($_SESSION['success_message']);
 <body>
     <?php include '../nav-sidebar-temp.php' ?>
         <div class="content" id="content">
-            <div class="container mt-4">
+            <!-- <div class="container mt-4"> -->
                 <h2>Manage Faculty Members</h2>
 
                 <div class="row mb-3">
@@ -193,7 +193,7 @@ unset($_SESSION['success_message']);
                         ?>
                     </tbody>
                 </table>
-            </div>
+            <!-- </div> -->
         </div>
     </div>
 

@@ -238,6 +238,7 @@
     grid-template-columns: 1fr 25px 25px;
     align-items: center;
     padding: 15px;
+    padding-bottom: 0;
 }
 
 

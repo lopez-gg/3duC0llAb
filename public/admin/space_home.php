@@ -145,7 +145,7 @@ unset($_SESSION['success_message']);
 
                                         <div class="r3">
                                             <div class="task-label">Progress</div>
-                                            <div class="task-data">
+                                            <div class="task-data progress-input">
                                                 <form action="update_task_progress.php" class="task-upd-f" method="post"> 
                                                     <input type="hidden" name="grade" value="<?= $task['grade']?>">   
                                                     <select class="task-data-select" data-task-id="<?= $task['id'] ?>" >

@@ -390,6 +390,7 @@ body {
     overflow-y: auto;
     width: calc(100% - 250px);
     transition: margin-left 0.3s ease, width 0.3s ease;
+    font-weight: normal;
 }
 
 .content.full-width {

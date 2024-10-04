@@ -117,8 +117,10 @@ function loadMessageList() {
 
                     messageList.append(`
                         <div class="${messageClass}" data-userid="${chat.user_id}" data-username="${chat.chat_username}" data-gradelevel="${chat.gradeLevel}" data-section="${chat.section}">
-                              <div class="username">${chat.chat_username}</div>
-                <div class="timestamp">${formattedDate}</div>
+                            <div class="msg-list-head">
+                                <div class="username">${chat.chat_username}</div>
+                                <div class="timestamp">${formattedDate}</div>
+                            </div>
                             <div class="message-content">${chat.message_text}</div>
                         </div>
                     `);

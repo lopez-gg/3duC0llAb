@@ -77,6 +77,8 @@
     padding: 10px;
     border-bottom: 1px solid #ccc;
     cursor: pointer;
+    display: grid;
+    grid-template-rows: 30% 70%;
 }
 
 .message-entry:hover {
@@ -92,6 +94,7 @@
     float: right;
     font-size: 0.8em;
     color: #999;
+    text-align: right;
 }
 
 .no-chats-message {
@@ -109,6 +112,7 @@
     font-style: italic;
     color: #888;
     margin-top: 20px;
+    grid-row: 2 / span 2;
 }
 
 #message-list{
@@ -140,6 +144,11 @@
     margin-bottom: 10px;
     height: 28px;
     /* z-index: 1; */
+}
+
+.msg-list-head {
+    display: grid;
+    grid-template-columns: auto auto;
 }
 
 .msg-head h2 {
