@@ -13,12 +13,6 @@ a {
 }
 
 /* notification */
-.notification-bell {
-    position: relative;
-    cursor: pointer;
-    font-size: 1.5rem;
-}
-
 .notification-dropdown {
     display: none;
     position: absolute;
@@ -51,7 +45,7 @@ a {
 }
 
 .notification.unread {
-    background-color: #f8f9fa; /* Light background for unread notifications */
+    background-color: #cce5ff; /* Light background for unread notifications */
     font-weight: bold; /* Bold text for emphasis */
 }
 
@@ -107,6 +101,7 @@ body {
     display: flex;
     flex-direction: column;
     overflow: auto; /* Changed from 'hidden' to 'auto' to allow scrolling */
+    box-sizing: border-box;
 }
 
 /* General styles for the top navigation bar */
@@ -165,6 +160,7 @@ body {
     position: relative;
     margin-right: 10px;
     cursor: pointer;
+    font-size: 1.5rem;
 }
 
 .notification-bell i {
@@ -172,7 +168,7 @@ body {
     color: #fff;
 }
 
-.notification-count {
+#notification-count {
     position: absolute;
     top: -5px;
     right: -10px;
@@ -187,6 +183,8 @@ body {
     justify-content: center;
     display: none;
 }
+
+
 
 /* Notification dropdown styles */
 .notification-dropdown {

@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function () {
     let unreadNotificationIds = []; // Array to store unread notification IDs
 
     const notificationBell = document.querySelector('.notification-bell');
-    const seeMoreButton = document.querySelector('.see-more');
     const dropdown = document.querySelector('.notification-dropdown');
 
     // Fetch notifications when the page loads
@@ -54,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 if (Array.isArray(notifications)) {
                     notifications.forEach(notification => {
+
                         const li = document.createElement('li');
                         li.classList.add('notification-item');
 
@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 li.classList.add('read');
                                 break;
                             case 'past':
-                                li.classList.add('past');
+                                li.classList.add('read');
                                 break;
                         }
 
@@ -90,24 +90,24 @@ document.addEventListener('DOMContentLoaded', function () {
                         notificationList.appendChild(li);
                     });
 
-                    // Display "See More" button if more notifications exist
-                    seeMoreButton.style.display = notifications.length === limit ? 'block' : 'none';
-
                     // Update notification count
-                    const unreadCountElement = document.querySelector('.notification-count');
-                    const unreadCount = unreadNotificationIds.length;
-                    unreadCountElement.textContent = unreadCount > 0 ? `${unreadCount}` : '';
-                    unreadCountElement.style.display = unreadCount > 0 ? 'block' : 'none';
+                    const unreadCountElement = document.getElementById('notification-count');
+                    if (unreadCountElement) {
+                        const unreadCount = unreadNotificationIds.length; // line 94
+                        unreadCountElement.textContent = unreadCount > 0 ? `${unreadCount}` : '';
+                        unreadCountElement.style.display = unreadCount > 0 ? 'block' : 'none';
+                    } else {
+                        console.error('Notification count element not found!');
+                    }
                 } else {
                     // No notifications message
                     const li = document.createElement('li');
                     li.textContent = notifications.message;
                     notificationList.appendChild(li);
-                    seeMoreButton.style.display = 'none';
                 }
             })
             .catch(error => console.error('Error fetching notifications:', error));
-    }
+    } //line 109
 
     // Function to mark notifications as read
     function markNotificationsAsRead() {
@@ -135,11 +135,4 @@ document.addEventListener('DOMContentLoaded', function () {
         notificationBell.addEventListener('click', toggleNotificationsDropdown);
     }
 
-    // Event listener for "See More" button
-    if (seeMoreButton) {
-        seeMoreButton.addEventListener('click', function () {
-            currentPage++;
-            fetchNotifications(true); // Fetch more notifications
-        });
-    }
 });

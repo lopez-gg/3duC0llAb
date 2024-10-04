@@ -16,7 +16,7 @@
             <!-- Bell icon with notification count -->
             <div class="notification-bell" >
                 <i class="bi bi-bell-fill"></i>
-                <div id="unread-count" style="display:none;">0</div>
+                <div id="notification-count" style="display:none;">0</div>
             </div>
             
             <!-- Notification dropdown-->
