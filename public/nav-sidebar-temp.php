@@ -1,7 +1,7 @@
     <!-- top navigation -->
     <div class="top-nav">
         <div class="left-section">
-            <button class="sidebar-toggle-button" onclick="toggleSidebar()">☰</button>
+            <button class="sidebar-toggle-button" onclick="toggleSidebar()"><i class="bi bi-list"></i></button>
             <div class="app-name">EduCollab</div>
             <div id="datetime">
                 <?php echo $currentDateTime; ?>

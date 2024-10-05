@@ -33,16 +33,17 @@ $yearRange = isset($_GET['year_range']) ? $_GET['year_range'] : getCurrentYearRa
 // Get base URL from the configuration
 $baseURL = $config['base_url'] . '/src/processes/a/fetch_manage_events.php';
 
-// Capture current parameters
+// Capture current parameters (remove 'events' from params)
 $params = [
     'page' => $currentPage,
     'order' => $order,
     'month' => $month,
-    'year_range' => $yearRange
+    'year_range' => $yearRange,
+    'search' => isset($_GET['search']) ? $_GET['search'] : ''
 ];
 
 // Build URL with current parameters
-$url = $baseURL . '?' . http_build_query(array_filter($params));
+$url = $baseURL . '?' . http_build_query(array_filter($params)); // Build query without nulls
 
 // Debugging: Print URL to ensure it's built correctly
 // echo "Constructed URL: " . htmlspecialchars($url) . "<br>";
@@ -70,6 +71,7 @@ if ($data === null) {
     die('Error decoding JSON: ' . json_last_error_msg());
 }
 
+// Use $data['events'], $data['currentPage'], etc. for further processing
 
 // default sy
 $currentYear = date('Y');
@@ -91,10 +93,6 @@ $successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_messa
 $verificationMessage = isset($_SESSION['verification_message']) ? $_SESSION['verification_message'] : null;
 include '../display_mod.php';
 unset($_SESSION['success_message']);
-
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -107,6 +105,7 @@ unset($_SESSION['success_message']);
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../src/css/message.css">
     <link href="../../src/css/gen.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../src/css/action_nav.css">
 </head>
 <body>
 
@@ -114,45 +113,61 @@ unset($_SESSION['success_message']);
         <div class="content" id="content">
 
             <h2>Calendar > Manage Events</h2>
-           
-            <div class="dropdown">
-                <div class="d-flex align-items-center" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                    <h3>SY <span id="currentYearRange"><?php echo htmlspecialchars($yearRange); ?></span></h3>
-                    <i class="bi bi-caret-down-fill ms-2" title="Filter by School Year"></i>
+
+            <hr>
+
+            <section class="actions-section">
+                <div class="right-section-actions">
+                    <div class="rs-a">
+                        <button class="btn-sort dropdown-toggle" id="sortIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Sort order">
+                            <i class="bi bi-funnel"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="sortIcon">
+                            <a class="dropdown-item sort-option" data-order="asc">Ascending</a>
+                            <a class="dropdown-item sort-option" data-order="desc">Descending</a>
+                        </div>
+                    </div>
+                    <div class="rs-a">
+                        <button class="btn-filter dropdown-toggle" id="filterIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Filter tasks">
+                            <i class="bi bi-filter"></i> SY <span id="currentYearRange"><?php echo htmlspecialchars($yearRange); ?></span>
+                        </button>
+                        <ul class="dropdown-menu" id="yearRangeDropdown" aria-labelledby="dropdownMenuButton">
+                            <?php foreach ($yearRanges as $range): ?>
+                                <li>
+                                    <span class="dropdown-item" data-year-range="<?= htmlspecialchars($range['year_range'], ENT_QUOTES, 'UTF-8') ?>">
+                                        <?= htmlspecialchars($range['year_range'], ENT_QUOTES, 'UTF-8') ?>
+                                    </span>
+                                </li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                    <div class="rs-a">
+                        <button class="btn-add-sy"  data-bs-toggle="modal" data-bs-target="#yearRangeModal" title="Create new SY Calendar">
+                            <i class="bi bi-calendar-plus"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="filterIcon">
+                            <a class="dropdown-item filter-option" data-progress="">All</a>
+                            <a class="dropdown-item filter-option" data-progress="pending">Pending</a>
+                            <a class="dropdown-item filter-option" data-progress="in_progress">In Progress</a>
+                            <a class="dropdown-item filter-option" data-progress="completed">Completed</a>
+                        </div>
+                    </div>
                 </div>
-                
-                <ul class="dropdown-menu" id="yearRangeDropdown" aria-labelledby="dropdownMenuButton">
-                    <?php foreach ($yearRanges as $range): ?>
-                        <li>
-                            <span class="dropdown-item" data-year-range="<?= htmlspecialchars($range['year_range'], ENT_QUOTES, 'UTF-8') ?>">
-                                <?= htmlspecialchars($range['year_range'], ENT_QUOTES, 'UTF-8') ?>
-                            </span>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            </div>
-
-
-
-        
-            <button type="button" class="btn btn-primary" onclick="window.location.href='add_new_event.php?sy=<?= htmlspecialchars($yearRange, ENT_QUOTES, 'UTF-8') ?>'">
-                Add New Event
-            </button>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#yearRangeModal">
-                New SY Calendar
-            </button>
-
-        
-            <div class="dropdown sort-dropdown">
-                <button class="btn btn-secondary dropdown-toggle" id="sortIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Sort order">
-                    <i class="bi bi-funnel"></i>
-                </button>
-                <div class="dropdown-menu" aria-labelledby="sortIcon">
-                    <a class="dropdown-item sort-option" data-order="asc" >Ascending</a>
-                    <a class="dropdown-item sort-option" data-order="desc" >Descending</a>
+                <div class="left-section-actions">
+                    <div class="ls-a">
+                        <div class="search-bar">
+                            <input type="text" class="searchBox" id="searchEvents" placeholder="Search events..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+                            <button id="searchButton"><i class="bi bi-search"></i></button>
+                        </div>
+                    </div>
+                    <div class="ls-a">
+                        <div class="btn-add">
+                            <a href="add_new_event.php?sy=<?= htmlspecialchars($yearRange, ENT_QUOTES, 'UTF-8') ?>" title="Add new event for the current SY"><i class="bi bi-plus-circle"></i></a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-
+            </section>
+            <hr>
 
             <table class="table table-bordered mt-4">
                 <thead>
@@ -209,9 +224,9 @@ unset($_SESSION['success_message']);
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
                     <li class="page-item <?php if ($currentPage <= 1) echo 'disabled'; ?>">
-                        <a class="page-link" href="?page=<?php echo $currentPage - 1; ?>&order=<?php echo $order; ?><?php echo $month !== null ? '&month=' . $month : ''; ?>" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
+                    <a class="page-link" href="?page=<?php echo $currentPage; ?>&order=<?php echo $order; ?>&year_range=<?php echo $yearRange; ?>&search=<?php echo htmlspecialchars($search); ?>">
+                        <?php echo $currentPage; ?>
+                    </a>
                     </li>
                     <?php for ($page = 1; $page <= $totalPages; $page++): ?>
                         <li class="page-item <?php if ($page == $currentPage) echo 'active'; ?>">
@@ -252,6 +267,23 @@ unset($_SESSION['success_message']);
                 }, 4500);
             <?php endif; ?>
         });
+
+    // Handle searching when search button is clicked
+    $('#searchButton').on('click', function () {
+        const searchQuery = $('#searchEvents').val();
+        var yearRange = $('#currentYearRange').text(); // Get the current year range
+
+        var newUrl = "?search=" + encodeURIComponent(searchQuery) + "&year_range=" + encodeURIComponent(yearRange) + "&order=<?php echo $order; ?>&page=1";
+        window.location.href = newUrl; // Update with your actual page
+    });
+
+    // Handle "Enter" key in search input
+    $('#searchEvents').on('keypress', function (e) {
+        if (e.which == 13) {
+            $('#searchButton').click();
+        }
+    });
+
 
     </script>
 

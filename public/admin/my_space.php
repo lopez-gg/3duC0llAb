@@ -96,7 +96,7 @@ unset($_SESSION['success_message']);
                     <div class="left-section-actions">
                         <div class="ls-a">
                         <div class="search-bar">
-                            <input type="text" id="taskSearch" placeholder="Search tasks..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+                            <input type="text" class="searchBox" id="taskSearch" placeholder="Search tasks..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
                             <button id="searchButton"><i class="bi bi-search"></i></button>
                         </div>
                         </div>

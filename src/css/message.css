@@ -13,18 +13,19 @@
 }
 
 .message-count {
-    height: 15px;
-    width: 15px;
+    height: 17px;
+    width: 17px;
     font-size: 12px;
     background-color: rgb(255, 62, 62);
     border-radius: 50px;
     position: absolute;
-    top: -4px;
-    right: -10px;
+    top: 0px;
+    right: -7px;
     padding: 2px;
     align-items: center;
     display: flex;
     justify-content: center;
+    box-sizing: border-box;
 }
 
 

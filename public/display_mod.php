@@ -12,12 +12,12 @@ unset($_SESSION['success_message']);
 $verificationMessage = isset($_SESSION['verification_message']) ? $_SESSION['verification_message'] : null;
 $modalTitle = isset($_SESSION['modal_title']) ? $_SESSION['modal_title'] : 'Confirm Action';
 $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confirm_button_text'] : 'Confirm';
+
+
 ?>
 
-
-
 <!-- Success Modal -->
-    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true" style="display: none;">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -40,7 +40,7 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
 
 
 <!-- Verification Modal -->
-<div class="modal fade" id="verificationModal" tabindex="-1" role="dialog" aria-labelledby="verificationModalLabel" aria-hidden="true">
+<div class="modal fade" id="verificationModal" tabindex="-1" role="dialog" aria-labelledby="verificationModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -62,7 +62,7 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
 
 
 <!-- Discard Changes Modal -->
-<div class="modal fade" id="discardChangesModal" tabindex="-1" role="dialog" aria-labelledby="discardChangesModalLabel" aria-hidden="true">
+<div class="modal fade" id="discardChangesModal" tabindex="-1" role="dialog" aria-labelledby="discardChangesModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -83,7 +83,7 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
 </div>
 
 <!-- new sy calendar modal -->
-<div class="modal fade" id="yearRangeModal" tabindex="-1" role="dialog" aria-labelledby="yearRangeModalLabel" aria-hidden="true">
+<div class="modal fade" id="yearRangeModal" tabindex="-1" role="dialog" aria-labelledby="yearRangeModalLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -111,7 +111,7 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
 
 
   <!-- Confirm Delete Modal -->
-<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
+<div class="modal fade" id="confirmDeleteModal" tabindex="-1" role="dialog" aria-labelledby="confirmDeleteLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -132,7 +132,7 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
 </div>
 
 <!-- Verify deactivation -->
-<div class="modal fade" id="verifyDeactivationModal" tabindex="-1" role="dialog" aria-labelledby="verifyDeactivationLabel" aria-hidden="true">
+<div class="modal fade" id="verifyDeactivationModal" tabindex="-1" role="dialog" aria-labelledby="verifyDeactivationLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -154,7 +154,7 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
 
 
 <!-- Set Reminder Modal -->
-<div class="modal fade" id="setReminderModal" tabindex="-1" aria-labelledby="setReminderLabel" aria-hidden="true">
+<div class="modal fade" id="setReminderModal" tabindex="-1" aria-labelledby="setReminderLabel" aria-hidden="true" style="display: none;">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header"><h5 class="modal-title" id="setReminderLabel">Set Reminder for <span id="taskTitle">Task</span></h5>

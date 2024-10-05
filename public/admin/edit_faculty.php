@@ -77,50 +77,51 @@ include '../display_mod.php';
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../src/css/gen.css">
     <link rel="stylesheet" href="../../src/css/message.css">
+    <link rel="stylesheet" href="../../src/css/form.css">
 </head>
 <body>
 
     <?php include '../nav-sidebar-temp.php'?>
-
         <div class="content" id="content">
-            <div class="container mt-4">
-                <h2>Edit Faculty Member</h2>
+        <div class="container mt-4">
+            <h2>Edit Faculty Member</h2>
+            <div class="form-container"> <!-- Added form-container class -->
                 <form method="POST" action="">
-                    <div class="mb-3">
+                    <div class="form-group">
                         <label for="username" class="form-label">Username</label>
-                        <input type="text" id="username" name="username" class="form-control" value="<?php echo htmlspecialchars($faculty['username']); ?>" required>
+                        <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($faculty['username']); ?>" required>
                     </div>
-                    <div class="mb-3">
+                    <div class="form-group">
                         <label for="firstname" class="form-label">First Name</label>
-                        <input type="text" id="firstname" name="firstname" class="form-control" value="<?php echo htmlspecialchars($faculty['firstname']); ?>" required>
+                        <input type="text" id="firstname" name="firstname" value="<?php echo htmlspecialchars($faculty['firstname']); ?>" required>
                     </div>
-                    <div class="mb-3">
+                    <div class="form-group">
                         <label for="lastname" class="form-label">Last Name</label>
-                        <input type="text" id="lastname" name="lastname" class="form-control" value="<?php echo htmlspecialchars($faculty['lastname']); ?>" required>
+                        <input type="text" id="lastname" name="lastname" value="<?php echo htmlspecialchars($faculty['lastname']); ?>" required>
                     </div>
-                    <div class="mb-3">
+                    <div class="form-group">
                         <label for="gradeLevel" class="form-label">Grade Level</label>
-                        <input type="text" id="gradeLevel" name="gradeLevel" class="form-control" value="<?php echo htmlspecialchars($faculty['gradeLevel']); ?>" required>
+                        <input type="text" id="gradeLevel" name="gradeLevel" value="<?php echo htmlspecialchars($faculty['gradeLevel']); ?>" required>
                     </div>
-                    <div class="mb-3">
+                    <div class="form-group">
                         <label for="section" class="form-label">Section</label>
-                        <input type="text" id="section" name="section" class="form-control" value="<?php echo htmlspecialchars($faculty['section']); ?>" required>
+                        <input type="text" id="section" name="section" value="<?php echo htmlspecialchars($faculty['section']); ?>" required>
                     </div>
-                    <div class="mb-3">
+                    <div class="form-group">
                         <label for="status" class="form-label">Status</label>
-                        <select id="status" name="status" class="form-select">
+                        <select id="status" name="status">
                             <option value="active" <?php echo $faculty['status'] == 'active' ? 'selected' : ''; ?>>Active</option>
                             <option value="inactive" <?php echo $faculty['status'] == 'inactive' ? 'selected' : ''; ?>>Inactive</option>
                             <option value="deactivated" <?php echo $faculty['status'] == 'deactivated' ? 'selected' : ''; ?>>Deactivated</option>
                         </select>
                     </div>
                     <button type="submit" class="btn btn-primary">Update Faculty</button>
-                    <button type="button" class="btn btn-secondary" 
-                            onclick="openDiscardChangesModal()">Cancel
-                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="openDiscardChangesModal()">Cancel</button>
                 </form>
             </div>
         </div>
+    </div>
+
     </div>
 
     <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>

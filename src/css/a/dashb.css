@@ -150,8 +150,7 @@
     font-weight: bold;
 }
 
-p#event-status{
-    font-size: 16px;
+p.event-status{
     font-weight: 300;
 
 }
