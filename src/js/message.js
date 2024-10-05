@@ -64,6 +64,9 @@ function toggleMessageSidebar() {
     } else {
         messageIcon.classList.remove('active');
     }
+    
+    fetchUnreadMessageCount();
+    
 }
 
 function toggleMessageBar() {
@@ -117,6 +120,9 @@ function loadMessageList() {
                     const messageClass = isRead ? 'message-entry read' : 'message-entry unread';
                     const unreadMarkDisplay = unreadUsers.includes(chat.user_id) ? 'block' : 'none'; // Check if user ID is in unreadUsers array
 
+                    const maxLength = 30; // Set your desired max length here
+                    const messagePreview = chat.message_text.length > maxLength ? chat.message_text.substring(0, maxLength) + '...' : chat.message_text;
+
                     messageList.append(`
                         <div class="${messageClass}" data-userid="${chat.user_id}" data-username="${chat.chat_username}" data-gradelevel="${chat.gradeLevel}" data-section="${chat.section}">
                             <div class="msg-list-head">
@@ -124,7 +130,7 @@ function loadMessageList() {
                                 <div class="timestamp">${formattedDate}</div>
                             </div>
                             <div class="msg-list-body">
-                                <div class="message-content">${chat.message_text}</div>
+                                <div class="message-content">${messagePreview}</div>
                                 <div class="unread-msg-li-notif" style="display:${unreadMarkDisplay};"></div>  
                             </div>
                         </div>
@@ -426,11 +432,6 @@ function fetchUnreadMessageCount() {
         }
     });
 }
-
-
-
-// Call this function periodically
-setInterval(fetchUnreadMessageCount, 500000); 
 
 
 
