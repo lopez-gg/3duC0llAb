@@ -12,8 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $reminderDate = htmlspecialchars($_POST['reminder_date'] ?? '');
     $reminderMessage = htmlspecialchars($_POST['reminder_message'] ?? '');
     $reminderType = htmlspecialchars($_POST['rtype'] ?? '');
-
-    var_dump($_POST);
     
     // Optional: Validate task ID and reminder date are not empty
     if (empty($taskId) || empty($reminderDate) || empty($acctype) || empty($reminderType)) {
@@ -50,13 +48,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 // Optionally redirect back or to another page
                 $_SESSION['success_title'] = 'Success!';
                 $_SESSION['success_message'] = 'Reminder added!';
-                // header("Location: ../../../public/admin/my_space.php");
+                header("Location: ../../../public/admin/my_space.php");
             }else if($acctype === 'ur'){
                 echo 'Reminder has been successfully saved.';
                 // Optionally redirect back or to another page
                 $_SESSION['success_title'] = 'Success!';
                 $_SESSION['success_message'] = 'Reminder added!';
-                // header("Location: ../../../public/user/my_space.php");
+                header("Location: ../../../public/user/my_space.php");
             }
         } else {
             // echo 'Failed to save the reminder. Please try again.';
@@ -68,7 +66,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // echo 'An error occurred while saving the reminder. Please try again later.';
         $_SESSION['success_title'] = 'Failed';
         $_SESSION['success_message'] = 'Failed to add reminder. Please try again.';
-        header("Location: ../../../public/admin/my_space.php");
+        if($acctype === 'am'){
+            echo 'Reminder has been successfully saved.';
+            // Optionally redirect back or to another page
+            header("Location: ../../../public/admin/my_space.php");
+        }else if($acctype === 'ur'){
+            echo 'Reminder has been successfully saved.';
+            // Optionally redirect back or to another page
+            header("Location: ../../../public/user/my_space.php");
+        }
     }
 
 } else {

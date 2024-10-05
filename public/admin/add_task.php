@@ -50,7 +50,7 @@ unset($_SESSION['success_message']);
         <h2>Create Personal Task</h2>
         
         <div class="form-container"> 
-            <form action="../../src/processes/a/process_add_personal_task.php" method="POST">
+            <form action="../../src/processes/process_add_personal_task.php" method="POST">
                 <!-- Task Title -->
                 <div class="form-group">
                     <label for="title">Task Title</label>
@@ -60,7 +60,7 @@ unset($_SESSION['success_message']);
                 <!-- Task Description -->
                 <div class="form-group">
                     <label for="description">Description</label>
-                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                    <textarea class="form-control" id="description" name="description" rows="3" >None</textarea>
                 </div>
 
                 <!-- Urgency Selection -->
