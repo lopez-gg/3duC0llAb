@@ -84,12 +84,10 @@ function loadMessageList() {
             const chatInterface = $('#chat-interface');
             const chatInput = $('#chat-input-maincon');
             
-            
             loadingMessage.hide();
             chatInterface.hide(); 
             chatInput.hide();
             
-            // startPolling();
             let response;
 
             if (typeof data === 'string') {
@@ -107,13 +105,17 @@ function loadMessageList() {
             if (response.message) {
                 messageList.html(`<div class="no-chats-message">${response.message}</div>`);
             } else {
-                messageList.html('');
-                response.forEach(chat => {
-                    const isRead = chat.read_at !== null;
+                messageList.html(''); // Clear previous messages
+                const unreadUsers = response.unread_users || []; // Get unread users from the response
+
+                // Process each chat
+                response.chats.forEach(chat => {
+                    const isRead = chat.read_at !== null; // Determine if the message has been read
                     const timestamp = new Date(chat.created_at);
                     const formattedDate = timestamp.toLocaleString('en-US', options).replace(',', ' at');
 
                     const messageClass = isRead ? 'message-entry read' : 'message-entry unread';
+                    const unreadMarkDisplay = unreadUsers.includes(chat.user_id) ? 'block' : 'none'; // Check if user ID is in unreadUsers array
 
                     messageList.append(`
                         <div class="${messageClass}" data-userid="${chat.user_id}" data-username="${chat.chat_username}" data-gradelevel="${chat.gradeLevel}" data-section="${chat.section}">
@@ -121,7 +123,10 @@ function loadMessageList() {
                                 <div class="username">${chat.chat_username}</div>
                                 <div class="timestamp">${formattedDate}</div>
                             </div>
-                            <div class="message-content">${chat.message_text}</div>
+                            <div class="msg-list-body">
+                                <div class="message-content">${chat.message_text}</div>
+                                <div class="unread-msg-li-notif" style="display:${unreadMarkDisplay};"></div>  
+                            </div>
                         </div>
                     `);
                 });
@@ -132,9 +137,10 @@ function loadMessageList() {
                     const username = $(this).data('username');
                     const gradeLevel = $(this).data('gradelevel');
                     const section = $(this).data('section');
-                    // Assuming you don't have grade level and section here, you can adjust it if needed.
                     selectUser(userId, username, gradeLevel, section); 
                 });
+
+                fetchUnreadMessageCount(); 
             }
         },
         error: function(xhr, status, error) {
@@ -142,6 +148,7 @@ function loadMessageList() {
         }
     });
 }
+
 
 
 

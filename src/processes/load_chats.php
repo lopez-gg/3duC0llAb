@@ -53,14 +53,27 @@ try {
     // Fetch all distinct conversations with the most recent message
     $chatUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // Now, let's fetch unread messages
+    $unreadSql = "SELECT DISTINCT
+                    m.sender_id
+                  FROM messages m
+                  WHERE m.recipient_id = :userId AND m.read_at IS NULL";
+
+    $unreadStmt = $pdo->prepare($unreadSql);
+    $unreadStmt->execute(['userId' => $user_id]);
+
+    // Fetch unread user IDs
+    $unreadUsers = $unreadStmt->fetchAll(PDO::FETCH_COLUMN, 0); // Get only sender IDs
+    $unreadUsers = array_unique($unreadUsers); // Ensure unique user IDs
+
     header('Content-Type: application/json');
 
     // Check if any chats exist
     if (empty($chatUsers)) {
-        echo json_encode(['message' => 'No messages yet.']);
+        echo json_encode(['message' => 'No messages yet.', 'unread_users' => $unreadUsers]);
     } else {
-        // Return the conversation list as JSON
-        echo json_encode($chatUsers);
+        // Return the conversation list as JSON, along with unread user IDs
+        echo json_encode(['chats' => $chatUsers, 'unread_users' => $unreadUsers]);
     }
 } catch (PDOException $e) {
     log_error('Query failed: ' . $e->getMessage(), 'db_errors.txt');

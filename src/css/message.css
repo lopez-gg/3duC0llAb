@@ -134,6 +134,16 @@
     flex-wrap: wrap;
 }
 
+.unread-msg-li-notif {
+    height: 10px;
+    width: 10px;
+    background-color: #00ffbb;
+    grid-column: 2 / span 1;
+    align-self: center;
+    display: flex;
+    border-radius: 10px;
+}
+
 .message-entry.unread .message-content {
     font-weight: bold; 
 }
@@ -150,6 +160,11 @@
 .msg-list-head {
     display: grid;
     grid-template-columns: auto auto;
+}
+
+.msg-list-body{
+    display: grid;
+    grid-template-columns: auto 10px;
 }
 
 .msg-head h2 {
