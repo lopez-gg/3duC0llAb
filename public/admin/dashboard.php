@@ -28,6 +28,13 @@ $currentDateTime = date('l, d/m/Y h:i:s A');
 $currentMonth = date('F');
 $currentYear = date('Y');
 $currentDate = new DateTime();
+
+$successTitle = isset($_SESSION['success_title']) ? $_SESSION['success_title'] : null;
+$successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
+$verificationMessage = isset($_SESSION['verification_message']) ? $_SESSION['verification_message'] : null;
+include '../display_mod.php';
+unset($_SESSION['success_message']);
+
 ?>
 
 
@@ -41,7 +48,7 @@ $currentDate = new DateTime();
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="../../src/css/gen.css">
-    <link rel="stylesheet" href="../../src/css/a/dashb.css">
+    <link rel="stylesheet" href="../../src/css/dashb.css">
     <link rel="stylesheet" href="../../src/css/message.css">
     <link rel="stylesheet" href="../../src/css/tasks.css">
 
@@ -90,31 +97,40 @@ $currentDate = new DateTime();
                                         $status = 'Ended';
                                     } elseif ($eventStartDate->format('Y-m-d') === $currentDate->format('Y-m-d')) {
                                         $status = 'Today';
+                                    } elseif ($eventStartDate->format('Y-m-d') < $currentDate && $eventEndDate->format('Y-m-d') > $currentDate->format('Y-m-d')) {
+                                        $status = 'Ongoing';
                                     }
                                     ?>
                                     <li>
-                                        <a href='calendar.php'>
-                                            <div class='space event-card'>
-                                                <div class='event-info'>
-                                                    <div class='event-date'>
-                                                        <?php echo $eventStartDate->format('d'); // Display the event day ?>
-                                                    </div>
-                                                    <div class='event-details'>
-                                                        <strong><?php echo $event['title']; ?></strong><br>
-                                                        <p class='event-status'><?php echo $status; ?></p>
-                                                        <p class='event-description'>
-                                                            <?php echo substr($event['description'], 0, 50) . (strlen($event['description']) > 50 ? '...' : ''); ?>
-                                                        </p>
-                                                    </div>
+                                        <div class='space event-card'>
+                                            <div class='event-info'>
+                                                <div class='event-date'>
+                                                    <?php echo $eventStartDate->format('d'); // Display the event day ?>
+                                                </div>
+                                                <div class='event-details'>
+                                                    <strong><?php echo $event['title']; ?></strong><br>
+                                                    <p class='event-status'><?php echo $status; ?></p>
+                                                    <p class='event-description'>
+                                                        <?php echo substr($event['description'], 0, 50) . (strlen($event['description']) > 50 ? '...' : ''); ?>
+                                                    </p>
                                                 </div>
                                             </div>
-                                        </a>
+                                        </div>
+                                    
                                     </li>
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <li>No events for this month.</li>
                             <?php endif; ?>
                         </ul>
+                    </div>
+                </div>
+
+
+                <div class="reminders-con">
+                    <h1 class="reminders-heading">Reminders</h1>
+                    <div class="reminders-lists">
+
                     </div>
                 </div>
             </section>
@@ -162,6 +178,7 @@ $currentDate = new DateTime();
     <script src='../../src/js/notification.js'></script>
     <script src='../../src/js/toggleSidebar.js'></script>
     <script src='../../src/js/message.js'></script>
+    <script src='../../src/js/reminder.js'></script>
     
 </div>
 </body>

@@ -164,9 +164,10 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
                 <!-- Display Task Due Date -->
                 <p><strong>Due Date:</strong> <span id="taskDueDate">Not set</span></p>
                 
-                <form id="reminderForm" action="../../src/processes/a/remind_me.php" method="POST">
+                <form id="reminderForm" action="../../src/processes/remind_me.php" method="POST">
                     <input type="hidden" name="id" id="task_id" value="<?= htmlspecialchars($task['id'] ?? ''); ?>">
                     <input type="hidden" name="utyp" value="">
+                    <input type="hidden" name="rtypetask" value="">
                     <input type="hidden" name="rtype" value="<?= htmlspecialchars($task['taskType'] ?? ''); ?>">
 
                     <div class="mb-3">
@@ -186,4 +187,25 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
             </div>
         </div>
     </div>
+</div>
+
+
+<!-- reminder details -->
+<div id="reminderModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="reminderModalLabel" aria-hidden="true" style="display:none;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="reminderModalLabel">Reminder Details</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id="modal-body">
+        <!-- Reminder details will be populated here -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
 </div>

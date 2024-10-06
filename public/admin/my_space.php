@@ -174,7 +174,8 @@ unset($_SESSION['success_message']);
                                                 data-task-due="<?= htmlspecialchars($task['due_date'] ?? ''); ?>"
                                                 data-task-id="<?= htmlspecialchars($task['id'] ?? ''); ?>"
                                                 data-task-rtype="<?= htmlspecialchars($task['taskType'] ?? ''); ?>"
-                                                data-task-utyp="am">
+                                                data-task-utyp="am"
+                                                data-task-rtypetask="task">
                                                     <i class="bi bi-bell"></i>
                                             </button>
                                         </form>

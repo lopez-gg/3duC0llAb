@@ -77,7 +77,6 @@ unset($_SESSION['success_message']);
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
         <link href="../../src/css/gen.css" rel="stylesheet">
         <link rel="stylesheet" href="../../src/css/tasks.css">
-        <link href="../../src/css/a/dashb.css" rel="stylesheet">
         <link rel="stylesheet" href="../../src/css/message.css">
     </head>
     <body>

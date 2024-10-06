@@ -5,13 +5,6 @@ a {
 }
 
 
-#upcoming-events {
-    list-style-type: none;
-}
-#upcoming-events li {
-    margin: 10px 0;
-}
-
 /* notification */
 .notification-item {
     list-style: none;

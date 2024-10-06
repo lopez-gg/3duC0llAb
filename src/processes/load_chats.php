@@ -53,7 +53,7 @@ try {
     // Fetch all distinct conversations with the most recent message
     $chatUsers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Now, let's fetch unread messages
+    // fetch unread messages
     $unreadSql = "SELECT DISTINCT
                     m.sender_id
                   FROM messages m

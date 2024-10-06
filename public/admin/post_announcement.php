@@ -41,7 +41,6 @@ $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Initialize $cur
     <title><?php echo htmlspecialchars($gradetodisplay); ?> Forum</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <link href="../../src/css/gen.css" rel="stylesheet">
-    <link href="../../src/css/a/dashb.css" rel="stylesheet">
 </head>
 <body>
     <div class="top-nav">
