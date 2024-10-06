@@ -104,7 +104,7 @@ unset($_SESSION['success_message']);
                     </div>
                     <div class="form-group">
                         <label for="due_time">Due Time</label>
-                        <input type="time" class="form-control" id="due_time" name="due_time" value="<?php echo htmlspecialchars($task['due_time']); ?>">
+                        <input type="time" class="form-control" id="due_time" name="due_time" value="">
                     </div>
 
                     <!-- Hidden Fields -->

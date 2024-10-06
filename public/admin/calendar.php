@@ -80,7 +80,7 @@ $currentMonth = date('F Y'); // e.g., July 2024
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
 
-        <script> src='../../src/js/datetime.js'</script>
+        <script src='../../src/js/datetime.js'></script>
         <script src="../../src/js/calendar.js"></script>
         <script src="../../src/js/toggleSidebar.js"></script>
         <script src='../../src/js/notification.js'></script>
