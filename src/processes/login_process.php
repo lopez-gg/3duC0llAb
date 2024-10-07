@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($username && $password) {
         try {
             // Prepare and execute the query
-            $stmt = $pdo->prepare("SELECT id, password, status, accType FROM users WHERE username = ?");
+            $stmt = $pdo->prepare("SELECT id, password, status, accType, gradeLevel FROM users WHERE username = ?");
             $stmt->execute([$username]);
             $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -41,7 +41,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Set session variables
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $username;
-                $_SESSION['accType'] = $user['accType']; // Store accType in session
+                $_SESSION['accType'] = $user['accType']; 
+                $_SESSION['ugrade'] = $user['gradeLevel'];
 
                 // Insert login attempt into logins table
                 $logStmt = $pdo->prepare("INSERT INTO logins (user_id, success) VALUES (?, ?)");

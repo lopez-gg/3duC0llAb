@@ -13,6 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $reminderMessage = htmlspecialchars($_POST['reminder_message'] ?? '');
     $reminderType = htmlspecialchars($_POST['rtypetask'] ?? '');
     
+    
     // Optional: Validate task ID and reminder date are not empty
     if (empty($taskId) || empty($reminderDate) || empty($acctype) || empty($reminderType)) {
         echo 'Task ID and reminder date are required.';

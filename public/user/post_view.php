@@ -6,27 +6,29 @@ require_once __DIR__ . '/../../src/config/session_config.php';
 require_once __DIR__ . '/../../src/config/access_control.php';
 require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
 
-check_access('ADMIN');
+check_access('USER');
 
 if (!isset($_SESSION['user_id'])) {
     header('Location: ../login.php');
     exit;
 } else {
-    $grade = $_SESSION['grade'];
+    $grade = isset($_GET['grade']) ? trim($_GET['grade']) : '';
+    $_SESSION['grade'] = $grade;
 
     if (is_numeric($grade) && $grade >= 1 && $grade <= 6) {
-        $grade = $grade;
+        $gradeurl = 'grade';
         $gradetodisplay = 'Grade ' . intval($grade);
     } elseif (strtolower($grade) === 'sned') {
-        $grade = $grade;
+        $gradeurl = 'grade';
         $gradetodisplay = strtoupper($grade);
     } else if(strtolower($grade === 'general')){
-        $grade = $grade;
+        $gradeurl = 'forum';
         $gradetodisplay = 'PSCS General ';
     }else {
         $gradetodisplay = 'Unknown Grade'; 
     }
 }
+
 $post_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if ($post_id <= 0) {
@@ -170,7 +172,7 @@ unset($_SESSION['success_message']);
                         </div>
                         <div>
                             <p class="post-meta">by <?= htmlspecialchars($post['username']) ?> on <?= $post['created_at'] ?></p>
-                            <div class="post-actions">
+                            <!-- <div class="post-actions">
                                 <a href="edit_post.php?grade=<?= $grade?>&id=<?= $post['id'] ?>" title='Edit post' class="edit-button">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
@@ -182,7 +184,7 @@ unset($_SESSION['success_message']);
                                         <i class="bi bi-trash3"></i>
                                     </button>
                                 </form>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>

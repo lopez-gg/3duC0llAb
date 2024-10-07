@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: /public/login.php');
         exit;
     }
-
+    $utype = $_SESSION['accType'];
     $reply_id = isset($_POST['reply_id']) ? (int)$_POST['reply_id'] : 0;
     $post_id = isset($_POST['post_id']) ? (int)$_POST['post_id'] : 0;
     $acc_type = isset($_POST['at']) ? (int)$_POST['at'] : 0;
@@ -33,8 +33,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!$reply || $reply['user_id'] != $_SESSION['user_id']) {
             $_SESSION['success_title'] = 'Unauthorized Access';
             $_SESSION['success_message'] = 'You are not the owner of this reply.';
-            header('Location: ../../../public/admin/post_view.php?grade=' . $grade . '&id=' . $post_id);
+            if($utype === 'ADMIN'){
+                header('Location: ../../../public/admin/post_view.php?grade=' . $grade . '&id=' . $post_id);
+                exit;
+            }if($utype === 'USER'){
+                header('Location: ../../../public/user/post_view.php?grade=' . $grade . '&id=' . $post_id);
             exit;
+            }
         }
 
         // Mark the reply as deleted instead of actually deleting it
@@ -44,8 +49,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $deleteStmt->execute();
 
         $_SESSION['success_title'] = 'Reply Deleted';
-        $_SESSION['success_message'] = 'Your reply has been marked as deleted.';
-        header('Location: ../../../public/admin/post_view.php?grade=' . $grade . '&id=' . $post_id);
+        $_SESSION['success_message'] = 'Your reply has been deleted.';
+        if($utype === 'ADMIN'){
+            header('Location: ../../../public/admin/post_view.php?grade=' . $grade . '&id=' . $post_id);
+            exit;
+        }if($utype === 'USER'){
+            header('Location: ../../../public/user/post_view.php?grade=' . $grade . '&id=' . $post_id);
+        exit;
+        }
         exit;
 
     } catch (PDOException $e) {

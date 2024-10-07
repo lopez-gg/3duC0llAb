@@ -7,11 +7,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
         die('Invalid CSRF token');
     }
-
+    $utype = $_SESSION['accType'];
     $post_id = intval($_POST['post_id']);
     $title = trim($_POST['title']);
     $content = trim($_POST['content']);
-    $grade = trim($_POST['grade']);
+    $grade = $_SESSION['grade'];
 
     if (empty($title) || empty($content) || empty($grade)) {
         die('Title, content, or grade cannot be empty.');
@@ -32,7 +32,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pdo->commit();
         $_SESSION['success_title'] = "Success!";
         $_SESSION['success_message'] = "Post updated successfully!";
-        header("Location: ../../../public/admin/space_forum.php?grade=" . urlencode($grade));
+        if ($grade != 'general'){
+            if($utype === "ADMIN"){
+                header("Location: ../../../public/admin/space_forum.php?grade=" . urlencode($grade));
+            } else if ($utype === "USER"){
+                header("Location: ../../../public/user/space_forum.php?grade=" . urlencode($grade));
+            }
+        }else{
+            if($utype === "ADMIN"){
+                header("Location: ../../../public/admin/general_forum.php?grade=" . urldecode($grade));
+            } else if ($utype === "USER"){
+                header("Location: ../../../public/user/general_forum.php?grade=" . urldecode($grade));
+            }
+        }
         exit;
     } catch (Exception $e) {
         $pdo->rollBack();

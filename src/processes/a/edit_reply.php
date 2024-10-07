@@ -9,6 +9,7 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+$utyp = $_SESSION['accType'];
 $reply_id = isset($_POST['reply_id']) ? (int)$_POST['reply_id'] : 0;
 $new_content = isset($_POST['reply_content']) ? $_POST['reply_content'] : '';
 
@@ -27,7 +28,13 @@ try {
 
     if (!$reply || $reply['user_id'] != $_SESSION['user_id']) {
         echo "Unauthorized access.";
+        if($utype === 'ADMIN'){
+            header('Location: ../../../public/admin/post_view.php?id=' . $_POST['post_id']);
+            exit;
+        }if($utype === 'USER'){
+            header('Location: ../../../public/user/post_view.php?id=' . $_POST['post_id']);
         exit;
+        }
     }
 
     // Update the reply content
@@ -39,8 +46,14 @@ try {
 
     $_SESSION['success_title'] = 'Reply Updated';
     $_SESSION['success_message'] = 'Your reply has been updated successfully.';
-    header('Location: ../../../public/admin/post_view.php?id=' . $_POST['post_id']);
+
+    if($utype === 'ADMIN'){
+        header('Location: ../../../public/admin/post_view.php?id=' . $_POST['post_id']);
+        exit;
+    }if($utype === 'USER'){
+        header('Location: ../../../public/user/post_view.php?id=' . $_POST['post_id']);
     exit;
+    }
 
 } catch (PDOException $e) {
     log_error('Database error: ' . $e->getMessage(), 'db_errors.txt');

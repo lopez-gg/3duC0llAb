@@ -5,7 +5,6 @@ require_once __DIR__ . '/../../config/config.php';    // Application-specific co
 // Capture the GET parameters or JSON input
 $order = isset($_GET['order']) ? $_GET['order'] : 'desc';  // Default to 'desc' if 'order' isn't specified
 $input = json_decode(file_get_contents('php://input'), true);  // Decode JSON input if available
-$grade = isset($input['grade']) ? $input['grade'] : (isset($_GET['grade']) ? $_GET['grade'] : null);
 $progress = isset($input['progress']) ? $input['progress'] : (isset($_GET['progress']) ? $_GET['progress'] : '');
 $order = isset($input['order']) ? ($input['order'] === 'asc' ? 'ASC' : 'DESC') : (isset($_GET['order']) ? ($_GET['order'] === 'asc' ? 'ASC' : 'DESC') : 'DESC');
 
@@ -14,7 +13,7 @@ $page = isset($input['page']) ? (int)$input['page'] : (isset($_GET['page']) ? (i
 $itemsPerPage = 15;  
 $offset = ($page - 1) * $itemsPerPage;  
 
-if ($grade) {
+
     try {
         $query = "
         SELECT t.id, t.title, t.description, t.taskType, t.tag, t.grade, t.progress, t.created_at, t.due_date, t.due_time, 
@@ -23,7 +22,8 @@ if ($grade) {
         FROM tasks t
         LEFT JOIN users u_assigned ON t.assignedTo = u_assigned.id
         LEFT JOIN users u_by ON t.assignedBy = u_by.id
-        WHERE t.grade = :grade 
+        WHERE t.taskType = 'assigned' 
+          AND t.assignedTo = :userId
           AND t.progress != 'completed'";
     
 
@@ -31,13 +31,13 @@ if ($grade) {
         if (!empty($progress)) {
             $query .= " AND t.progress = :progress";
         }
-        
+
         // Add ordering and pagination
         $query .= " ORDER BY t.due_date $order LIMIT :offset, :itemsPerPage";
 
         // Prepare the query
-        $stmt = $pdo->prepare($query);
-        $stmt->bindParam(':grade', $grade, PDO::PARAM_STR);  // Bind the grade parameter
+        $stmt = $pdo->prepare($query); 
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_STR);
 
         if (!empty($progress)) {
             $stmt->bindParam(':progress', $progress, PDO::PARAM_STR);  // Bind the progress parameter if provided
@@ -93,8 +93,5 @@ if ($grade) {
         log_error('Error fetching tasks: ' . $e->getMessage(), 'db_errors.txt');
         echo json_encode(['error' => 'Failed to fetch tasks']);
     }
-} else {
-    // If grade isn't provided, return a JSON error message
-    echo json_encode(['error' => 'Grade not specified']);
-}
+
 ?>

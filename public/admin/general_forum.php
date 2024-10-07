@@ -15,6 +15,9 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+$grade = 'general';
+$_SESSION['grade'] = $grade;
+
 // Set default values for the variables
 $gen_forum ='gen_forum';
 $csrf_token = $_SESSION['csrf_token'];
@@ -84,7 +87,7 @@ unset($_SESSION['success_message']);
 
                 <div class="mb-4 text-end">
 
-                    <a href="new_post.php?forum=general" class="btn btn-primary">Create New Post</a>
+                    <a href="new_post.php?grade=general" class="btn btn-primary">Create New Post</a>
                 </div>
 
                 <?php if (count($posts) > 0): ?>

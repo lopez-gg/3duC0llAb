@@ -173,7 +173,7 @@ p.event-status{
 }
 
 /* reminders */
-.reminders-con{
+.reminders-con, .due-tasks-con{
     flex: 1;
     min-width: 300px;
     width: 100%;
@@ -185,7 +185,7 @@ p.event-status{
     position: relative;
 }
 
-.reminders-heading{
+.reminders-heading, .due-tasks-con-heading{
     position: sticky;
     top: 0;
     background-color: #fff;
@@ -198,12 +198,13 @@ p.event-status{
     margin: 0;
 }
 
-.reminders-lists{
+.reminders-lists, .dashb-task-list-container{
     max-height: 350px;
     overflow-y: scroll;
     padding: 10px;
     scrollbar-width: none;
 }
+
 
 .reminder-li {
     display: flex;
