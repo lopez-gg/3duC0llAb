@@ -1,9 +1,9 @@
 <?php
-
 require_once __DIR__ . '/../../src/config/config.php';
 require_once __DIR__ . '/../../src/config/access_control.php'; 
 require_once __DIR__ . '/../../src/config/session_config.php';
 require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
+
 
 $events = require_once __DIR__ . '/../../src/processes/fetch_upcoming_events.php'; 
 
@@ -12,11 +12,12 @@ check_access('USER');
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: /public/login.php'); 
+    header('Location: ../login.php'); 
     exit;
 }
 
 $userId = ($_SESSION['user_id']);
+$calendr = 'calendar';
 
 // Set timezone
 date_default_timezone_set('Asia/Manila'); 
@@ -29,17 +30,17 @@ $currentMonth = date('F Y'); // e.g., July 2024
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendar</title>
     <link href='https://fullcalendar.io/releases/fullcalendar/3.9.0/fullcalendar.min.css' rel='stylesheet' />
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css' rel='stylesheet' />
     <link href="../../src/css/custom-calendar.css" rel="stylesheet" />
     <link href="../../src/css/gen.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../src/css/message.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <script> src='../../src/js/datetime.js'</script>
     <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
     <script src='https://fullcalendar.io/releases/fullcalendar/3.9.0/lib/jquery.min.js'></script>
     <script src='https://fullcalendar.io/releases/fullcalendar/3.9.0/lib/moment.min.js'></script>
@@ -47,18 +48,12 @@ $currentMonth = date('F Y'); // e.g., July 2024
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src='https://fullcalendar.io/releases/fullcalendar/3.9.0/fullcalendar.min.js'></script>
 
+    
 </head>
 <body>
     <?php include '../nav-sidebar-temp.php'?>
-   
-    
         <div class="content" id="content">
-
-            <!-- Current date and time -->
-            <div id="datetime">
-                <?php echo $currentDateTime; ?>
-            </div>
-
+        
             <!-- Calendar display -->
             <h2>PSCS Calendar</h2>
             <div id='calendar'></div>
@@ -80,12 +75,17 @@ $currentMonth = date('F Y'); // e.g., July 2024
                 </div>
             </div>
         </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+
+        <script src='../../src/js/datetime.js'></script>
+        <script src="../../src/js/calendar.js"></script>
+        <script src="../../src/js/toggleSidebar.js"></script>
+        <script src='../../src/js/notification.js'></script>
+        <script src='../../src/js/message.js'></script>
     </div>
 
+    
 
-    <script src="../../src/js/calendar.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
-    <script src="../../src/js/toggleSidebar.js"></script>
-    <script src='../../src/js/notification.js'></script>
 </body>
 </html>

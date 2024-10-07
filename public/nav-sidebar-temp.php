@@ -47,7 +47,7 @@
     <!-- sidebar -->
     <div class="main">
     <div class="sidebar" id="sidebar">
-        <div class="logo"></div> 
+        <div class="logo"> <img src="../src/img/gen/pscslogo2.jpg" alt="pscs logo"></div> 
         <div class="nav-links">
             <a class="<?= getNavState($my_space) ?: '' ?>" href="my_space.php"><i class="bi bi-person-workspace"></i>My Space</a>
             <a class="<?= getNavState($dashb) ?: '' ?>" href="dashboard.php"><i class="bi bi-speedometer"></i>Dashboard</a>
