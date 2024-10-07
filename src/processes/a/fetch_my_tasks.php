@@ -14,10 +14,15 @@ function fetch_my_tasks($userId, $order = 'desc', $progress = '', $search = '', 
     try {
         // Prepare the SQL query
         $query = "
-            SELECT t.id, t.title, t.description, t.taskType, t.tag, t.grade, t.progress, t.due_date, t.due_time 
-            FROM tasks t
-            WHERE (t.assignedTo = :userId OR (t.assignedBy = :userId AND t.assignedTo = :userId)) AND t.progress != 'completed'";
-
+        SELECT t.id, t.title, t.description, t.taskType, t.tag, t.grade, t.progress, t.due_date, t.due_time,
+               u_assigned.username AS assigned_username,
+               u_by.username AS assigned_by_username
+        FROM tasks t
+        LEFT JOIN users u_assigned ON t.assignedTo = u_assigned.id
+        LEFT JOIN users u_by ON t.assignedBy = u_by.id
+        WHERE (t.assignedTo = :userId OR (t.assignedBy = :userId AND t.assignedTo = :userId)) 
+          AND t.progress != 'completed'";
+          
         if (!empty($progress)) {
             $query .= " AND t.progress = :progress";
         }

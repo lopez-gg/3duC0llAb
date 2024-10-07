@@ -7,28 +7,12 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: ../../public/login.php');
     exit;
 }
+$utype = $_SESSION['accType'];
 $currentUserId = $_SESSION['user_id'];  
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-try {
-    $stmt = $pdo->prepare("SELECT accType FROM users WHERE id = :userId");
-    $stmt->execute(['userId' => $currentUserId]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    
-    if ($user) {
-        $accountType = $user['accType']; // Fetch the account type
-    } else {
-        // Handle case where user is not found, if necessary
-        header('Location: ../../public/login.php');
-        exit;
-    }
-} catch (PDOException $e) {
-    log_error('Database query failed: ' . $e->getMessage(), 'db_errors.txt');
-    header('Location: ../../public/error_page.php?message=Failed to retrieve account type.');
-    exit;
-}
 
 // Check if the request method is POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -78,7 +62,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if($accountType === 'ADMIN'){
             header('Location: ../../public/admin/my_space.php');
         }else{
-            header('Location: ../../public/user/dashboard.php');
+            header('Location: ../../public/user/my_space.php');
+        }
+        if($utype === "ADMIN"){
+            header("Location: ../../public/admin/my_space.php");
+        } else if ($utype === "USER"){
+            header("Location: ../../public/user/my_space.php");
         }
         exit;
     } catch (PDOException $e) {
@@ -88,7 +77,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if($accountType === 'ADMIN'){
             header('Location: ../../public/admin/my_space.php');
         }else{
-            header('Location: ../../public/user/dashboard.php');
+            header('Location: ../../public/user/my_space.php');
+        }
+        if($utype === "ADMIN"){
+            header("Location: ../../public/admin/my_space.php");
+        } else if ($utype === "USER"){
+            header("Location: ../../public/user/my_space.php");
         }
 
         exit;

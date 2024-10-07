@@ -14,7 +14,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = $_SESSION['user_id']; // Logged-in user ID
-
+$utype = $_SESSION['accType'];
 // Fetch task data from POST request
 $task_id = isset($_POST['id']) ? $_POST['id'] : null;
 $title = isset($_POST['title']) ? $_POST['title'] : null;
@@ -57,7 +57,16 @@ try {
     // Set success message and redirect
     $_SESSION['success_title'] = "Success";
     $_SESSION['success_message'] = "Task updated successfully!";
-    header('Location: ../../../public/admin/my_space.php');
+    if($accountType === 'ADMIN'){
+        header('Location: ../../../public/admin/my_space.php');
+    }else{
+        header('Location: ../../../public/user/my_space.php');
+    }
+    if($utype === "ADMIN"){
+        header("Location: ../../../public/admin/my_space.php");
+    } else if ($utype === "USER"){
+        header("Location: ../../../public/user/my_space.php");
+    }
     exit();
 
 } catch (Exception $e) {
@@ -70,6 +79,16 @@ try {
     log_error('Error updating task: ' . $e->getMessage(), 'db_errors.txt');
     $_SESSION['success_title'] = "Failed";
     echo $_SESSION['success_message'] = "Failed to update task. Please try again later.";
-    header('Location: ../../../public/admin/my_space.php');
+    if($accountType === 'ADMIN'){
+        header('Location: ../../public/admin/my_space.php');
+    }else{
+        header('Location: ../../public/user/my_space.php');
+    }
+    if($utype === "ADMIN"){
+        header("Location: ../../public/admin/my_space.php");
+    } else if ($utype === "USER"){
+        header("Location: ../../public/user/my_space.php");
+    }
+    
     exit();
 }
