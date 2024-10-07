@@ -3,7 +3,6 @@
 require_once __DIR__ . '/../src/config/session_config.php';
 require_once __DIR__ . '/../src/config/access_control.php';
 require_once __DIR__ . '/../src/config/db_config.php';
-require_once __DIR__ . '/../src/config/config.php';
 
 $successTitle = isset($_SESSION['success_title']) ? $_SESSION['success_title'] : null;
 $successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
@@ -196,7 +195,7 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="reminderModalLabel">Reminder Details</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
@@ -204,7 +203,7 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
         <!-- Reminder details will be populated here -->
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

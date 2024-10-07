@@ -23,7 +23,7 @@ if (!$reminderId) {
 
 try {
     // Mark the reminder as done
-    $stmt = $pdo->prepare("UPDATE reminders SET status = 'completed', reminded_at = NOW() WHERE id = :reminder_id AND user_id = :user_id");
+    $stmt = $pdo->prepare("UPDATE reminders SET status = 'done', reminded_at = NOW() WHERE id = :reminder_id AND user_id = :user_id");
     $stmt->execute(['reminder_id' => $reminderId, 'user_id' => $userId]);
 
     echo json_encode(['success' => true]);

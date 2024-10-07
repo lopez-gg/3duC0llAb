@@ -187,12 +187,29 @@ unset($_SESSION['success_message']);
                                         </div>
 
                                         <div class="p-task-action-con">
-                                            <div class="task-action-deactivate">
-                                                <form action="../../src/processes/a/delete_task.php" method="POST">
+                                            <!-- <div class="task-action-deactivate">
+                                                <form action="../../src/processes/delete_task.php" method="POST">
                                                     <input type="hidden" name="id" value="<?= htmlspecialchars($task['id'] ?? '');?>">
                                                     <input type="hidden" name="grade" value="<?= htmlspecialchars($task['grade']) ?? ''?>">
                                                     <button type="submit" title="Discard Task" class="btn btn-normal" style="display: inline;">
                                                         <i class="bi bi-trash3"></i>
+                                                    </button>
+                                                </form>
+                                            </div> -->
+                                            <div class="task-action-reminder">
+                                                <form action="../../src/processes/remind_me.php" method="POST">
+                                                    <input type="hidden" name="id" value="<?= htmlspecialchars($task['id'] ?? '');?>">
+                                                    <input type="hidden" name="rtype" value="<?= htmlspecialchars($task['taskType'] ?? '');?>">
+                                                    <input type="hidden" name="utyp" value="am">
+                                                    <button type="button" title="Set reminder for this task" class="btn" style="display: inline;" 
+                                                        data-bs-toggle="modal" data-bs-target="#setReminderModal"
+                                                        data-task-title="<?= htmlspecialchars($task['title'] ?? ''); ?>"
+                                                        data-task-due="<?= htmlspecialchars($task['due_date'] ?? ''); ?>"
+                                                        data-task-id="<?= htmlspecialchars($task['id'] ?? ''); ?>"
+                                                        data-task-rtype="<?= htmlspecialchars($task['taskType'] ?? ''); ?>"
+                                                        data-task-utyp="am"
+                                                        data-task-rtypetask="task">
+                                                            <i class="bi bi-bell"></i>
                                                     </button>
                                                 </form>
                                             </div>

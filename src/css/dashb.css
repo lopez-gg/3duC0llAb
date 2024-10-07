@@ -103,6 +103,9 @@
     font-size: 14px;
     min-height: 80px;
     margin: 0;
+    align-items: center;
+    display: flex;
+    justify-content: center;
 }
 /* Event card styling */
 .event-card, .reminder-li {

@@ -2,11 +2,12 @@
 require_once __DIR__ . '/../config/db_config.php';
 require_once __DIR__ . '/../config/session_config.php';
 
+header('Content-Type: application/json');
 $eventId = $_GET['event_id']; // Assuming this is passed as a GET parameter
 
 try {
     $stmt = $pdo->prepare("
-        SELECT id, title, description, event_date, end_date, event_type
+        SELECT *
         FROM events
         WHERE id = :event_id
     ");

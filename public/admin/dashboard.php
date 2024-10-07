@@ -102,7 +102,7 @@ unset($_SESSION['success_message']);
                                     }
                                     ?>
                                     <li>
-                                        <div class='space event-card'>
+                                        <div class='event-card'>
                                             <div class='event-info'>
                                                 <div class='event-date'>
                                                     <?php echo $eventStartDate->format('d'); // Display the event day ?>

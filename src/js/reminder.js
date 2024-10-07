@@ -17,7 +17,7 @@ $('#setReminderModal').on('show.bs.modal', function (event) {
         var date = new Date(taskDueDate);
         formattedDate = date.toLocaleDateString('en-US', {
             year: 'numeric', 
-            month: 'long',   // Displays month as a word (e.g., October)
+            month: 'long',   
             day: 'numeric'
         });
     }
@@ -34,14 +34,14 @@ $('#setReminderModal').on('show.bs.modal', function (event) {
 
 // Close modal when 'x' is clicked (handled by Bootstrap)
 document.querySelector('.close').addEventListener('click', function() {
-    $('#reminderModal').modal('hide'); // Use Bootstrap method
+    $('#reminderModal').modal('hide'); 
 });
 
 // Close modal if user clicks outside of it (handled by Bootstrap)
 $(window).on('click', function(event) {
     const modal = $('#reminderModal');
     if ($(event.target).is(modal)) {
-        modal.modal('hide'); // Use Bootstrap method
+        modal.modal('hide'); 
     }
 });
 
@@ -49,7 +49,6 @@ $(window).on('click', function(event) {
 document.addEventListener('DOMContentLoaded', function() {
     fetch('../../src/processes/fetch_reminders.php')
     .then(response => {
-        console.log('Response from fetch_reminders.php:', response);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -64,12 +63,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const reminderItem = document.createElement('div');
             reminderItem.classList.add('reminder-item');
             reminderItem.innerHTML = `
-                <div class="reminder-li">
+                <div class="reminder-li" data-reminder-taskId="${reminder.task_id}"> 
                     <div class="reminder-li-left">
                         <button type="button" class="btn mark-rem-done" data-reminder-id="${reminder.id}">
                             <i class="bi bi-check-circle"></i>
                         </button>
-                    </div>
+                    </div>  
                     <div class="reminder-li-right">
                         <div class="r-title">Today's reminder for: <strong>${reminder.title}</strong></div>
                         <div class="r-message"><p>${reminder.reminder_message || 'No additional message'}</p></div>
@@ -80,9 +79,16 @@ document.addEventListener('DOMContentLoaded', function() {
             // Add event listener to the "Mark as done" button
             const markDoneButton = reminderItem.querySelector('.mark-rem-done');
             markDoneButton.addEventListener('click', function(event) {
-                event.stopPropagation(); // Prevent triggering the reminder click event
-                markReminderAsDone(reminder.id); // Call the function to mark the reminder as done
+                event.stopPropagation(); 
+                markReminderAsDone(reminder.id); 
             });
+
+            // Add event listener to show reminder details when the reminder is clicked
+            reminderItem.addEventListener('click', function() {
+                const taskId = this.querySelector('.reminder-li').dataset.reminderTaskid; // Get the task_id from the dataset
+                openReminderModal(reminder.reminder_type, taskId); // Pass the task_id to openReminderModal
+            });
+
 
             remindersList.appendChild(reminderItem);
         });
@@ -97,35 +103,104 @@ function markReminderAsDone(reminderId) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ reminder_id: reminderId })
     })
-    .then(response => response.json())
-    .then(result => {
-        if (result.success) {
-            alert('Reminder marked as done!');
-            location.reload(); // Reload the page to update the reminders list
-        } else {
-            alert('Failed to mark reminder as done.');
+    .then(response => {
+        // console.log('Response from fetch_reminders.php:', response);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json(); 
+    })
+    .then(data => {
+        console.log('Response data:', data);  // Log raw data for inspection
+        try {
+            const parsedData = JSON.parse(data);
+            displayReminderModal(parsedData, reminderType);  // Parse and pass the data
+        } catch (err) {
+            console.error('Error parsing JSON:', err, data);
         }
     })
     .catch(error => console.error('Error marking reminder as done:', error));
 }
 
+// New function to handle modal display based on reminder type
+function openReminderModal(reminderType, reminderId) { 
+    let reminderUrl = '';
+    
+    if (reminderType === 'task') {
+        reminderUrl = '../../src/processes/load_task_details.php';
+    } else if (reminderType === 'event') {
+        reminderUrl = '../../src/processes/load_event_details.php';
+    }
 
-// Show reminder details in a modal
-function showReminderDetails(reminder) {
-    // Construct modal content
-    const modalBodyContent = `
-        <p><strong>Type:</strong> ${reminder.reminder_type}</p>
-        <p><strong>Date:</strong> ${reminder.reminder_date}</p>
-        <p><strong>Message:</strong> ${reminder.reminder_message}</p>
-        ${reminder.task_title ? `<p><strong>Task:</strong> ${reminder.task_title}</p>` : ''}
-        ${reminder.event_title ? `<p><strong>Event:</strong> ${reminder.event_title}</p>` : ''}
-    `;
+    fetch(reminderUrl + '?id=' + reminderId)  
+        .then(response => {
+            console.log('Response from openReminderModal:', response);
+            console.log('rId: ', reminderId, 'rtype: ', reminderType);
+            if (!response.ok) {
+                throw new Error('Failed to fetch reminder details');
+            }
+            return response.json();
+        })
+        .then(data => {
+            displayReminderModal(data, reminderType); 
+        })
+        .catch(error => console.error('Error fetching reminder details:', error));
+}
 
-    // Set the content in the modal body
-    document.getElementById('modal-body').innerHTML = modalBodyContent;
+// Function to display the reminder details inside the modal
+function displayReminderModal(reminder, reminderType) {
+    const modalTitle = document.getElementById('reminderModalLabel');
+    const modalBody = document.getElementById('modal-body');
 
-    // Show the modal using Bootstrap's modal method
+    console.log('Reminder details from displayReminderModal:', reminder);
+    console.log('Reminder type from displayReminderModal:', reminderType);
+
+    // Set modal title or provide a fallback title
+    modalTitle.textContent = reminder.title || 'No Title Available';
+
+    // Clear the modal body content first
+    modalBody.innerHTML = '';
+
+    // If it's a task reminder, display task details
+    if (reminderType === 'task') {
+        modalBody.innerHTML = `
+            <p><strong>Task Title:</strong> ${reminder.title || 'No Title'}</p>
+            <p><strong>Due Date:</strong> ${reminder.due_date ? formatDate(reminder.due_date) : 'No Due Date'}</p>
+            <p><strong>Due Time:</strong> ${reminder.due_time ? formatTime(reminder.due_time) : 'No Due Time'}</p>
+            <p><strong>Progress:</strong> ${reminder.progress || 'No Progress Info'}</p>
+            <p><strong>Assigned To:</strong> ${reminder.assigned_username || 'No Assignee'}</p>
+            <p><strong>Assigned By:</strong> ${reminder.assigned_by_username || 'No Info'}</p>
+            <p><strong>Grade:</strong> ${reminder.grade ? (reminder.grade === 'SNED' ? 'SNED' : 'Grade ' + reminder.grade) : 'No Grade Info'}</p>
+            <p><strong>Description:</strong> ${reminder.description || 'No Description'}</p>
+        `;
+    }
+    // If it's an event reminder, display event details
+    else if (reminderType === 'event') {
+        modalBody.innerHTML = `
+            <p><strong>Event Title:</strong> ${reminder.title || 'No Title'}</p>
+            <p><strong>Event Date:</strong> ${reminder.event_date ? formatDate(reminder.event_date) : 'No Event Date'}</p>
+            <p><strong>End Date:</strong> ${reminder.end_date ? formatDate(reminder.end_date) : 'No End Date'}</p>
+            <p><strong>Description:</strong> ${reminder.description || 'No Description'}</p>
+        `;
+    } else {
+        // Fallback in case the reminder type is unknown
+        modalBody.innerHTML = `<p>No details available for this reminder type.</p>`;
+    }
+
+    // Show the modal only after the data is populated
     $('#reminderModal').modal('show');
 }
 
+function formatDate(dateString) {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const date = new Date(dateString);
+    return date.toLocaleDateString(undefined, options);
+}
 
+function formatTime(timeString) {
+    const [hours, minutes] = timeString.split(':');
+    const date = new Date();
+    date.setHours(hours);
+    date.setMinutes(minutes);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
