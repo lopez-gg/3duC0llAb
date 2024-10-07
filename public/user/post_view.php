@@ -12,23 +12,21 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: ../login.php');
     exit;
 } else {
-    $grade = isset($_GET['grade']) ? trim($_GET['grade']) : '';
-    $_SESSION['grade'] = $grade;
+    $grade = $_SESSION['grade'];
 
     if (is_numeric($grade) && $grade >= 1 && $grade <= 6) {
-        $gradeurl = 'grade';
+        $grade = $grade;
         $gradetodisplay = 'Grade ' . intval($grade);
     } elseif (strtolower($grade) === 'sned') {
-        $gradeurl = 'grade';
+        $grade = $grade;
         $gradetodisplay = strtoupper($grade);
     } else if(strtolower($grade === 'general')){
-        $gradeurl = 'forum';
+        $grade = $grade;
         $gradetodisplay = 'PSCS General ';
     }else {
         $gradetodisplay = 'Unknown Grade'; 
     }
 }
-
 $post_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
 if ($post_id <= 0) {
@@ -172,19 +170,6 @@ unset($_SESSION['success_message']);
                         </div>
                         <div>
                             <p class="post-meta">by <?= htmlspecialchars($post['username']) ?> on <?= $post['created_at'] ?></p>
-                            <!-- <div class="post-actions">
-                                <a href="edit_post.php?grade=<?= $grade?>&id=<?= $post['id'] ?>" title='Edit post' class="edit-button">
-                                    <i class="bi bi-pencil-square"></i>
-                                </a>
-                                <form id="delete_post_<?= $post['id'] ?>" action="../../src/processes/a/delete_post.php" method="post" style="display:inline;">
-                                    <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
-                                    <input type="hidden" name="grade" value="<?= $grade ?>">
-                                    <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
-                                    <button type="button" class="delete-button" data-form-id="delete_post_<?= $post['id'] ?>">
-                                        <i class="bi bi-trash3"></i>
-                                    </button>
-                                </form>
-                            </div> -->
                         </div>
                     </div>
                     <p><?= nl2br(htmlspecialchars($post['content'])) ?></p>

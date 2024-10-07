@@ -14,8 +14,7 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: ../login.php');
     exit;
 } else {
-    $grade = isset($_GET['grade']) ? trim($_GET['grade']) : '';
-    $_SESSION['grade'] = $grade;
+    $grade = $_SESSION['grade'];
 
     if (is_numeric($grade) && $grade >= 1 && $grade <= 6) {
         $gradetodisplay = 'Grade ' . intval($grade);
@@ -77,9 +76,12 @@ unset($_SESSION['success_message']);
 <body>
     <?php include '../nav-sidebar-temp.php'?>
         <div class="content" id="content">
-
             <div class="container">
-                <h2 class="mb-4">Forum for Grade <?= htmlspecialchars($grade) ?></h2>
+                <h2 class="mb-4">Forum for Grade <?= htmlspecialchars($grade)  ?></h2>
+
+                <div class="mb-4 text-end">
+                    <a href="new_post.php?grade=<?= urlencode($grade) ?>" class="btn btn-primary">Create New Post</a>
+                </div>
 
                 <?php if (count($posts) > 0): ?>
                     <?php foreach ($posts as $post): ?>
@@ -90,30 +92,8 @@ unset($_SESSION['success_message']);
                                     <small class="text-muted">by <?= htmlspecialchars($post['username']) ?> on <?= $post['created_at'] ?></small>
                                 </div>
                                 <div>
-                                    <a href="post_view.php?grade=<?=$grade?>&id=<?= $post['id'] ?>" class="btn btn-sm btn-outline-secondary">See full post</a>
+                                    <a href="post_view.php?grade=<?php echo $grade?>&id=<?= $post['id'] ?>" class="btn btn-sm btn-outline-secondary">See full post</a>
                                 </div>
-                                <!-- <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="bi bi-three-dots-vertical"></i>
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <li>
-                                            <a class="dropdown-item" href="edit_post.php?grade=<?= $grade ?>&id=<?= $post['id'] ?>">
-                                                <i class="bi bi-pencil-square"></i> Edit Post
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <form id="delete_post_<?= $post['id'] ?>" action="../../src/processes/a/delete_post.php" method="post" class="dropdown-item p-0">
-                                                <input type="hidden" name="post_id" value="<?= $post['id'] ?>">
-                                                <input type="hidden" name="grade" value="<?= $grade ?>">
-                                                <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($csrf_token) ?>">
-                                                <button type="submit" class="btn btn-link text-danger p-0 delete-button" style="display:inline;">
-                                                    <i class="bi bi-trash3"></i> Delete Post
-                                                </button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div> -->
                             </div>
                             <div class="card-body">
                                 <p>
