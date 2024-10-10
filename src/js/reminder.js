@@ -46,7 +46,7 @@ $(window).on('click', function(event) {
 });
 
 
-document.addEventListener('DOMContentLoaded', function() {
+function listFetchedReminders() {
     fetch('../../src/processes/fetch_reminders.php')
     .then(response => {
         if (!response.ok) {
@@ -57,44 +57,52 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(data => {
         console.log('Parsed data:', data);
         const remindersList = document.querySelector('.reminders-lists');
-        remindersList.innerHTML = ''; 
-
-        data.forEach(reminder => {
-            const reminderItem = document.createElement('div');
-            reminderItem.classList.add('reminder-item');
-            reminderItem.innerHTML = `
-                <div class="reminder-li" data-reminder-taskId="${reminder.task_id}"> 
-                    <div class="reminder-li-left">
-                        <button type="button" class="btn mark-rem-done" data-reminder-id="${reminder.id}">
-                            <i class="bi bi-check-circle"></i>
-                        </button>
-                    </div>  
-                    <div class="reminder-li-right">
-                        <div class="r-title">Today's reminder for: <strong>${reminder.title}</strong></div>
-                        <div class="r-message"><p>${reminder.reminder_message || 'No additional message'}</p></div>
+        remindersList.innerHTML = ''; // Clear the list before adding new reminders
+        
+        if (data.reminders.length === 0) {
+            remindersList.innerHTML = `<p class="text-muted">${data.message || 'No reminders for today.'}</p>`;
+            return;
+        }else{
+            data.forEach(reminder => {
+                const reminderItem = document.createElement('div');
+                reminderItem.classList.add('reminder-item');
+                reminderItem.innerHTML = `
+                    <div class="reminder-li" data-reminder-taskId="${reminder.task_id}"> 
+                        <div class="reminder-li-left">
+                            <button type="button" class="btn mark-rem-done" data-reminder-id="${reminder.id}">
+                                <i class="bi bi-check-circle"></i>
+                            </button>
+                        </div>  
+                        <div class="reminder-li-right">
+                            <div class="r-title">Today's reminder for: <strong>${reminder.title}</strong></div>
+                            <div class="r-message"><p>${reminder.reminder_message || 'No additional message'}</p></div>
+                        </div>
                     </div>
-                </div>
-            `;
-
-            // Add event listener to the "Mark as done" button
-            const markDoneButton = reminderItem.querySelector('.mark-rem-done');
-            markDoneButton.addEventListener('click', function(event) {
-                event.stopPropagation(); 
-                markReminderAsDone(reminder.id); 
+                `;
+    
+                // Add event listener to the "Mark as done" button
+                const markDoneButton = reminderItem.querySelector('.mark-rem-done');
+                markDoneButton.addEventListener('click', function(event) {
+                    event.stopPropagation(); // Prevent event propagation to the click handler of reminder item
+                    markReminderAsDone(reminder.id); // Call the function to mark reminder as done
+                });
+    
+                // Add event listener to show reminder details when the reminder is clicked
+                reminderItem.addEventListener('click', function() {
+                    const taskId = this.querySelector('.reminder-li').dataset.reminderTaskid; // Get the task_id from the dataset
+                    openReminderModal(reminder.reminder_type, taskId); // Pass the task_id to openReminderModal
+                });
+    
+                remindersList.appendChild(reminderItem); // Append the new reminder to the list
             });
-
-            // Add event listener to show reminder details when the reminder is clicked
-            reminderItem.addEventListener('click', function() {
-                const taskId = this.querySelector('.reminder-li').dataset.reminderTaskid; // Get the task_id from the dataset
-                openReminderModal(reminder.reminder_type, taskId); // Pass the task_id to openReminderModal
-            });
-
-
-            remindersList.appendChild(reminderItem);
-        });
-    })
+        }
+        })
+        
     .catch(error => console.error('Error fetching reminders:', error));
-});
+}
+
+// Example usage:
+listFetchedReminders(); // Call this function when you need to fetch and display reminders
 
 // Mark reminder as done
 function markReminderAsDone(reminderId) {
@@ -104,23 +112,28 @@ function markReminderAsDone(reminderId) {
         body: JSON.stringify({ reminder_id: reminderId })
     })
     .then(response => {
-        // console.log('Response from fetch_reminders.php:', response);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
-        return response.json(); 
+        return response.json();  // No need to parse again, response.json() already does this
     })
     .then(data => {
-        console.log('Response data:', data);  // Log raw data for inspection
-        try {
-            const parsedData = JSON.parse(data);
-            displayReminderModal(parsedData, reminderType);  // Parse and pass the data
-        } catch (err) {
-            console.error('Error parsing JSON:', err, data);
+        console.log('Response data:', data);  
+        if (data.success) {
+            // Prepare and show success modal with a message
+            const successModalBody = document.querySelector('#successModal .modal-body');
+            successModalBody.innerHTML = 'Reminder marked as done successfully!';
+            $('#successModal').modal('show'); // Assuming you're using Bootstrap for modals
+            
+            // Refresh the reminder list
+            listFetchedReminders();  
+        } else {
+            console.error('Error: Success was false', data);
         }
     })
     .catch(error => console.error('Error marking reminder as done:', error));
 }
+
 
 // New function to handle modal display based on reminder type
 function openReminderModal(reminderType, reminderId) { 

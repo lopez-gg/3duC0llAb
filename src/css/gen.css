@@ -275,7 +275,7 @@ body {
     color: #fff;
 }
 
-.dropdown {
+.user-profile-d {
     display: none;
     position: absolute;
     background-color: #fff;
@@ -289,7 +289,7 @@ body {
     right: -20px;
 }
 
-.dropdown a {
+.user-profile-d a {
     display: block;
     padding: 10px;
     text-decoration: none;
@@ -297,16 +297,16 @@ body {
     transition: background-color 0.3s;
 }
 
-.dropdown a:hover {
+.user-profile-d a:hover {
     background-color: #f4f4f4;
 }
 
-.dropdown form {
+.user-profile-d form {
     margin: 0;
     padding: 0;
 }
 
-.dropdown input[type="submit"] {
+.user-profile-d input[type="submit"] {
     width: 100%;
     padding: 10px;
     border: none;
@@ -317,12 +317,12 @@ body {
     transition: background-color 0.3s;
 } */
 
-.dropdown input[type="submit"]:hover {
+.user-profile-d input[type="submit"]:hover {
     background-color: #7e6c6c;
 }
 
 /* Hover effects */
-.dropdown,
+.user-profile-d,
 .notification-bell:hover .notification-dropdown {
     display: block;
 }
@@ -357,10 +357,20 @@ body {
 }
 
 .logo {
-    max-width: 170px;
-    max-height: 100px;
-    background-color: lightblue; 
-    margin-bottom: 30px;
+    max-width: 200px;
+    max-height: 200px;
+    /* background-color: lightblue;  */
+    margin-bottom: 5rem;
+    text-align: center;
+    margin: 0;
+}
+
+.pscslogo{
+    vertical-align: middle;
+    resize: auto;
+    max-width: 130px;
+    /* max-height: auto; */
+    margin-bottom: 10px;
 }
 
 .nav-links {
@@ -390,10 +400,14 @@ body {
 
 .nav-links a:hover {
     background-color: #575757;
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
 }
 
 .nav-links .active{
     background-color: #7b7b7b;
+    border-top-right-radius: 50px;
+    border-bottom-right-radius: 50px;
 }
 
 .content {

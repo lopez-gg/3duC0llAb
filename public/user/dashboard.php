@@ -142,6 +142,7 @@ unset($_SESSION['success_message']);
                 <div class="reminders-con">
                     <h1 class="reminders-heading">Reminders</h1>
                     <div class="reminders-lists">
+                        
                     </div>
                 </div>
             </section>
@@ -151,7 +152,15 @@ unset($_SESSION['success_message']);
             <hr>
             <section class='main-sec' id='sec-three'> 
                 <div class="due-tasks-con">
-                    <h1 class="due-tasks-con-heading">Due Tasks</h1>
+                    <div class="due-task-head">
+                        <h1 class="due-tasks-con-heading">Due Tasks</h1>
+                        <div class="dropdown legendBtn ">
+                            <button class="btn" id="legendButton" data-bs-toggle="modal" data-bs-target="#legendModal">
+                                <i class="bi bi-patch-question" title="Legend"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
                     <div class="dashb-task-list-container">
                         <?php require_once __DIR__ . '/../../src/processes/u/fetch_due_tasks.php';?>
                     </div>
@@ -173,6 +182,48 @@ unset($_SESSION['success_message']);
     <script src='../../src/js/toggleSidebar.js'></script>
     <script src='../../src/js/message.js'></script>
     <script src='../../src/js/reminder.js'></script>
+
+    <script>
+          $(document).ready(function () {
+            $('.task-data-select').on('change', function () {
+                const taskId = $(this).data('task-id');
+                const newProgress = $(this).val();
+                const csrfToken = '<?= $_SESSION['csrf_token'] ?>'; // Assuming CSRF token is set in session
+
+                $.ajax({
+                    url: '../../src/processes/update_task_progress.php',
+                    type: 'POST',
+                    data: {
+                        id: taskId,
+                        progress: newProgress,
+                        csrf_token: csrfToken // Include the CSRF token
+                    },
+                    success: function (response) {
+                        let jsonResponse = JSON.parse(response);
+                        if (jsonResponse.success) {
+                            $('#successModal .modal-body').text(jsonResponse.message);
+                    
+                            $('#successModal').modal('show');
+                            setTimeout(function() {
+                                $('#successModal').modal('hide');
+                            }, 4500);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        let jsonResponse = JSON.parse(response);
+                        if (jsonResponse.error) {
+                            $('#successModal .modal-body').text(jsonResponse.message);
+                    
+                            $('#successModal').modal('show');
+                            setTimeout(function() {
+                                $('#successModal').modal('hide');
+                            }, 4500);
+                        }
+                    }
+                });
+            });
+        });
+    </script>
     
 
 

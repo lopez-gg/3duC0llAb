@@ -166,7 +166,7 @@ unset($_SESSION['success_message']);
                                                 <form action="../../src/processes/remind_me.php" method="POST">
                                                     <input type="hidden" name="id" value="<?= htmlspecialchars($task['id'] ?? '');?>">
                                                     <input type="hidden" name="rtype" value="<?= htmlspecialchars($task['taskType'] ?? '');?>">
-                                                    <input type="hidden" name="utyp" value="ur">
+                                                    <input type="hidden" name="utyp" value="am">
                                                     <button type="button" title="Set reminder for this task" class="btn" style="display: inline;" 
                                                         data-bs-toggle="modal" data-bs-target="#setReminderModal"
                                                         data-task-title="<?= htmlspecialchars($task['title'] ?? ''); ?>"

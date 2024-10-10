@@ -9,8 +9,8 @@ $userId = $_SESSION['user_id'];
 
 $currentDate = date('Y-m-d'); 
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// error_reporting(E_ALL);
+// ini_set('display_errors', 1);
 try {
     // Fetch reminders for today
     $stmt = $pdo->prepare("
@@ -26,6 +26,11 @@ try {
     $reminders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Fetch titles from either the tasks or events table based on reminder_type
+    if (empty($reminders)){
+        echo json_encode(['reminders' => [], 'message' => 'You have no reminders set for today.']);
+        exit;
+    }else {
+
     foreach ($reminders as &$reminder) {
         if ($reminder['reminder_type'] === 'task') {
             // Fetch task title
@@ -44,6 +49,7 @@ try {
         // Provide a default message if reminder_message is NULL
         $reminder['reminder_message'] = $reminder['reminder_message'] ?: 'No additional message provided';
     }
+}
 
     // Return the reminders with titles in JSON format
     echo json_encode($reminders);

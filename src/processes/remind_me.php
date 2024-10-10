@@ -7,6 +7,7 @@ require_once __DIR__ . '/../config/session_config.php';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Retrieve task ID and reminder details from the POST request
+    $utype =$_SESSION['accType'];
     $acctype = htmlspecialchars($_POST['utyp'] ?? '');
     $taskId = htmlspecialchars($_POST['id'] ?? '');
     $reminderDate = htmlspecialchars($_POST['reminder_date'] ?? '');
@@ -67,14 +68,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // echo 'An error occurred while saving the reminder. Please try again later.';
         $_SESSION['success_title'] = 'Failed';
         $_SESSION['success_message'] = 'Failed to add reminder. Please try again.';
-        if($acctype === 'am'){
-            echo 'Reminder has been successfully saved.';
-            // Optionally redirect back or to another page
-            header("Location: ../../../public/admin/my_space.php");
-        }else if($acctype === 'ur'){
-            echo 'Reminder has been successfully saved.';
-            // Optionally redirect back or to another page
+        
+        // Optionally redirect back or to another page
+        if($utype === 'ADMIN'){
+            header('Location: ../../../public/admin/my_space.php');
+            exit;
+        }if($utype === 'USER'){
             header("Location: ../../../public/user/my_space.php");
+            exit;
         }
     }
 

@@ -3,12 +3,12 @@
 require_once __DIR__ . '/../config/db_config.php'; // Includes database configuration
 require_once __DIR__ . '/../config/session_config.php'; // Includes session
 
-
+header('Content-Type: application/json');
 // Assuming the user's ID is stored in the session
 $userId = $_SESSION['user_id']; // Adjust if necessary
 
 if (!isset($_SESSION['user_id'])) {
-    echo json_encode(['message' => 'User not logged in']);
+    header('Location: ../../public/login.php');
     exit;
 }
 
@@ -17,7 +17,7 @@ $data = json_decode(file_get_contents('php://input'), true);
 $reminderId = $data['reminder_id'];
 
 if (!$reminderId) {
-    echo json_encode(['success' => false, 'message' => 'Invalid reminder ID']);
+    echo json_encode(['success' => false, 'message' => 'This reminder is not found. Please try refreshing the page.']);
     exit;
 }
 

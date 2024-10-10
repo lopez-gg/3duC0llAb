@@ -35,7 +35,7 @@
 
             <div class="user-profile" id="userProfile">
                 <div class="user-icon" onclick="toggleUserProfileDropdown(event)">U</div>
-                <div class="dropdown" id="dropdown" style="display: none;">
+                <div class="dropdown user-profile-d" id="dropdown" style="display: none;">
                     <form action="../../src/processes/logout.php" method="post">
                         <input type="submit" name="logout" value="Logout">
                     </form>
@@ -47,7 +47,10 @@
     <!-- sidebar -->
     <div class="main">
     <div class="sidebar" id="sidebar">
-        <div class="logo"> <img src="../src/img/gen/pscslogo2.jpg" alt="pscs logo"></div> 
+        <div class="logo"> 
+            <img class="pscslogo" src="/educollab/src/img/gen/pscslogo.png" alt="pscs logo">
+            <p class="logoname">112011 PSCS</p>
+        </div> 
         <div class="nav-links">
             <a class="<?= getNavState($my_space) ?: '' ?>" href="my_space.php"><i class="bi bi-person-workspace"></i>My Space</a>
             <a class="<?= getNavState($dashb) ?: '' ?>" href="dashboard.php"><i class="bi bi-speedometer"></i>Dashboard</a>

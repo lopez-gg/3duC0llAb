@@ -208,3 +208,34 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
     </div>
   </div>
 </div>
+
+<!-- Legend Modal -->
+<div class="modal fade" id="legendModal" tabindex="-1" aria-labelledby="legendModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="legendModalLabel">Legend</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <ul class="list-group">
+          <li class="list-group-item">
+            <span class="badge" style="background-color: white; border: 1px solid gray;">&nbsp;&nbsp;</span> - Normal
+          </li>
+          <li class="list-group-item">
+            <span class="badge" style="background-color: yellow;">&nbsp;&nbsp;</span> - Urgent
+          </li>
+          <li class="list-group-item">
+            <span class="badge" style="background-color: orange;">&nbsp;&nbsp;</span> - Important
+          </li>
+          <li class="list-group-item">
+            <span class="badge" style="background-color: red;">&nbsp;&nbsp;</span> - Urgent and Important
+          </li>  
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

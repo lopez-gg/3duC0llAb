@@ -185,7 +185,7 @@ p.event-status{
     position: relative;
 }
 
-.reminders-heading, .due-tasks-con-heading{
+.reminders-heading{
     position: sticky;
     top: 0;
     background-color: #fff;
@@ -241,4 +241,34 @@ button.btn.mark-rem-done:hover{
     margin: 0;
     font-size: 15px;
     padding-left: 5px;
+}
+
+.due-task-head{
+    display: grid;
+    grid-template-columns: auto 50px;
+    align-items: center;
+    background-color: #fff;
+    width: 100%;
+    border-bottom: 1px solid #ddd;
+
+}
+.due-tasks-con-heading{
+    position: sticky;
+    top: 0;
+    background-color: #fff;
+    padding: 1.5rem;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    z-index: 1;
+    border-bottom: 1px solid #ddd;
+    margin: 0;
+    
+}
+
+#legendButton{
+   display: flex;
+   align-items: flex-end;
+
+   
 }
