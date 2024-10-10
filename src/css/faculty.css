@@ -1,0 +1,27 @@
+.faculty-con{
+    display: flex;
+    flex-wrap: wrap; /* Allow containers to wrap to the next line */
+    justify-content: space-around; /* Ensure spacing between containers */
+    gap: 20px;
+}
+
+.faculty-container{
+    display: flex;
+    flex-direction: column; /* Stack content vertically */
+    min-width: 300px;
+    max-width: 400px;
+    min-height: 200px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    flex-grow: 1; /* Allow the container to grow to fill available space */
+    flex-shrink: 1;
+}
+
+.faculty-container h3{
+    text-align: center;
+    padding: 0.8rem;
+    background-color: #ececec;
+    border-bottom: 1px solid gray;
+}

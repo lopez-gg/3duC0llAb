@@ -210,7 +210,7 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
 </div>
 
 <!-- Legend Modal -->
-<div class="modal fade" id="legendModal" tabindex="-1" aria-labelledby="legendModalLabel" aria-hidden="true">
+<div class="modal fade" id="legendModal" tabindex="-1" aria-labelledby="legendModalLabel" aria-hidden="true" style="display:none;">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -235,6 +235,25 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- faculty details -->
+<div class="modal fade" id="userDetailsModal" tabindex="-1" aria-labelledby="userDetailsModalLabel" aria-hidden="true" style="display:none;">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="userDetailsModalLabel">User Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Name:</strong> <span id="userName"></span></p>
+        <p><strong>Username:</strong> <span id="userUsername"></span></p>
+        <p><strong>Grade Level:</strong> <span id="userGradeLevel"></span></p>
+        <p><strong>Section:</strong> <span id="userSection"></span></p>
+        <p><strong>Status:</strong> <span id="userStatus"></span></p>
       </div>
     </div>
   </div>

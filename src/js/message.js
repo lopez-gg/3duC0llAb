@@ -407,21 +407,17 @@ function fetchUnreadMessageCount() {
         method: 'GET',
         dataType: 'json', // Ensure we expect a JSON response
         success: function(data) {
-            // Log the entire response for debugging
-            console.log('Response from server:', data);
-
-            // Update the message count in the UI
             if (data.error) {
-                // console.error('Error from PHP:', data.error); // Log any error from PHP
+                // console.error('Error from PHP:', data.error); 
             } else if (typeof data.unread_count !== 'undefined') {
                 // console.log('Unread count:', data.unread_count); 
-                $('.message-count').text(data.unread_count); // Update the count in the UI
+                $('.message-count').text(data.unread_count); 
                 
                 // Hide message-count if the count is 0
                 if (data.unread_count === 0) {
                     $('.message-count').hide();
                 } else {
-                    $('.message-count').show(); // Show it if the count is greater than 0
+                    $('.message-count').show();
                 }
             } else {
                 // console.error('Unread count is undefined in response');
