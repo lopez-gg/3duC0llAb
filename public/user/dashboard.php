@@ -19,15 +19,19 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }else{
     $ugrade = $_SESSION['ugrade'];
-    $userId = ($_SESSION['user_id']);
+    $userId = $_SESSION['user_id'];
     $dashb = 'dashboard';
+
+    if (strtolower($ugrade) === strtolower('sned')){
+        $grade = 'SNED';
+        $_SESSION['grade'] = $grade;
+    }else{
+        $grade = str_replace("Grade ", "", $ugrade);
+        $_SESSION['grade'] = $grade;
+    }
 }
 
-if (strtolower($ugrade) === strtolower('sned')){
-    $grade = 'SNED';
-}else{
-    $grade = str_replace("Grade ", "", $ugrade);
-}
+
 
 // Set timezone
 date_default_timezone_set('Asia/Manila'); 
@@ -85,7 +89,7 @@ unset($_SESSION['success_message']);
                 <a href="my_space.php"><div class="space">My Space</div></a>
                 <a href="general_forum.php"><div class="space">General Forum</div></a>
                 <a href="space_forum.php?grade=<?php echo $grade?>"><div class="space"><?php echo $ugrade?> Forum</div></a>
-                <!-- <a href="#"><div class="space">Appointment Requests</div></a> -->
+                <a href="request_appointment.php"><div class="space">Request Appointment</div></a>
             </section>
 
             <hr>
@@ -154,10 +158,24 @@ unset($_SESSION['success_message']);
                 <div class="due-tasks-con">
                     <div class="due-task-head">
                         <h1 class="due-tasks-con-heading">Due Tasks</h1>
-                        <div class="dropdown legendBtn ">
-                            <button class="btn" id="legendButton" data-bs-toggle="modal" data-bs-target="#legendModal">
-                                <i class="bi bi-patch-question" title="Legend"></i>
-                            </button>
+                        <button class="btn legendBtn" id="legend" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Legend">
+                            <i class="bi bi-patch-question"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="legend">
+                        <ul class="legend-list-group">
+                            <li class="legend-list-group-item">
+                                <span class="badge" style="background-color: white; border: 1px solid gray;">&nbsp;&nbsp;</span> - Normal
+                            </li>
+                            <li class="legend-list-group-item">
+                                <span class="badge" style="background-color: yellow;">&nbsp;&nbsp;</span> - Urgent
+                            </li>
+                            <li class="legend-list-group-item">
+                                <span class="badge" style="background-color: orange;">&nbsp;&nbsp;</span> - Important
+                            </li>
+                            <li class="legend-list-group-item">
+                                <span class="badge" style="background-color: red;">&nbsp;&nbsp;</span> - Urgent and Important
+                            </li>  
+                            </ul>
                         </div>
                     </div>
                     

@@ -118,6 +118,15 @@ unset($_SESSION['success_message']);
         <script src='../../src/js/message.js'></script>
 
         <script>
+            $(window).on('load', function() {
+                <?php if ($successMessage): ?>
+                    $('#successModal').modal('show');
+                    setTimeout(function() {
+                        $('#successModal').modal('hide');
+                    }, 4500);
+                <?php endif; ?>
+            });
+
             // Function to load faculty members and populate containers
             function loadFaculty() {
                 fetch('../../src/processes/u/fetch_faculty.php')
@@ -177,7 +186,7 @@ unset($_SESSION['success_message']);
             // Function to fetch and show user details in the modal
             function showUserDetails(userId) {
                 // console.log(`Fetching details for user ID: ${userId}`);
-                fetch(`../../src/processes/u/fetch_faculty_details.php?user_id=${userId}`)  
+                fetch(`../../src/processes/u/fetch_faculty_details.php?f_id=${userId}`)  
                     .then(response => response.json())
                     .then(data => {
                         if (data.error) {
@@ -188,6 +197,12 @@ unset($_SESSION['success_message']);
                             document.getElementById('userGradeLevel').textContent = data.gradeLevel;
                             document.getElementById('userSection').textContent = data.section;
                             document.getElementById('userStatus').textContent = data.status;
+
+                            const requestAppointmentBtn = document.getElementById('requestAppointmentBtn');
+                            requestAppointmentBtn.onclick = function() {
+                                const funame = `${data.username}`;
+                                window.location.href = `request_appointment.php?f_id=${encodeURIComponent(funame)}`;
+                            };
 
                             // Show the modal
                             var userDetailsModal = new bootstrap.Modal(document.getElementById('userDetailsModal'));
