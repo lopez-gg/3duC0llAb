@@ -4,7 +4,7 @@ require_once __DIR__ . '/../../src/config/db_config.php';
 require_once __DIR__ . '/../../src/config/session_config.php';
 require_once __DIR__ . '/../../src/config/access_control.php';
 
-check_access('USER');
+check_access('ADMIN');
 
 // Check if user is logged in
 if (!isset($_SESSION['user_id'])) {
@@ -32,6 +32,11 @@ if (isset($_GET['f_id'])) {
         die('Database error: ' . $e->getMessage());
     }
 }
+
+$successTitle = isset($_SESSION['success_title']) ? $_SESSION['success_title'] : null;
+$successMessage = $_SESSION['success_message'] ?? null;
+include '../display_mod.php';
+unset($_SESSION['success_message']);
 ?>
 
 <!DOCTYPE html>
@@ -170,6 +175,15 @@ if (isset($_GET['f_id'])) {
                     facultySearchResults.style.display = 'none'; // Hide the search results if query is empty
                 }
             });
+        });
+
+        $(window).on('load', function() {
+            <?php if ($successMessage): ?>
+                $('#successModal').modal('show');
+                setTimeout(function() {
+                    $('#successModal').modal('hide');
+                }, 4500);
+            <?php endif; ?>
         });
     </script>
 </body>

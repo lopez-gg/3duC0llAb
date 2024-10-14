@@ -55,6 +55,7 @@
             <a class="<?= getNavState($my_space) ?: '' ?>" href="my_space.php"><i class="bi bi-person-workspace"></i>My Space</a>
             <a class="<?= getNavState($dashb) ?: '' ?>" href="dashboard.php"><i class="bi bi-speedometer"></i>Dashboard</a>
             <a class="<?= getNavState($calendr) ?: '' ?>" href="calendar.php"><i class="bi bi-calendar"></i>Calendar</a>
+            <a class="<?= getNavState($calendr) ?: '' ?>" href="appointments.php"><i class="bi bi-clock"></i>Appointments</a>
             <a class="<?= getNavState($faculty) ?: '' ?>" href="faculty.php"><i class="bi bi-people"></i>Faculty</a>
             <a class="<?= getNavState($gen_forum) ?: '' ?>" href="general_forum.php"><i class="bi bi-megaphone"></i>General Forum</a>
         </div>
