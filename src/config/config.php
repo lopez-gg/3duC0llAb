@@ -39,6 +39,22 @@ function getUrgencyColor($tag) {
     }
 }
 
+function getEventTypeColor($tag) {
+    switch ($tag) {
+        case 'School':
+            return 'white';
+        case 'Holiday':
+            return 'yellow';
+        case 'Special':
+            return 'orange';
+        case 'Others':
+            return 'red';
+        default:
+            return 'white';
+    }
+}
+
+
 function getTaskType($task_type) {
     switch($task_type) {
         case 'assigned':

@@ -25,7 +25,7 @@
 /* Container for each task card */
 .task-card {
     width: 100%;
-    max-width: 380px;
+    max-width: 330px;
     margin: 0.3rem;
     padding: 15px;
     background-color: #fff;

@@ -106,6 +106,28 @@ unset($_SESSION['success_message']);
                     </div>
                 </section>
                 <hr>
+                
+                <button class="btn legendBtn" id="legend" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Legend">
+                    <i class="bi bi-patch-question"></i>
+                </button>
+                <div class="dropdown-menu" aria-labelledby="legend">
+                <ul class="legend-list-group">
+                    <li class="legend-list-group-item">
+                        <span class="badge" style="background-color: white; border: 1px solid gray;">&nbsp;&nbsp;</span> - Normal
+                    </li>
+                    <li class="legend-list-group-item">
+                        <span class="badge" style="background-color: yellow;">&nbsp;&nbsp;</span> - Urgent
+                    </li>
+                    <li class="legend-list-group-item">
+                        <span class="badge" style="background-color: orange;">&nbsp;&nbsp;</span> - Important
+                    </li>
+                    <li class="legend-list-group-item">
+                        <span class="badge" style="background-color: red;">&nbsp;&nbsp;</span> - Urgent and Important
+                    </li>  
+                    </ul>
+                </div>
+
+                
                 <div class="task-list-container">
                     <?php if (empty($tasks)): ?>
                         <div>No personal tasks found.</div>

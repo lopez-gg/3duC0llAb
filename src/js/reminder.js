@@ -1,3 +1,7 @@
+document.addEventListener('DOMContentLoaded', () => {
+    listFetchedReminders();
+});
+
 // Event listener to capture when the modal is triggered
 $('#setReminderModal').on('show.bs.modal', function (event) {
     // Button that triggered the modal
@@ -32,7 +36,6 @@ $('#setReminderModal').on('show.bs.modal', function (event) {
     modal.find('input[name="rtypetask"]').val(rtypetask);
 });
 
-// Close modal when 'x' is clicked (handled by Bootstrap)
 document.querySelector('.close').addEventListener('click', function() {
     $('#reminderModal').modal('hide'); 
 });
@@ -55,7 +58,7 @@ function listFetchedReminders() {
         return response.json(); 
     })
     .then(data => {
-        console.log('Parsed data:', data);
+        // console.log('Parsed data:', data);
         const remindersList = document.querySelector('.reminders-lists');
         remindersList.innerHTML = ''; // Clear the list before adding new reminders
         
@@ -100,9 +103,6 @@ function listFetchedReminders() {
         
     .catch(error => console.error('Error fetching reminders:', error));
 }
-
-// Example usage:
-listFetchedReminders(); // Call this function when you need to fetch and display reminders
 
 // Mark reminder as done
 function markReminderAsDone(reminderId) {
