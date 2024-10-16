@@ -72,7 +72,7 @@ unset($_SESSION['success_message']);
             <section class='main-sec' id='sec-two'>
                 <a href="faculty.php"><div class="space">Faculty</div></a>
                 <a href="general_forum.php"><div class="space">General Forum</div></a>
-                <a href="appointments.php"><div class="space">Appointment Requests</div></a>
+                <!-- <a href="appointments.php"><div class="space">Appointment Requests</div></a> -->
             </section>
 
             <hr>

@@ -17,7 +17,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 
-$my_space = 'my_space';
+$faculty = 'faculty';
 
 // Handle Pagination Variables
 $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1; 
@@ -48,6 +48,7 @@ unset($_SESSION['success_message']);
 ?>
 
 <!DOCTYPE html>
+<html lang="en">
 <html>
     <head>
         <meta charset="UTF-8">

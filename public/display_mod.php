@@ -227,12 +227,92 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
 
         <div class="modal-footer">
         <!-- Button to Request Appointment -->
-        <button type="button" class="btn btn-primary" id="requestAppointmentBtn">
+        <!-- <button type="button" class="btn btn-primary" id="requestAppointmentBtn">
           Request Appointment
-        </button>
+        </button> -->
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
       </div>
       </div>
     </div>
+  </div>
+</div>
+
+<!-- Modal for requesting a change -->
+
+<div class="modal fade" id="requestCrChangeModal" tabindex="-1" aria-labelledby="requestCrChangeModalLabel" aria-hidden="true" style="display:none;">
+  <div class="modal-dialog">
+    <form method="POST" action="../../src/processes/send_request_change.php">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="requestCrChangeModalLabel">Request Change of Appointment</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="crappointment_id" id="crappointmentId">
+
+          <!-- New date field -->
+          <div class="mb-3">
+            <label for="crnewDate" class="form-label">New Date</label>
+            <input type="date" class="form-control" name="new_date" id="crnewDate">
+          </div>
+
+          <!-- New time field -->
+          <div class="mb-3">
+            <label for="crnewTime" class="form-label">New Time</label>
+            <input type="time" class="form-control" name="new_time" id="crnewTime">
+          </div>
+          
+          <!-- Optional notes -->
+          <div class="mb-3">
+            <label for="crnotes" class="form-label">Notes (optional)</label>
+            <textarea class="form-control" name="notes" id="crnotes" rows="3" placeholder="Reason for change"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit Request</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal for requesting a change in change requests-->
+
+<div class="modal fade" id="requestApptChangeModal" tabindex="-1" aria-labelledby="requestChangeModalLabel" aria-hidden="true" style="display:none;">
+  <div class="modal-dialog">
+    <form method="POST" action="../../src/processes/send_request_change.php">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="requestChangeModalLabel">Request Change of Appointment</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" name="appointment_id" id="appointmentId">
+
+          <!-- New date field -->
+          <div class="mb-3">
+            <label for="newDate" class="form-label">New Date</label>
+            <input type="date" class="form-control" name="new_date" id="newDate">
+          </div>
+
+          <!-- New time field -->
+          <div class="mb-3">
+            <label for="newTime" class="form-label">New Time</label>
+            <input type="time" class="form-control" name="new_time" id="newTime">
+          </div>
+          
+          <!-- Optional notes -->
+          <div class="mb-3">
+            <label for="notes" class="form-label">Notes (optional)</label>
+            <textarea class="form-control" name="notes" id="notes" rows="3" placeholder="Reason for change"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit Request</button>
+        </div>
+      </div>
+    </form>
   </div>
 </div>

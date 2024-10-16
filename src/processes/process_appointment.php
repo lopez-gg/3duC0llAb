@@ -19,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $additionalNotes = $_POST['additional_notes'];
     $faculty_username = $_POST['faculty_username'];
     $utype = $_SESSION['accType'];
+    $my_username = $_SESSION['username'];
 
     // Validate form data (you can add more validation as needed)
     if (empty($appointmentDate) || empty($appointmentTime) || empty($appointmentTitle)) {
@@ -33,13 +34,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
     try {
         // Prepare the SQL statement to insert the appointment request
-        $query = "INSERT INTO appointments (user_id, faculty_id, appointment_title, appointment_date, appointment_time, additional_notes) 
-                  VALUES (:user_id, :faculty_id, :appointment_title, :appointment_date, :appointment_time, :additional_notes)"; // Fixed here
+        $query = "INSERT INTO appointments (requestor, requestee, appointment_title, appointment_date, appointment_time, additional_notes) 
+                  VALUES (:requestor, :requestee, :appointment_title, :appointment_date, :appointment_time, :additional_notes)"; // Fixed here
         $stmt = $pdo->prepare($query);
     
         // Bind parameters
-        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
-        $stmt->bindParam(':faculty_id', $facultyId, PDO::PARAM_INT);
+        $stmt->bindParam(':requestor', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':requestee', $facultyId, PDO::PARAM_INT);
         $stmt->bindParam(':appointment_title', $appointmentTitle, PDO::PARAM_STR); // Added here
         $stmt->bindParam(':appointment_date', $appointmentDate);
         $stmt->bindParam(':appointment_time', $appointmentTime);
@@ -49,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($stmt->execute()) {
             // Create a notification for the faculty
             $notifType = 'appointment_request'; 
-                $notifContent = "You have received a new appointment request titled '$appointmentTitle' from $faculty_username";
+                $notifContent = "You have received a new appointment request titled '$appointmentTitle' from $my_username";
                 $notifStatus = 'unread';
 
             // Prepare notification SQL

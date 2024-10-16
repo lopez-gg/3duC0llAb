@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../src/config/session_config.php'; // Ensure session
 
 $user_id = $_SESSION['user_id']; // Currently logged-in user
 
+$view = $_GET['view'] ?? 'appointments'; 
 // Search, sort, and filter logic
 $search = $_GET['search'] ?? '';
 $sort_order = $_GET['sort_order'] ?? 'asc';
@@ -17,50 +18,66 @@ $active_filter = $_GET['filter'] ?? '';
 $active_month = $_GET['filter_month'] ?? '';
 $active_status = $_GET['filter_status'] ?? '';
 
-// SQL base query
-$sql = "SELECT a.*, 
-               u1.username AS sender, 
-               u2.username AS receiver
-        FROM appointments a
-        JOIN users u1 ON a.user_id = u1.id
-        JOIN users u2 ON a.faculty_id = u2.id
-        WHERE (u1.username LIKE :search OR a.additional_notes LIKE :search)";
+if ($view === 'appointments') {
+    // SQL query for appointments
+    $sql = "SELECT a.*, 
+                   u1.username AS sender, 
+                   u2.username AS receiver
+            FROM appointments a
+            JOIN users u1 ON a.requestor = u1.id
+            JOIN users u2 ON a.requestee = u2.id
+            WHERE (a.requestor = :user_id OR a.requestee = :user_id)
+            AND (u1.username LIKE :search OR u2.username LIKE :search OR a.additional_notes LIKE :search)";
 
+    // Add the filters for appointments
+    if ($filter === 'received') {
+        $sql .= " AND a.requestee = :user_id";
+    } elseif ($filter === 'sent') {
+        $sql .= " AND a.requestor = :user_id";
+    }
 
-// Add conditions based on the filter
-if ($filter === 'received') {
-    $sql .= " AND a.faculty_id = :faculty_id"; 
-} elseif ($filter === 'sent') {
-    $sql .= " AND a.user_id = :user_id"; 
+    if (!empty($filter_month)) {
+        $sql .= " AND MONTH(a.appointment_date) = :filter_month";
+    }
+
+    if (!empty($filter_status)) {
+        $sql .= " AND a.status = :filter_status";
+    }
+
+    // Sorting and execution
+    $sql .= " ORDER BY a.appointment_date $sort_order";
+    $stmt = $pdo->prepare($sql);
+} elseif ($view === 'change_requests') {
+    // SQL query for change requests
+    $sql = "SELECT cr.*, 
+                   u1.username AS requested_by_user, 
+                   u2.username AS requested_to_user
+            FROM change_requests cr
+            JOIN users u1 ON cr.requested_by = u1.id
+            JOIN users u2 ON cr.requested_to = u2.id 
+            WHERE (cr.requested_by = :user_id OR cr.requested_to = :user_id)
+            AND (u1.username LIKE :search OR u2.username LIKE :search OR cr.notes LIKE :search)";
+
+    // Add filters for change requests if needed
+    if ($filter === 'received') {
+        $sql .= " AND cr.requested_to = :user_id";
+    } elseif ($filter === 'sent') {
+        $sql .= " AND cr.requested_by = :user_id";
+    }
+
+    if (!empty($filter_status)) {
+        $sql .= " AND cr.status = :filter_status";
+    }
+
+    // Sorting and execution
+    $sql .= " ORDER BY cr.created_at $sort_order";
+    $stmt = $pdo->prepare($sql);
 }
 
-// Handle month filtering
-if (!empty($filter_month)) {
-    $sql .= " AND MONTH(a.appointment_date) = :filter_month";
-}
-
-// Handle status filtering
-if (!empty($filter_status)) {
-    $sql .= " AND a.status = :filter_status";
-}
-
-// Handle requests sent to the user
-if (!empty($filter_to_user)) {
-    $sql .= " AND a.faculty_id = :user_id"; 
-}
-
-// Handle requests sent by the user
-if (!empty($filter_by_user)) {
-    $sql .= " AND a.user_id = :user_id"; 
-}
-
-// Sorting
-$sql .= " ORDER BY a.appointment_date $sort_order";
-
-// Prepare and bind parameters
-$stmt = $pdo->prepare($sql);
+// Bind parameters and execute
 $search_param = "%{$search}%";
 $stmt->bindParam(':search', $search_param, PDO::PARAM_STR);
+$stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
 
 if (!empty($filter_month)) {
     $stmt->bindParam(':filter_month', $filter_month, PDO::PARAM_STR);
@@ -70,19 +87,14 @@ if (!empty($filter_status)) {
     $stmt->bindParam(':filter_status', $filter_status, PDO::PARAM_STR);
 }
 
-if (!empty($filter_to_user) || !empty($filter_by_user)) {
-    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-}
-
-if ($filter === 'received') {
-    $stmt->bindParam(':faculty_id', $user_id, PDO::PARAM_INT); 
-} elseif ($filter === 'sent') {
-    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
-}
-
-// Execute the query and fetch results
 $stmt->execute();
-$appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$results = $stmt->fetchAll(PDO::FETCH_ASSOC); 
+
+$successTitle = isset($_SESSION['success_title']) ? $_SESSION['success_title'] : null;
+$successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
+$verificationMessage = isset($_SESSION['verification_message']) ? $_SESSION['verification_message'] : null;
+include '../display_mod.php';
+unset($_SESSION['success_message']);
 ?>
 
 
@@ -104,6 +116,11 @@ $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <?php include '../nav-sidebar-temp.php'?>
 
     <div class="content" id="content">
+
+        <div class="view-toggle">
+            <button id="appointmentViewBtn" class="btn btn-primary">Appointment Requests</button>
+            <button id="changeRequestViewBtn" class="btn btn-secondary">Change Requests</button>
+        </div>
 
         <section class="actions-section">
             <div class="right-section-actions">
@@ -212,39 +229,130 @@ $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </section>
 
-
-        <!-- Table displaying the appointments -->
-        <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Sender</th>
-                <th>Receiver</th>
-                <th>Requested Date</th>
-                <th>Requested Time</th>
-                <th>Status</th>
-                <th>Notes</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (!empty($appointments)): ?>
-                <?php foreach ($appointments as $appointment): ?>
+        <!-- Table for Appointments -->
+        <?php if ($view === 'appointments'): ?>
+            <table class="table table-bordered">
+                <thead>
                     <tr>
-                        <td><?= htmlspecialchars($appointment['sender']); ?></td>
-                        <td><?= htmlspecialchars($appointment['receiver']); ?></td>
-                        <td><?= date('Y-m-d', strtotime($appointment['appointment_date'])); ?></td>
-                        <td><?= date('H:i', strtotime($appointment['appointment_time'])); ?></td>
-                        <td><?= htmlspecialchars($appointment['status']); ?></td>
-                        <td><?= htmlspecialchars($appointment['additional_notes']); ?></td>
+                        <th>Sender</th>
+                        <th>Receiver</th>
+                        <th>Title</th>
+                        <th>Requested Date</th>
+                        <th>Requested Time</th>
+                        <th>Status</th>
+                        <th>Notes</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($results as $appointment): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($appointment['sender']); ?></td>
+                            <td><?= htmlspecialchars($appointment['receiver']); ?></td>
+                            <td><?= htmlspecialchars($appointment['appointment_title']); ?></td>
+                            <td><?= htmlspecialchars($appointment['appointment_date']); ?></td>
+                            <td><?= htmlspecialchars($appointment['appointment_time']); ?></td>
+                            <td>
+                                <?php if ($appointment['requestee'] == $user_id && $appointment['status'] != 'approved'):?>
+                                        <select class="status-select" style="border:none;" data-appointment-id="<?= $appointment['id']; ?>">
+                                            <option value="pending" <?= $appointment['status'] === 'pending' ? 'selected' : ''; ?>>Pending</option>
+                                            <option value="approved" <?= $appointment['status'] === 'approved' ? 'selected' : ''; ?>>Approved</option>
+                                            <option value="declined" <?= $appointment['status'] === 'declined' ? 'selected' : ''; ?>>Declined</option>
+                                        </select>
+                                    <?php else: ?>
+                                        <?= htmlspecialchars($appointment['status']); ?>
+                                <?php endif; ?>
+                            </td>
+                            <td><?= htmlspecialchars($appointment['additional_notes']); ?></td>
+                                <td>
+                                <?php if ($appointment['requestee'] == $user_id || ($appointment['requestor'] == $user_id && $appointment['status'] === 'approved')) : ?>
+                                    <button class="btn btn-warning requestApptChangeBtn" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#requestApptChangeModal"
+                                            data-appointment-id="<?= $appointment['id']; ?>"
+                                            data-appointment-current-date="<?= $appointment['appointment_date']; ?>" 
+                                            data-appointment-current-time="<?= $appointment['appointment_time']; ?>">
+                                        Request Change
+                                    </button>
+
+                                <?php else: ?>
+                                    <button class="btn btn-primary editBtn" data-id="<?= $appointment['id']; ?>">
+                                        Edit
+                                    </button>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        
+        <!-- Table for Change Requests -->
+        <?php elseif ($view === 'change_requests'): ?>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Requested by</th>
+                        <th>Requested to</th>
+                        <th>Title</th>
+                        <th>New Date</th>
+                        <th>New Time</th>
+                        <th>Status</th>
+                        <th>Notes</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php foreach ($results as $change_request): ?>
+                    <?php
+                        // Fetch the appointment title for the current change request
+                        $appointment_id = $change_request['appointment_id'];
+                        $stmt_appointment = $pdo->prepare("SELECT appointment_title FROM appointments WHERE id = :appointment_id");
+                        $stmt_appointment->bindParam(':appointment_id', $appointment_id, PDO::PARAM_INT);
+                        $stmt_appointment->execute();
+                        $appointment_title = $stmt_appointment->fetchColumn();
+                    ?>
+                    <tr>
+                        <td><?= htmlspecialchars($change_request['requested_by_user']); ?></td>
+                        <td><?= htmlspecialchars($change_request['requested_to_user']); ?></td>
+                        <td><?= htmlspecialchars($appointment_title); ?></td>
+                        <td><?= htmlspecialchars($change_request['new_date']); ?></td>
+                        <td><?= htmlspecialchars($change_request['new_time']); ?></td>
+                        <td>
+                            <?php if ($change_request['requested_to'] == $user_id && $change_request['status'] != 'approved'): ?>
+                                <select class="change-request-status-select" style="border:none;" data-change-request-id="<?= $change_request['id']; ?>">
+                                    <option value="pending" <?= $change_request['status'] === 'pending' ? 'selected' : ''; ?>>Pending</option>
+                                    <option value="approved" <?= $change_request['status'] === 'approved' ? 'selected' : ''; ?>>Approved</option>
+                                    <option value="declined" <?= $change_request['status'] === 'declined' ? 'selected' : ''; ?>>Declined</option>
+                                </select>
+                            <?php else: ?>
+                                <?= htmlspecialchars($change_request['status']); ?>
+                            <?php endif; ?>
+                        </td>
+                        <td><?= htmlspecialchars($change_request['notes']); ?></td>
+                        <td>
+                            <?php if ($change_request['requested_to'] == $user_id || ($change_request['requested_by'] == $user_id && $change_request['status'] === 'approved')): ?>
+                                <button class="btn btn-warning requestCrChangeBtn" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#requestCrChangeModal" 
+                                    data-cr-id="<?= $change_request['id']; ?>"
+                                    data-cr-current-date="<?= $change_request['new_date']; ?>" 
+                                    data-cr-current-time="<?= $change_request['new_time']; ?>">
+                                    Request Change
+                                </button>
+                            <?php else: ?>
+                                <button class="btn btn-primary editBtn" data-id="<?= $change_request['id']; ?>">
+                                    Edit
+                                </button>
+                            <?php endif; ?>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="6">No appointments found</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
 
-        </table>
+                </tbody>
+            </table>
+        <?php endif; ?>
+
+
     </div>
 </div>
 
@@ -341,9 +449,9 @@ $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
             function updateFilterIcon(filter) {
                 let iconSpan = document.getElementById('sentReceivedFilterIcon');
                 if (filter === 'received') {
-                    iconSpan.innerHTML = `<img src="../../src/img/ic/inbox-in.svg" style="height:20px; width: auto;" alt="Received">`;
+                    iconSpan.innerHTML = `<img src="../../src/img/ic/inbox-in.svg" style="height:20px; width: auto; margin:5px;" alt="Received">`;
                 } else if (filter === 'sent') {
-                    iconSpan.innerHTML = `<img src="../../src/img/ic/inbox-out.svg" style="height:20px; width: auto;" alt="Sent">`;
+                    iconSpan.innerHTML = `<img src="../../src/img/ic/inbox-out.svg" style="height:20px; width: auto; margin:5px;" alt="Sent">`;
                 } else {
                     iconSpan.innerHTML = 'All'; 
                 }
@@ -361,12 +469,177 @@ $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 currentUrl.searchParams.set('filter', filter);
                 updateFilterIcon(filter);
                 setTimeout(() => {
-                    window.location.href = url.toString();
+                    window.location.href = currentUrl.toString();
                 }, 100); 
             });
         });
 
+        //Appointment change request
+        document.querySelectorAll('.requestApptChangeBtn').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const appointmentId = this.getAttribute('data-appointment-id');
+                const currentDate = this.getAttribute('data-appointment-current-date');
+                const currentTime = this.getAttribute('data-appointment-current-time');
 
+                // Set values in the modal fields
+                document.getElementById('appointmentId').value = appointmentId;
+                document.getElementById('newDate').value = currentDate;  // Default to current date
+                document.getElementById('newTime').value = currentTime;  // Default to current time
+            });
+        });
+
+        //change_request request
+        document.querySelectorAll('.requestCrChangeBtn').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const appointmentId = this.getAttribute('data-cr-id');
+                const currentDate = this.getAttribute('data-cr-current-date');
+                const currentTime = this.getAttribute('data-cr-current-time');
+
+                // Set values in the modal fields
+                document.getElementById('crappointmentId').value = appointmentId;
+                document.getElementById('crnewDate').value = currentDate;  // Default to current date
+                document.getElementById('crnewTime').value = currentTime;  // Default to current time
+            });
+        });
+
+
+
+        $(document).ready(function() {
+            // Handle status change
+            $('.status-select').on('change', function() {
+                const appointmentId = $(this).data('appointment-id');
+                const newStatus = $(this).val();
+
+                // Send AJAX request to update the status
+                $.ajax({
+                    url: '../../src/processes/update_appointment_status.php', // Update this to your actual update script
+                    method: 'POST',
+                    dataType: 'json',
+                    data: {
+                        id: appointmentId,
+                        status: newStatus
+                    },
+                    success: function(response) {
+                    console.log("Raw response:", response); // Check the raw response first
+
+                    try {
+                        let message = '';
+                        
+                        if (response.success) {
+                            if (newStatus === 'approved') {
+                                message = 'Change request approved and appointment updated!';
+                            } else {
+                                message = 'Change request status updated!';
+                            }
+                        } else {
+                            message = 'Error updating status.';
+                        }
+
+                        // Assign the message to the successModal body
+                        $('#successModal .modal-body').text(message);
+                        
+                        // Show the modal
+                        $('#successModal').modal('show');
+                        
+                        // Hide the modal after 3 seconds
+                        setTimeout(function() {
+                            $('#successModal').modal('hide');
+                        }, 3000);
+                    } catch (e) {
+                        console.error('Error parsing JSON:', e);
+                        console.error('Response:', response);
+                        $('#successModal .modal-body').text('Failed to update status due to invalid response.');
+                        $('#successModal').modal('show');
+                        setTimeout(function() {
+                            $('#successModal').modal('hide');
+                        }, 3000);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error updating status:', textStatus, errorThrown);
+                    $('#successModal .modal-body').text('Failed to update status.');
+                    $('#successModal').modal('show');
+                    setTimeout(function() {
+                        $('#successModal').modal('hide');
+                    }, 3000);
+                }
+                });
+            });
+        });
+
+        document.getElementById('appointmentViewBtn').addEventListener('click', function() {
+            const url = new URL(window.location.href);
+            url.searchParams.set('view', 'appointments');
+            window.location.href = url.toString();
+        });
+
+        document.getElementById('changeRequestViewBtn').addEventListener('click', function() {
+            const url = new URL(window.location.href);
+            url.searchParams.set('view', 'change_requests');
+            window.location.href = url.toString();
+        });
+
+        $(document).ready(function() {
+        // Handle change request status change
+        $('.change-request-status-select').on('change', function() {
+            const changeRequestId = $(this).data('change-request-id');
+            const newStatus = $(this).val();
+
+            // Send AJAX request to update the change request status
+            $.ajax({
+                url: '../../src/processes/update_change_request_status.php', // Update to your actual script
+                method: 'POST',
+                data: {
+                    id: changeRequestId,
+                    status: newStatus
+                },
+                success: function(response) {
+                    console.log("Raw response:", response); // Check the raw response first
+
+                    try {
+                        let message = '';
+                        
+                        if (response.success) {
+                            if (newStatus === 'approved') {
+                                message = 'Change request approved and appointment updated!';
+                            } else {
+                                message = 'Change request status updated!';
+                            }
+                        } else {
+                            message = 'Error updating status.';
+                        }
+
+                        // Assign the message to the successModal body
+                        $('#successModal .modal-body').text(message);
+                        
+                        // Show the modal
+                        $('#successModal').modal('show');
+                        
+                        // Hide the modal after 3 seconds
+                        setTimeout(function() {
+                            $('#successModal').modal('hide');
+                        }, 3000);
+                    } catch (e) {
+                        console.error('Error parsing JSON:', e);
+                        console.error('Response:', response);
+                        $('#successModal .modal-body').text('Failed to update status due to invalid response.');
+                        $('#successModal').modal('show');
+                        setTimeout(function() {
+                            $('#successModal').modal('hide');
+                        }, 3000);
+                    }
+                },
+                error: function(jqXHR, textStatus, errorThrown) {
+                    console.error('Error updating status:', textStatus, errorThrown);
+                    $('#successModal .modal-body').text('Failed to update status.');
+                    $('#successModal').modal('show');
+                    setTimeout(function() {
+                        $('#successModal').modal('hide');
+                    }, 3000);
+                }
+            });
+        });
+    });
     </script>
 
 </body>
