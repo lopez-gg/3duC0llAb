@@ -5,95 +5,76 @@ require_once __DIR__ . '/../../src/config/db_config.php';
 require_once __DIR__ . '/../../src/config/config.php';
 require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
 
-$events = require_once __DIR__ . '/../../src/processes/fetch_upcoming_events.php'; 
-include '../../src/processes/fetch_sy.php';
-include '../../src/processes/fetch_e_type.php';
-
 // Check if the user is admin
 check_access('ADMIN');
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header('Location: ../login.php');
+    header('Location: ../login.php'); 
     exit;
 }
 
-$calendr = 'calendar';
+try {
+    // Query the year ranges from the sy table
+    $query = "SELECT year_range FROM sy ORDER BY year_range desc";
+    $stmt = $pdo->prepare($query);
+    $stmt->execute();
+
+    // Fetch all year ranges
+    $yearRanges = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+} catch (PDOException $e) {
+    // Handle any potential database errors
+    echo "Error fetching year ranges: " . $e->getMessage();
+    $yearRanges = []; 
+}
+
+// Default values
 $dashb = '';
 $my_space = '';
-$calendr = '';
+$calendr = 'calendar';
 $gen_forum = '';
-$faculty = '';
-
-$month = isset($_GET['month']) ? (int)$_GET['month'] : null;
-$order = isset($_GET['order']) && $_GET['order'] === 'desc' ? 'desc' : 'asc';
+$events = [];
 $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$yearRange = isset($_GET['year_range']) ? $_GET['year_range'] : getCurrentYearRange();
+$totalPages = 1;
 
-// Get base URL from the configuration
-$baseURL = $config['base_url'] . '/src/processes/a/fetch_manage_events.php';
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$yearRange = isset($_GET['year_range']) ? trim($_GET['year_range']) : '';
+$order = isset($_GET['order']) ? ($_GET['order'] === 'desc' ? 'desc' : 'asc') : 'asc';
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$itemsPerPage = $eventsData['itemsPerPage'] ?? 4;
 
-// Capture current parameters (remove 'events' from params)
-$params = [
-    'page' => $currentPage,
-    'order' => $order,
-    'month' => $month,
-    'year_range' => $yearRange,
-    'search' => isset($_GET['search']) ? $_GET['search'] : ''
-];
 
-// Build URL with current parameters
-$url = $baseURL . '?' . http_build_query(array_filter($params)); // Build query without nulls
+$baseUrl = $config['base_url'];
+// Fetch events with pagination and filters
+require_once __DIR__ . '/../../src/processes/a/fetch_manage_events.php';
+$eventsData = fetch_events($search, $yearRange, $order, $page, $itemsPerPage);
 
-// Debugging: Print URL to ensure it's built correctly
-// echo "Constructed URL: " . htmlspecialchars($url) . "<br>";
+// if (isset($eventsData['error'])) {
+//     echo "<p>Error: " . htmlspecialchars($eventsData['error']) . "</p>";
+//     exit;
+// }
 
-// Fetch paginated events
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-$response = curl_exec($ch);
+// Handle fetched data
+$events = $eventsData['events'] ?? [];
+$totalPages = $eventsData['totalPages'] ?? 1;
+$currentYearRange = $eventsData['currentYearRange'] ?? '';
+$url = "manage_events.php?". "&year_range=" . urlencode($yearRange) . "&order=" . urlencode($order) . "&page=" . urlencode($page) . "search=" . urlencode($search) ;
 
-if ($response === false) {
-    $error = curl_error($ch);
-    curl_close($ch);
-    die('Error fetching events: ' . $error);
-}
 
-curl_close($ch);
-
-// Output the raw JSON response for debugging
-// header('Content-Type: application/json');
-// echo $response; // Check what this outputs
-
-$data = json_decode($response, true);
-if ($data === null) {
-    die('Error decoding JSON: ' . json_last_error_msg());
-}
-
-// Use $data['events'], $data['currentPage'], etc. for further processing
-
-// default sy
-$currentYear = date('Y');
-$nextYear = $currentYear + 1;
-$defaultYearRange = "$currentYear-$nextYear";
-
-$events = $data['events'] ?? [];
-$totalPages = $data['totalPages'] ?? 1;
-$currentPage = $data['currentPage'] ?? 1;
-
-// Helper function to format date
+// Format date helper function
 function formatDate($date) {
     $datetime = new DateTime($date);
     return $datetime->format('F j, Y');
 }
 
-$successTitle = isset($_SESSION['success_title']) ? $_SESSION['success_title'] : null;
+// Handle messages
 $successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
 $verificationMessage = isset($_SESSION['verification_message']) ? $_SESSION['verification_message'] : null;
 include '../display_mod.php';
 unset($_SESSION['success_message']);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -129,13 +110,19 @@ unset($_SESSION['success_message']);
                     </div>
                     <div class="rs-a">
                         <button class="btn-filter dropdown-toggle" id="filterIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Filter tasks">
-                            <i class="bi bi-filter"></i> SY <span id="currentYearRange"><?php echo htmlspecialchars($yearRange); ?></span>
+                            <i class="bi bi-filter"></i> SY <span id="currentYearRange">
+                                <?php if(empty($yearRange)) {
+                                    $yearRange = $currentYearRange;
+                                    echo htmlspecialchars($yearRange);
+                                }else{
+                                    echo htmlspecialchars($yearRange); 
+                                    }?></span>
                         </button>
                         <ul class="dropdown-menu" id="yearRangeDropdown" aria-labelledby="dropdownMenuButton">
                             <?php foreach ($yearRanges as $range): ?>
                                 <li>
-                                    <span class="dropdown-item" data-year-range="<?= htmlspecialchars($range['year_range'], ENT_QUOTES, 'UTF-8') ?>">
-                                        <?= htmlspecialchars($range['year_range'], ENT_QUOTES, 'UTF-8') ?>
+                                    <span class="dropdown-item" data-year-range="<?= htmlspecialchars(trim($range['year_range']), ENT_QUOTES, 'UTF-8') ?>">
+                                        <?= htmlspecialchars(trim($range['year_range']), ENT_QUOTES, 'UTF-8') ?>
                                     </span>
                                 </li>
                             <?php endforeach; ?>
@@ -162,7 +149,7 @@ unset($_SESSION['success_message']);
                     </div>
                     <div class="ls-a">
                         <div class="btn-add">
-                            <a href="add_new_event.php?sy=<?= htmlspecialchars($yearRange, ENT_QUOTES, 'UTF-8') ?>" title="Add new event for the current SY"><i class="bi bi-plus-circle"></i></a>
+                            <a href="add_new_event.php?sy=<?= htmlspecialchars(trim($yearRange), ENT_QUOTES, 'UTF-8') ?>" title="Add new event for the current SY"><i class="bi bi-plus-circle"></i></a>
                         </div>
                     </div>
                 </div>
@@ -183,64 +170,81 @@ unset($_SESSION['success_message']);
                 </thead>
                 <tbody id="eventList">
                     <?php 
-                        $itemsPerPage = $data['itemsPerPage'] ?? 10; 
-                        $index = ($currentPage - 1) * $itemsPerPage + 1; 
-                        foreach ($events as $event): 
+                        // Check if there are no events found
+                        if (empty($eventsData['events'])) {
+                            echo '<tr><td colspan="7" class="alert alert-warning text-center">No matching records found.</td></tr>';
+                        } else {
+                            // Loop through events and display them
+                            $itemsPerPage = $eventsData['itemsPerPage'] ?? 10; 
+                            $index = ($eventsData['currentPage'] - 1) * $itemsPerPage + 1; 
+                            foreach ($eventsData['events'] as $event): 
                     ?>
-                        <tr>
-                            <td>
-                                <div 
-                                    class="event_type" 
-                                    title="<?php echo htmlspecialchars($event['event_type']); ?>" 
-                                    style="height:25px; width:25px; background-color:<?php echo htmlspecialchars($event['color']); ?>; border-radius: 50%;">
-                                </div>
-                            </td>
-                            <td><?php echo $index++; ?></td> 
-                            <td><?php echo htmlspecialchars($event['title'] ?? ''); ?></td>
-                            <td><?php echo htmlspecialchars($event['description'] ?? ''); ?></td>
-                            <td><?php echo isset($event['event_date']) ? formatDate($event['event_date']) : ''; ?></td>
-                            <td><?php echo isset($event['end_date']) ? formatDate($event['end_date']) : ''; ?></td>
+                                <tr>
+                                    <td>
+                                        <div 
+                                            class="event_type" 
+                                            title="<?php echo htmlspecialchars($event['event_type']); ?>" 
+                                            style="height:25px; width:25px; background-color:<?php echo htmlspecialchars($event['color']); ?>; border-radius: 50%;">
+                                        </div>
+                                    </td>
+                                    <td><?php echo $index++; ?></td> 
+                                    <td><?php echo htmlspecialchars($event['title'] ?? ''); ?></td>
+                                    <td><?php echo htmlspecialchars($event['description'] ?? ''); ?></td>
+                                    <td><?php echo isset($event['event_date']) ? formatDate($event['event_date']) : ''; ?></td>
+                                    <td><?php echo isset($event['end_date']) ? formatDate($event['end_date']) : ''; ?></td>
 
-                            <td>
-                                <form action="update_event.php" method="GET" style="display:inline;">
-                                    <input type="hidden" name="id" value="<?php echo htmlspecialchars($event['id'] ?? ''); ?>">
-                                    <input type="hidden" name="type" value="<?php echo htmlspecialchars($event['event_type'] ?? ''); ?>">
-                                    <input type="hidden" name="year_range" value="<?php echo htmlspecialchars($event['year_range'] ?? ''); ?>">
-
-                                    <button type="submit" class="btn btn-normal" title="Edit event"><i class="bi bi-pencil-square"></i></button>
-                                </form>
-                                <form id="deleteForm_<?php echo htmlspecialchars($event['id'] ?? ''); ?>" action="../../src/processes/a/delete_event.php" method="POST" >
-                                <input type="hidden" name="id" value="<?php echo htmlspecialchars($event['id'] ?? ''); ?>">
-                                </form>
-                                <button type="button" class="btn btn-danger" title="Delete event" onclick="openVerificationModal('deleteForm_<?php echo htmlspecialchars($event['id'] ?? ''); ?>', 'Confirm Deletion', 'Are you sure you want to delete this event?', 'Delete', 'manage_events.php', '1')">
-                                    <i class="bi bi-trash3"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
+                                    <td>
+                                        <form action="update_event.php" method="GET" style="display:inline;">
+                                            <input type="hidden" name="id" value="<?php echo htmlspecialchars($event['id'] ?? ''); ?>">
+                                            <input type="hidden" name="type" value="<?php echo htmlspecialchars($event['event_type'] ?? ''); ?>">
+                                            <input type="hidden" name="year_range" value="<?php echo htmlspecialchars($event['year_range'] ?? ''); ?>">
+                                            <button type="submit" class="btn btn-normal" title="Edit event"><i class="bi bi-pencil-square"></i></button>
+                                        </form>
+                                        <form id="deleteForm_<?php echo htmlspecialchars($event['id'] ?? ''); ?>" action="../../src/processes/a/delete_event.php" method="POST" >
+                                            <input type="hidden" name="id" value="<?php echo htmlspecialchars($event['id'] ?? ''); ?>">
+                                        </form>
+                                        <button type="button" class="btn btn-danger" title="Delete event" onclick="openVerificationModal('deleteForm_<?php echo htmlspecialchars($event['id'] ?? ''); ?>', 'Confirm Deletion', 'Are you sure you want to delete this event?', 'Delete', 'manage_events.php', '1')">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                    <?php 
+                            endforeach; 
+                        } 
+                    ?>
                 </tbody>
+
             </table>
 
-            <nav aria-label="Page navigation example">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item <?php if ($currentPage <= 1) echo 'disabled'; ?>">
-                    <a class="page-link" href="?page=<?php echo $currentPage; ?>&order=<?php echo $order; ?>&year_range=<?php echo $yearRange; ?>&search=<?php echo htmlspecialchars($search); ?>">
-                        <?php echo $currentPage; ?>
-                    </a>
-                    </li>
-                    <?php for ($page = 1; $page <= $totalPages; $page++): ?>
-                        <li class="page-item <?php if ($page == $currentPage) echo 'active'; ?>">
-                            <a class="page-link" href="?page=<?php echo $page; ?>&order=<?php echo $order; ?><?php echo $month !== null ? '&month=' . $month : ''; ?>"><?php echo $page; ?></a>
+            <?php if ($eventsData['totalPages'] > 1): ?>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination justify-content-center">
+                        <!-- Previous Page Link -->
+                        <li class="page-item <?php if ($eventsData['currentPage'] <= 1) echo 'disabled'; ?>">
+                            <a class="page-link" href="?page=<?php echo max(1, $eventsData['currentPage'] - 1); ?>&order=<?php echo $order; ?>&year_range=<?php echo urlencode(trim($yearRange)); ?>&search=<?php echo urlencode($search); ?>" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
                         </li>
-                    <?php endfor; ?>
-                    <li class="page-item <?php if ($currentPage >= $totalPages) echo 'disabled'; ?>">
-                        <a class="page-link" href="?page=<?php echo $currentPage + 1; ?>&order=<?php echo $order; ?>" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
 
-                </ul>
-            </nav>
+                        <!-- Pagination Number Links -->
+                        <?php for ($page = 1; $page <= $eventsData['totalPages']; $page++): ?>
+                            <li class="page-item <?php if ($page == $eventsData['currentPage']) echo 'active'; ?>">
+                                <a class="page-link" href="?page=<?php echo $page; ?>&order=<?php echo $order; ?>&year_range=<?php echo urlencode(trim($yearRange)); ?>&search=<?php echo urlencode($search); ?>">
+                                    <?php echo $page; ?>
+                                </a>
+                            </li>
+                        <?php endfor; ?>
+
+                        <!-- Next Page Link -->
+                        <li class="page-item <?php if ($eventsData['currentPage'] >= $eventsData['totalPages']) echo 'disabled'; ?>">
+                            <a class="page-link" href="?page=<?php echo min($eventsData['totalPages'], $eventsData['currentPage'] + 1); ?>&order=<?php echo $order; ?>&year_range=<?php echo urlencode(trim($yearRange)); ?>&search=<?php echo urlencode($search); ?>" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            <?php endif; ?>
+
         </div>
     </div>
 
