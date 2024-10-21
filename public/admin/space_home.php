@@ -1,11 +1,9 @@
 <?php
-
+require_once __DIR__ . '/../../src/config/session_config.php';
+require_once __DIR__ . '/../../src/config/access_control.php';
+require_once __DIR__ . '/../../src/config/db_config.php';
 require_once __DIR__ . '/../../src/config/config.php';
-require_once __DIR__ . '/../../src/config/access_control.php'; 
-require_once __DIR__ . '/../../src/config/session_config.php'; 
-require_once __DIR__ . '/../../src/config/db_config.php'; 
 require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
-require_once __DIR__ . '/../../src/processes/check_del_assgnd_tasks.php'; 
 
 // Check if the user is admin
 check_access('ADMIN');
@@ -15,56 +13,50 @@ if (!isset($_SESSION['user_id'])) {
     header('Location: ../login.php');
     exit;
 } else {
+    $userID = $_SESSION['user_id'];
     $grade = isset($_GET['grade']) ? trim($_GET['grade']) : '';
     $_SESSION['grade'] = $grade;
 
     if (is_numeric($grade) && $grade >= 1 && $grade <= 6) {
         $gradetodisplay = 'Grade ' . intval($grade);
-    } elseif (strtolower($grade) === 'sned' || strtolower($grade) === 'kinder' ) {
+    } elseif (strtolower($grade) === 'sned' || strtolower($grade) === 'kinder') {
         $gradetodisplay = strtoupper($grade);
     } else {
-        $gradetodisplay = 'Unknown Grade'; 
+        $gradetodisplay = 'Unknown Grade';
+        $_SESSION['success_message'] = 'Failed to fetch space data. Please try again.'; 
+        // header('Location: dashboard.php');
     }
-    
 }
+
+
+$dashb = 'dashboard';
 
 // Handle Pagination Variables
-$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Initialize $currentPage
-$itemsPerPage = $data['itemsPerPage'] ?? 10; 
-$index = ($currentPage - 1) * $itemsPerPage + 1; 
-$params = [
-    'grade' => $grade, 
-    'order' => isset($_GET['order']) ? $_GET['order'] : 'desc',
-    'progress' => isset($_GET['progress']) ? $_GET['progress'] : '', 
-    'page' => isset($_GET['page']) ? $_GET['page'] : 1 
-];
+$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1; 
+$itemsPerPage = 10; 
+$index = ($currentPage - 1) * $itemsPerPage + 1;
+$order = isset($_GET['order']) ? $_GET['order'] : 'desc';
+$progress = isset($_GET['progress']) ? $_GET['progress'] : '';
+$search = isset($_GET['search']) ? $_GET['search'] : '';
 
-// Build the query string
-$queryString = http_build_query($params);
+// Fetch tasks from internal function
+require_once __DIR__ . '/../../src/processes/a/fetch_space_tasks_new.php';
+$tasksData = fetch_space_tasks($userID, $grade, $order, $progress, $search, $currentPage, $itemsPerPage);
 
-// Fetching tasks per grade
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $config['base_url'] . "/src/processes/a/fetch_space_tasks.php?" . $queryString);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-$tasks_json = curl_exec($ch);
-if (curl_errno($ch)) {
-    echo 'Error:' . curl_error($ch);
-}
-curl_close($ch);
-$tasks = json_decode($tasks_json, true);
 
-if (isset($tasks['error'])) {
-    echo "<p>Error: " . htmlspecialchars($tasks['error']) . "</p>";
+if (isset($tasksData['error'])) {
+    echo "<p>Error: " . htmlspecialchars($tasksData['error']) . "</p>";
+    exit;
 }
 
-$totalPages = $tasks['totalPages'] ?? 1; // Default to 1 if not set
+$tasks = $tasksData['tasks'] ?? [];
+$totalPages = $tasksData['totalPages'] ?? 1;
+
 
 $successTitle = isset($_SESSION['success_title']) ? $_SESSION['success_title'] : null;
-$successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
-$verificationMessage = isset($_SESSION['verification_message']) ? $_SESSION['verification_message'] : null;
+$successMessage = $_SESSION['success_message'] ?? null;
 include '../display_mod.php';
 unset($_SESSION['success_message']);
-
 ?>
 
 <!DOCTYPE html>
@@ -72,11 +64,12 @@ unset($_SESSION['success_message']);
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title><?php echo htmlspecialchars($gradetodisplay); ?></title>
+        <title><?php echo htmlspecialchars($gradetodisplay)?></title>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
         <link href="../../src/css/gen.css" rel="stylesheet">
         <link rel="stylesheet" href="../../src/css/tasks.css">
+        <link href="../../src/css/action_nav.css" rel="stylesheet">
         <link rel="stylesheet" href="../../src/css/message.css">
     </head>
     <body>
@@ -99,26 +92,73 @@ unset($_SESSION['success_message']);
                 </section>
 
                 <hr>
-                <section>
-                    <div class="">
-                        <button class="btn btn-secondary dropdown-toggle" id="sortIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Sort order">
-                            <i class="bi bi-funnel"></i>
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="sortIcon">
-                            <a class="dropdown-item sort-option" data-order="asc" >Ascending</a>
-                            <a class="dropdown-item sort-option" data-order="desc" >Descending</a>
+                <section class="actions-section">
+                    <div class="right-section-actions">
+                        <div class="rs-a">
+                            <button class="btn-sort dropdown-toggle" id="sortIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Sort order">
+                                <i class="bi bi-funnel"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="sortIcon">
+                                <a class="dropdown-item sort-option" data-order="asc">Ascending</a>
+                                <a class="dropdown-item sort-option" data-order="desc">Descending</a>
+                            </div>
+                        </div>
+                        <div class="rs-a">
+                            <button class="btn-filter dropdown-toggle" id="filterIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Filter tasks">
+                                <i class="bi bi-filter"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="filterIcon">
+                                <a class="dropdown-item filter-option" data-progress="">All</a>
+                                <a class="dropdown-item filter-option" data-progress="pending">Pending</a>
+                                <a class="dropdown-item filter-option" data-progress="in_progress">In Progress</a>
+                                <a class="dropdown-item filter-option" data-progress="completed">Completed</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="left-section-actions">
+                        <div class="ls-a">
+                        <div class="search-bar">
+                            <input type="text" class="searchBox" id="taskSearch" placeholder="Search tasks..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+                            <button id="searchButton"><i class="bi bi-search"></i></button>
+                        </div>
+                        </div>
+                        <div class="ls-a">
+                        <div class="btn-add">
+                            <a href="assign_task.php" id="taskEdit" title="Assign new task"><i class="bi bi-plus-circle"></i></a>
+                        </div>
                         </div>
                     </div>
                 </section>
                 <hr>
-                    <div class="task-list-container">
-                        <?php if (empty($tasks['tasks'])): ?>
-                            <div>No tasks found.</div>
-                        <?php else: ?>
-                            <!-- Outer task-grid to hold multiple cards in a row -->
-                            <div class="task-grid">
-                                <?php foreach ($tasks['tasks'] as $task): ?>
-                                    <!-- Each task-card with internal grid for the layout -->
+                <div class="task-list-container">
+
+                    <!-- Legend Button with Unique ID and Menu -->
+                    <div class="legend-con" style="display: flex; position: relative; flex-direction: row-reverse;">
+                        <button class="btn legendBtn" id="legend" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Filter tasks">
+                            <i class="bi bi-patch-question"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="legend" >
+                            <ul class="legend-list-group" style="max-width:300px; list-style:none; padding:10px; margin:0;">
+                                <li class="legend-list-group-item">
+                                    <span class="badge" style="background-color: white; border: 1px solid gray;">&nbsp;&nbsp;</span> - Normal
+                                </li>
+                                <li class="legend-list-group-item">
+                                    <span class="badge" style="background-color: yellow;">&nbsp;&nbsp;</span> - Urgent
+                                </li>
+                                <li class="legend-list-group-item">
+                                    <span class="badge" style="background-color: orange;">&nbsp;&nbsp;</span> - Important
+                                </li>
+                                <li class="legend-list-group-item">
+                                    <span class="badge" style="background-color: red;">&nbsp;&nbsp;</span> - Urgent and Important
+                                </li>  
+                            </ul>
+                        </div>
+                    </div>
+                    <?php if (empty($tasks)): ?>
+                        <div>No personal tasks found.</div>
+                    <?php else: ?>
+                        <div class="task-grid">
+                            <?php foreach ($tasks as $task): ?>
                                     <div class="task-card">
 
                                         <div class="r1">
@@ -128,7 +168,7 @@ unset($_SESSION['success_message']);
                                             <div class="task-title"><?php echo htmlspecialchars($task['title'] ?? 'Untitled Task'); ?></div>
                                             <div class="task-lock"><i class="<?php echo htmlspecialchars($task_type)?>" title="<?php echo htmlspecialchars($task['taskType'])?>"></i></div>
                                             <div class="edit-button">
-                                                <a href="update_tasks.php?grade=<?=$grade?>&id=<?=$task['id'] ?>"><i class="bi bi-pencil-square"></i></a>
+                                                <a href="update_tasks.php?grade=<?=$grade?>&id=<?=$task['id'] ?>" title='Edit this task'><i class="bi bi-pencil-square"></i></a>
                                             </div>
                                         </div>
 
@@ -185,17 +225,17 @@ unset($_SESSION['success_message']);
                                             <div class="task-label-r4">Description</div>
                                             <div class="task-data"><?php echo htmlspecialchars($task['description'] ?? 'None');?></div>
                                         </div>
-
                                         <div class="p-task-action-con">
-                                            <!-- <div class="task-action-deactivate">
-                                                <form action="../../src/processes/delete_task.php" method="POST">
-                                                    <input type="hidden" name="id" value="<?= htmlspecialchars($task['id'] ?? '');?>">
-                                                    <input type="hidden" name="grade" value="<?= htmlspecialchars($task['grade']) ?? ''?>">
-                                                    <button type="submit" title="Discard Task" class="btn btn-normal" style="display: inline;">
-                                                        <i class="bi bi-trash3"></i>
-                                                    </button>
-                                                </form>
-                                            </div> -->
+                                            <?php if($task['assigned_by_username'] === $_SESSION['username']) :?>
+                                                <div class="task-action-delete">
+                                                    <form action="../../src/processes/a/delete_task.php" method="POST" id="delete-button">
+                                                        <input type="hidden" name="id" value="<?= htmlspecialchars($task['id'] ?? '');?>">
+                                                        <button type="button" title="Delete task" class="btn delete-button" data-form-id="delete-button" style="display: inline;" onclick="confirmDeleteModal()">
+                                                            <i class="bi bi-trash3"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            <?php endif?>
                                             <div class="task-action-reminder">
                                                 <form action="../../src/processes/remind_me.php" method="POST">
                                                     <input type="hidden" name="id" value="<?= htmlspecialchars($task['id'] ?? '');?>">
@@ -216,31 +256,37 @@ unset($_SESSION['success_message']);
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
+
+                            <div class="btn-add-cont">
+                                <div class="btn-add-bottom">
+                                    <a href="assign_task.php" title="Assign new task"><i class="bi bi-plus-circle"></i></a>
+                                </div>
                             </div>
-                        <?php endif; ?>
-                    </div>
+
+                        </div>
+                    <?php endif; ?>
+                </div>
+
                 <section class="main-sec" id="page-nav">
                     <nav aria-label="Task pagination">
                         <ul class="pagination justify-content-center">
-                            <li class="page-item <?php if ($currentPage <= 1) echo 'disabled'; ?>">
-                                <a class="page-link" href="?page=<?php echo $currentPage - 1; ?>&grade=<?php echo urlencode($grade); ?>" aria-label="Previous">
+                            <li class="page-item <?= $currentPage <= 1 ? 'disabled' : '' ?>">
+                                <a class="page-link" href="?page=<?= $currentPage - 1 ?>" aria-label="Previous">
                                     <span aria-hidden="true">&laquo;</span>
                                 </a>
                             </li>
                             <?php for ($page = 1; $page <= $totalPages; $page++): ?>
-                                <li class="page-item <?php if ($page == $currentPage) echo 'active'; ?>">
-                                    <a class="page-link" href="?page=<?php echo $page; ?>&grade=<?php echo urlencode($grade); ?>"><?php echo $page; ?></a>
+                                <li class="page-item <?= $page == $currentPage ? 'active' : '' ?>">
+                                    <a class="page-link" href="?page=<?= $page ?>"><?= $page ?></a>
                                 </li>
                             <?php endfor; ?>
-                            <li class="page-item <?php if ($currentPage >= $totalPages) echo 'disabled'; ?>">
-                                <a class="page-link" href="?page=<?php echo $currentPage + 1; ?>&grade=<?php echo urlencode($grade); ?>" aria-label="Next">
+                            <li class="page-item <?= $currentPage >= $totalPages ? 'disabled' : '' ?>">
+                                <a class="page-link" href="?page=<?= $currentPage + 1 ?>" aria-label="Next">
                                     <span aria-hidden="true">&raquo;</span>
                                 </a>
                             </li>
                         </ul>
                     </nav>
-
-
                 </section>
 
             </div>
@@ -250,15 +296,13 @@ unset($_SESSION['success_message']);
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
         <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-
         
         <script src='../../src/js/datetime.js'></script>
-        <script src="../../src/js/toggleSidebar.js"></script>
-        <script src="../../src/js/verify.js"></script>
-        <script src="../../src/js/new_sy.js"></script>
         <script src='../../src/js/notification.js'></script>
+        <script src='../../src/js/toggleSidebar.js'></script>
         <script src='../../src/js/message.js'></script>
-
+        <script src='../../src/js/verify.js'></script>
+        <script src='../../src/js/reminder.js'></script>
 
         <script>
             $(window).on('load', function() {
@@ -270,27 +314,113 @@ unset($_SESSION['success_message']);
                 <?php endif; ?>
             });
 
+            $(document).on('click', '.delete-button', function() {
+                var formId = $(this).data('form-id');
+                confirmDeleteModal(formId, 'Confirm Deletion', 'Are you sure you want to delete this task?', 'Delete');
+             });
+
             $(document).ready(function () {
-                // Event listener for sorting options
-                $('.sort-option').on('click', function () {
-                    const order = $(this).data('order'); // Fetch sort order from button click
+            // Handle sorting
+            $('.sort-option').on('click', function () {
+                const order = $(this).data('order');
+                const progress = "<?php echo isset($_GET['progress']) ? urlencode($_GET['progress']) : ''; ?>"; 
+                const params = {
+                    order: order,
+                    progress: progress,
+                    page: "<?php echo $currentPage; ?>"
+                };
+                const queryString = $.param(params);
+                window.location.href = `space_home.php?grade=<?=$grade?>&${queryString}`;
+            });
+
+            // Handle filtering
+            $('.filter-option').on('click', function () {
+                const progress = $(this).data('progress');
+                const order = "<?php echo isset($_GET['order']) ? urlencode($_GET['order']) : 'desc'; ?>";
+                const params = {
+                    order: order,
+                    progress: progress,
+                    page: "<?php echo $currentPage; ?>"
+                };
+                const queryString = $.param(params);
+                window.location.href = `space_home.php?grade=<?=$grade?>&${queryString}`;
+            });
+        });
+          // Handle searching
+        $('#searchButton').on('click', function () {
+            const searchQuery = $('#taskSearch').val();
+            const order = "<?php echo isset($_GET['order']) ? urlencode($_GET['order']) : 'desc'; ?>";
+            const progress = "<?php echo isset($_GET['progress']) ? urlencode($_GET['progress']) : ''; ?>";
+            const params = {
+                order: order,
+                progress: progress,
+                search: searchQuery,
+                page: "<?php echo $currentPage; ?>"
+            };
+            const queryString = $.param(params);
+            window.location.href = `space_home.php?grade=<?=$grade?>&${queryString}`;
+        });
+        
+        // Handle "Enter" key in search input
+        $('#taskSearch').on('keypress', function (e) {
+            if (e.which == 13) {
+                $('#searchButton').click();
+            }
+        });
+
+        $(document).ready(function() {
+            <?php if ($successMessage): ?>
+                $('#successModal').modal('show');
+                setTimeout(function() {
+                    $('#successModal').modal('hide');
+                }, 4500);
+            <?php endif; ?>
+        });
+
+        $(document).ready(function () {
+            $('.task-data-select').on('change', function () {
+                const taskId = $(this).data('task-id');
+                const newProgress = $(this).val();
+                const csrfToken = '<?= $_SESSION['csrf_token'] ?>'; // Assuming CSRF token is set in session
+
+                $.ajax({
+                    url: '../../src/processes/update_task_progress.php',
+                    type: 'POST',
+                    data: {
+                        id: taskId,
+                        progress: newProgress,
+                        csrf_token: csrfToken // Include the CSRF token
+                    },
+                    success: function (response) {
+                        let jsonResponse = JSON.parse(response);
+                        if (jsonResponse.success) {
+                            $('#successModal .modal-body').text(jsonResponse.message);
                     
-                    // Collect existing URL parameters
-                    const params = {
-                        grade: "<?php echo urlencode($grade); ?>", // Grade is always essential
-                        order: order, // New sort order
-                        progress: "<?php echo isset($_GET['progress']) ? urlencode($_GET['progress']) : ''; ?>", // Keep current filters
-                        page: "<?php echo $currentPage; ?>" // Current page
-                    };
-
-                    // Build the query string
-                    const queryString = $.param(params);
-
-                    // Reload page with updated query
-                    window.location.href = `space_home.php?${queryString}`;
+                            $('#successModal').modal('show');
+                            setTimeout(function() {
+                                $('#successModal').modal('hide');
+                            }, 4500);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        let jsonResponse = JSON.parse(response);
+                        if (jsonResponse.error) {
+                            $('#successModal .modal-body').text(jsonResponse.message);
+                    
+                            $('#successModal').modal('show');
+                            setTimeout(function() {
+                                $('#successModal').modal('hide');
+                            }, 4500);
+                        }
+                    }
                 });
             });
-        </script>
+        });
 
+        // $(document).on('click', '.task_data-select', function() {
+        //     $(this).prop('disabled', true); 
+        // });
+
+        </script>
     </body>
 </html>

@@ -17,11 +17,13 @@ if (!isset($_SESSION['user_id'])) {
     $grade = $_SESSION['grade'];
 
     if (is_numeric($grade) && $grade >= 1 && $grade <= 6) {
-        $gradetodisplay = 'Grade ' . intval($grade);
+        $gradetodisplay = 'Forum forGrade ' . intval($grade);
     } elseif (strtolower($grade) === 'sned' || strtolower($grade) === 'kinder') {
         $gradetodisplay = strtoupper($grade);
     } else {
-        $gradetodisplay = 'Unknown Grade'; 
+        $gradetodisplay = 'Unknown Grade';
+        $_SESSION['Failed to fetch space data. Please try again.']; 
+        header('Location: dashboard.php');
     }
 }
 

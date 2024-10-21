@@ -54,7 +54,7 @@ if (!empty($tasks)) {
 ?>
 
 <!-- Modal -->
-<div class="modal fade" id="taskArchivedModal" tabindex="-1" aria-labelledby="taskArchivedModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+<div class="modal fade" id="taskArchivedModal" tabindex="-1" aria-labelledby="taskArchivedModalLabel" aria-hidden="true" data-bs-backdrop="static" data-keyboard="false" style="display:none;">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">

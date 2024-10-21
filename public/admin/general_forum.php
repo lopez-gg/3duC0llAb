@@ -120,7 +120,7 @@ unset($_SESSION['success_message']);
                         </ul>
                     </nav>
                 <?php else: ?>
-                    <p class="text-center">No posts found for this grade.</p>
+                    <p class="text-center">No posts found for this forum.</p>
                 <?php endif; ?>
             </div>
         </div>
