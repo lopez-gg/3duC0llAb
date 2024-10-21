@@ -151,6 +151,27 @@ $confirmButtonText = isset($_SESSION['confirm_button_text']) ? $_SESSION['confir
     </div>
 </div>
 
+<!-- Verify deactivation -->
+<div class="modal fade" id="verifyActivationModal" tabindex="-1" role="dialog" aria-labelledby="verifyActivationLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="verifyActivationLabel">Confirm Action</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="verificationMessage">Are you sure you want to activate this account?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmActivation">Activate</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- Set Reminder Modal -->
 <div class="modal fade" id="setReminderModal" tabindex="-1" aria-labelledby="setReminderLabel" aria-hidden="true" style="display: none;">
