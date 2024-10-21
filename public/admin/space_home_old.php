@@ -1,26 +1,22 @@
 <?php
-
+require_once __DIR__ . '/../../src/config/session_config.php';
+require_once __DIR__ . '/../../src/config/access_control.php';
+require_once __DIR__ . '/../../src/config/db_config.php';
 require_once __DIR__ . '/../../src/config/config.php';
-require_once __DIR__ . '/../../src/config/access_control.php'; 
-require_once __DIR__ . '/../../src/config/session_config.php'; 
-require_once __DIR__ . '/../../src/config/db_config.php'; 
 require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
-require_once __DIR__ . '/../../src/processes/check_del_assgnd_tasks.php'; 
 
-// Check if the user is admin
 check_access('ADMIN');
 
-// Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
     header('Location: ../login.php');
     exit;
-} else {
+}else {
     $grade = isset($_GET['grade']) ? trim($_GET['grade']) : '';
     $_SESSION['grade'] = $grade;
 
     if (is_numeric($grade) && $grade >= 1 && $grade <= 6) {
         $gradetodisplay = 'Grade ' . intval($grade);
-    } elseif (strtolower($grade) === 'sned' || strtolower($grade) === 'kinder' ) {
+    } elseif (strtolower($grade) === 'sned') {
         $gradetodisplay = strtoupper($grade);
     } else {
         $gradetodisplay = 'Unknown Grade'; 
@@ -28,44 +24,27 @@ if (!isset($_SESSION['user_id'])) {
     
 }
 
-// Handle Pagination Variables
-$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Initialize $currentPage
-$itemsPerPage = $data['itemsPerPage'] ?? 10; 
-$index = ($currentPage - 1) * $itemsPerPage + 1; 
-$params = [
-    'grade' => $grade, 
-    'order' => isset($_GET['order']) ? $_GET['order'] : 'desc',
-    'progress' => isset($_GET['progress']) ? $_GET['progress'] : '', 
-    'page' => isset($_GET['page']) ? $_GET['page'] : 1 
-];
+$grade = isset($_GET['grade']) ? trim($_GET['grade']) : '';
+$progress = isset($_GET['progress']) ? trim($_GET['progress']) : '';
+$order = isset($_GET['order']) ? ($_GET['order'] === 'desc' ? 'DESC' : 'ASC') : 'ASC';
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$itemsPerPage = 10; 
 
-// Build the query string
-$queryString = http_build_query($params);
+// Fetch tasks directly
+require_once __DIR__ . '/../../src/processes/a/fetch_space_tasks.php';
+$tasksData = fetch_manage_tasks($grade, $progress, $order, $page, $itemsPerPage);
 
-// Fetching tasks per grade
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $config['base_url'] . "/src/processes/a/fetch_space_tasks.php?" . $queryString);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-$tasks_json = curl_exec($ch);
-if (curl_errno($ch)) {
-    echo 'Error:' . curl_error($ch);
-}
-curl_close($ch);
-$tasks = json_decode($tasks_json, true);
+$tasks = $tasksData['tasks'] ?? [];
+$totalPages = $tasksData['totalPages'] ?? 1;
 
-if (isset($tasks['error'])) {
-    echo "<p>Error: " . htmlspecialchars($tasks['error']) . "</p>";
-}
-
-$totalPages = $tasks['totalPages'] ?? 1; // Default to 1 if not set
-
+// Handle messages
 $successTitle = isset($_SESSION['success_title']) ? $_SESSION['success_title'] : null;
 $successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
 $verificationMessage = isset($_SESSION['verification_message']) ? $_SESSION['verification_message'] : null;
 include '../display_mod.php';
 unset($_SESSION['success_message']);
-
 ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -82,6 +61,7 @@ unset($_SESSION['success_message']);
     <body>
         <?php include '../nav-sidebar-temp.php'?>
             <div class="content" id="content">
+                <?php var_dump($tasksData); ?>
                 <section class='main-sec' id='sec-one'>
                     <h2> <?php echo strtoupper(htmlspecialchars($gradetodisplay)); ?></h2>
                 </section>

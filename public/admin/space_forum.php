@@ -18,7 +18,7 @@ if (!isset($_SESSION['user_id'])) {
 
     if (is_numeric($grade) && $grade >= 1 && $grade <= 6) {
         $gradetodisplay = 'Grade ' . intval($grade);
-    } elseif (strtolower($grade) === 'sned') {
+    } elseif (strtolower($grade) === 'sned' || strtolower($grade) === 'kinder') {
         $gradetodisplay = strtoupper($grade);
     } else {
         $gradetodisplay = 'Unknown Grade'; 

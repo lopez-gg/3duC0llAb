@@ -17,12 +17,9 @@ if (!isset($_SESSION['user_id'])) {
     if (is_numeric($grade) && $grade >= 1 && $grade <= 6) {
         $grade = $grade;
         $gradetodisplay = 'Grade ' . intval($grade);
-    } elseif (strtolower($grade) === 'sned') {
+    } elseif (strtolower($grade) === 'sned' || strtolower($grade) === 'kinder' || strtolower($grade) === 'general' ) {
         $grade = $grade;
         $gradetodisplay = strtoupper($grade);
-    } else if(strtolower($grade === 'general')){
-        $grade = $grade;
-        $gradetodisplay = 'PSCS General ';
     }else {
         $gradetodisplay = 'Unknown Grade'; 
     }

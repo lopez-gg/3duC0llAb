@@ -16,12 +16,14 @@ if (!isset($_SESSION['user_id'])) {
     if (is_numeric($grade) && $grade >= 1 && $grade <= 6) {
         // If the grade is a number between 1 and 6, display it as 'Grade X'
         $gradetodisplay = 'Grade ' . intval($grade);
-    } elseif (strtolower($grade) === 'sned') {
+    } elseif (strtolower($grade) === 'sned' || strtolower($grade) === 'kinder' || strtolower($grade) === 'general' ) {
         // If the grade is 'sned', display it as 'SNED'
         $gradetodisplay = strtoupper($grade);
     } else {
         // Handle cases where the grade is not valid (optional)
-        $gradetodisplay = 'Unknown Grade'; // or handle error accordingly
+        $gradetodisplay = 'Unknown Grade'; 
+        $_SESSION['success_message'] = 'Failed fetching space data. Please try again.';
+        header('Location: dashboard.php');
     }
    
 }

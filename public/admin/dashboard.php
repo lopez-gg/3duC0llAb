@@ -140,6 +140,9 @@ unset($_SESSION['success_message']);
             <hr>
             
             <section class='main-sec' id='sec-four'>
+                <a href='space_home.php?grade=KINDER'><div class="space">
+                    Kindergarten
+                </div></a>
                 <a href='space_home.php?grade=1'><div class="space">
                     Grade 1
                 </div></a>

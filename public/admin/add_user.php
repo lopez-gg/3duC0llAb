@@ -55,6 +55,7 @@ unset($_SESSION['success_message']);
                         $formFields = [
                             'username' => 'Username',
                             'firstname' => 'First Name',
+                            'middlename' => 'Middle Name',
                             'lastname' => 'Last Name',
                             'section' => 'Section',
                             'password' => 'Password'
@@ -76,7 +77,7 @@ unset($_SESSION['success_message']);
                             <label for="gradeLevel">Grade Level:</label>
                             <select name="gradeLevel" id="gradeLevel" required>
                                 <?php
-                                $gradeLevels = ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'SNED'];
+                                $gradeLevels = ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6', 'SNED', 'KINDER'];
                                 foreach ($gradeLevels as $level): ?>
                                     <option value="<?= $level ?>"><?= $level ?></option>
                                 <?php endforeach; ?>
@@ -107,6 +108,15 @@ unset($_SESSION['success_message']);
 
         $('#confirmDiscardButton').on('click', function() {
             window.location.href = 'faculty.php'; 
+        });
+
+        $(window).on('load', function() {
+            <?php if ($successMessage): ?>
+                $('#successModal').modal('show');
+                setTimeout(function() {
+                    $('#successModal').modal('hide');
+                }, 4500);
+            <?php endif; ?>
         });
     </script>
 </body>
