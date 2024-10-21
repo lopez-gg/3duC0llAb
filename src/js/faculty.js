@@ -121,10 +121,10 @@ $(document).on('click', '.verifyActivationButton', function() {
     
     // Open modal and set the confirmation message for activation
     $('#verificationMessage').text('Are you sure you want to activate this account?');
-    $('#verifyDeactivationModal').modal('show');
+    $('#verifyActivationModal').modal('show');
 
     // When Confirm button is clicked for activation
-    $('#confirmDeactivation').off('click').on('click', function() {
+    $('#confirmActivation').off('click').on('click', function() {
         const form = document.createElement('form');
         form.method = 'POST';
         form.action = '../../src/processes/a/faculty_actions.php';
@@ -145,6 +145,6 @@ $(document).on('click', '.verifyActivationButton', function() {
         form.submit();
         
         // Hide the modal
-        $('#verifyDeactivationModal').modal('hide');
+        $('#verifyactivationModal').modal('hide');
     });
 });
