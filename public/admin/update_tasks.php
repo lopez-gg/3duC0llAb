@@ -15,7 +15,7 @@ if (!isset($_SESSION['user_id'])) {
     $grade = isset($_GET['grade']) ? trim($_GET['grade']) : '';
     $_SESSION['grade'] = $grade;
 
-    if ($grade === 'sned'){
+    if ($grade === 'sned' || strtolower($grade) === 'kinder' ){
         $gradetodisplay = strtoupper($grade);
     } else {
         $gradetodisplay = 'Grade ' . $grade;

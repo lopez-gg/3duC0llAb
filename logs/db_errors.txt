@@ -1,9 +1,0 @@
-Error fetching reminders: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
-Error fetching reminders: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
-Error fetching reminders: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
-Error fetching reminders: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
-Error fetching reminders: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
-Error fetching reminders: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
-Error fetching reminders: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
-Error fetching reminders: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
-Error fetching reminders: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens

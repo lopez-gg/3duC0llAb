@@ -24,29 +24,22 @@ $csrf_token = $_SESSION['csrf_token'];
 $grade = 'general';
 $currentDateTime = date('l, d/m/Y h:i:s A'); 
 // Pagination settings
-$limit = 50; // Posts per page
-$page = $_GET['page'] ?? 1;
-$offset = ($page - 1) * $limit;
 
-// Fetching tasks per grade
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $config['base_url'] . "/src/processes/fetch_general_forum_posts.php?forum=". $grade . "&limit=" . $limit . "&page=" . $page);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-$posts_json = curl_exec($ch);
-if (curl_errno($ch)) {
-    echo 'Error:' . curl_error($ch);
-}
-curl_close($ch);
-$response = json_decode($posts_json, true);
+$forum = isset($_GET['forum']) ? trim($_GET['forum']) : 'general';
+$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 50;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 
-if (isset($response['error'])) {
-    echo "<p>Error: " . htmlspecialchars($response['error']) . "</p>";
-    $posts = [];
-    $totalPages = 1;
-} else {
-    $posts = $response['posts'];
-    $totalPages = $response['totalPages'];
+require_once __DIR__ . '/../../src/processes/fetch_general_forum_posts.php';
+$forumPostsData = fetch_forum_posts($forum, $limit, $page);
+
+if (isset($forumPostsData['error'])) {
+    echo "<p>Error: " . htmlspecialchars($forumPostsData['error']) . "</p>";
+    exit;
 }
+
+$posts = $forumPostsData['posts'] ?? [];
+$totalPages = $forumPostsData['totalPages'] ?? 1;
+
 
 $successTitle = isset($_SESSION['success_title']) ? $_SESSION['success_title'] : null;
 $successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;

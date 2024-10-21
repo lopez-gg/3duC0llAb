@@ -48,6 +48,7 @@ unset($_SESSION['success_message']);
 ?>
 
 <!DOCTYPE html>
+<html lang="en">
 <html>
     <head>
         <meta charset="UTF-8">

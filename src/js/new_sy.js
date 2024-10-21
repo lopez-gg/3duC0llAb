@@ -1,7 +1,7 @@
 document.getElementById('yearRangeForm').addEventListener('submit', function(event) {
     event.preventDefault();
 
-console.log('new_sy.js is loaded');
+// console.log('new_sy.js is loaded');
 
     var startYear = document.getElementById('startYear').value;
     var endYear = document.getElementById('endYear').value;

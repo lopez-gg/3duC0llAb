@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (target.classList.contains('dropdown-item')) {
                 const selectedYearRange = target.getAttribute('data-year-range');
-                console.log('Fetching events for year range:', selectedYearRange);
+                // console.log('Fetching events for year range:', selectedYearRange);
 
                 // Update the displayed current year range
                 if (currentYearRangeSpan) {

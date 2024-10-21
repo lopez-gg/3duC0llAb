@@ -89,7 +89,7 @@ unset($_SESSION['success_message']);
                 <a href="my_space.php"><div class="space">My Space</div></a>
                 <a href="general_forum.php"><div class="space">General Forum</div></a>
                 <a href="space_forum.php?grade=<?php echo $grade?>"><div class="space"><?php echo $ugrade?> Forum</div></a>
-                <a href="request_appointment.php"><div class="space">Request Appointment</div></a>
+                <!-- <a href="request_appointment.php"><div class="space">Request Appointment</div></a> -->
             </section>
 
             <hr>
@@ -158,24 +158,27 @@ unset($_SESSION['success_message']);
                 <div class="due-tasks-con">
                     <div class="due-task-head">
                         <h1 class="due-tasks-con-heading">Due Tasks</h1>
-                        <button class="btn legendBtn" id="legend" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Legend">
-                            <i class="bi bi-patch-question"></i>
-                        </button>
-                        <div class="dropdown-menu" aria-labelledby="legend">
-                        <ul class="legend-list-group">
-                            <li class="legend-list-group-item">
-                                <span class="badge" style="background-color: white; border: 1px solid gray;">&nbsp;&nbsp;</span> - Normal
-                            </li>
-                            <li class="legend-list-group-item">
-                                <span class="badge" style="background-color: yellow;">&nbsp;&nbsp;</span> - Urgent
-                            </li>
-                            <li class="legend-list-group-item">
-                                <span class="badge" style="background-color: orange;">&nbsp;&nbsp;</span> - Important
-                            </li>
-                            <li class="legend-list-group-item">
-                                <span class="badge" style="background-color: red;">&nbsp;&nbsp;</span> - Urgent and Important
-                            </li>  
-                            </ul>
+                        <!-- Legend Button with Unique ID and Menu -->
+                        <div class="legend-con" style="display: flex; position: relative; flex-direction: row-reverse;">
+                            <button class="btn legendBtn" id="legend" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Filter tasks">
+                                <i class="bi bi-patch-question"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="legend" >
+                                <ul class="legend-list-group" style="max-width:300px; list-style:none; padding:10px; margin:0;">
+                                    <li class="legend-list-group-item">
+                                        <span class="badge" style="background-color: white; border: 1px solid gray;">&nbsp;&nbsp;</span> - Normal
+                                    </li>
+                                    <li class="legend-list-group-item">
+                                        <span class="badge" style="background-color: yellow;">&nbsp;&nbsp;</span> - Urgent
+                                    </li>
+                                    <li class="legend-list-group-item">
+                                        <span class="badge" style="background-color: orange;">&nbsp;&nbsp;</span> - Important
+                                    </li>
+                                    <li class="legend-list-group-item">
+                                        <span class="badge" style="background-color: red;">&nbsp;&nbsp;</span> - Urgent and Important
+                                    </li>  
+                                </ul>
+                            </div>
                         </div>
                     </div>
                     

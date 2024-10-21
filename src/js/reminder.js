@@ -60,7 +60,7 @@ function listFetchedReminders() {
     .then(data => {
         // console.log('Parsed data:', data);
         const remindersList = document.querySelector('.reminders-lists');
-        remindersList.innerHTML = ''; // Clear the list before adding new reminders
+        remindersList.innerHTML = '';
         
         if (data.reminders.length === 0) {
             remindersList.innerHTML = `<p class="text-muted">${data.message || 'No reminders for today.'}</p>`;

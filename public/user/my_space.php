@@ -48,6 +48,7 @@ unset($_SESSION['success_message']);
 ?>
 
 <!DOCTYPE html>
+<html lang="en">
 <html>
     <head>
         <meta charset="UTF-8">
@@ -65,6 +66,9 @@ unset($_SESSION['success_message']);
             <div class="content" id="content">
                 <section class='main-sec' id='sec-one'>
                     <h2>My Personal Tasks</h2>
+
+                    
+
                 </section>
 
                 <hr>
@@ -106,28 +110,30 @@ unset($_SESSION['success_message']);
                     </div>
                 </section>
                 <hr>
-                
-                <button class="btn legendBtn" id="legend" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Legend">
+            <!-- Legend Button with Unique ID and Menu -->
+            <div class="legend-con" style="display: flex; position: relative; flex-direction: row-reverse;">
+                <button class="btn legendBtn" id="legend" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Filter tasks">
                     <i class="bi bi-patch-question"></i>
                 </button>
-                <div class="dropdown-menu" aria-labelledby="legend">
-                <ul class="legend-list-group">
-                    <li class="legend-list-group-item">
-                        <span class="badge" style="background-color: white; border: 1px solid gray;">&nbsp;&nbsp;</span> - Normal
-                    </li>
-                    <li class="legend-list-group-item">
-                        <span class="badge" style="background-color: yellow;">&nbsp;&nbsp;</span> - Urgent
-                    </li>
-                    <li class="legend-list-group-item">
-                        <span class="badge" style="background-color: orange;">&nbsp;&nbsp;</span> - Important
-                    </li>
-                    <li class="legend-list-group-item">
-                        <span class="badge" style="background-color: red;">&nbsp;&nbsp;</span> - Urgent and Important
-                    </li>  
+                <div class="dropdown-menu" aria-labelledby="legend" style="z-index:9999;">
+                    <ul class="legend-list-group" style="max-width:300px; list-style:none; padding:10px; margin:0;">
+                        <li class="legend-list-group-item">
+                            <span class="badge" style="background-color: white; border: 1px solid gray;">&nbsp;&nbsp;</span> - Normal
+                        </li>
+                        <li class="legend-list-group-item">
+                            <span class="badge" style="background-color: yellow;">&nbsp;&nbsp;</span> - Urgent
+                        </li>
+                        <li class="legend-list-group-item">
+                            <span class="badge" style="background-color: orange;">&nbsp;&nbsp;</span> - Important
+                        </li>
+                        <li class="legend-list-group-item">
+                            <span class="badge" style="background-color: red;">&nbsp;&nbsp;</span> - Urgent and Important
+                        </li>  
                     </ul>
                 </div>
+            </div>
 
-                
+
                 <div class="task-list-container">
                     <?php if (empty($tasks)): ?>
                         <div>No personal tasks found.</div>
@@ -359,6 +365,7 @@ unset($_SESSION['success_message']);
                     }, 4500);
                 <?php endif; ?>
             });
+
 
             $(document).on('click', '.delete-button', function() {
                 var formId = $(this).data('form-id');
