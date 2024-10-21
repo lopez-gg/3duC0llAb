@@ -66,7 +66,11 @@ unset($_SESSION['success_message']);
             <h2>PSCS Faculty</h2>
 
            <div class="faculty-con">
-            <div id="grade1" class="faculty-container">
+                <div id="kinder" class="faculty-container">
+                    <h3>Kinder</h3>
+                    <ul id="kinderList"></ul>
+                </div>
+                <div id="grade1" class="faculty-container">
                     <h3>Grade 1</h3>
                     <ul id="grade1List"></ul>
                 </div>
@@ -140,7 +144,7 @@ unset($_SESSION['success_message']);
                             // Populate each container by gradeLevel
                             data.forEach(faculty => {
                                 const listItem = document.createElement('li');
-                                listItem.textContent = `${faculty.firstname} ${faculty.lastname}`;
+                                listItem.textContent = `${faculty.firstname} ${faculty.middlename} ${faculty.lastname}`;
                                 listItem.classList.add('faculty-item');
                                 listItem.setAttribute('data-user-id', faculty.id);
 
@@ -153,6 +157,9 @@ unset($_SESSION['success_message']);
 
                                 // Append to the corresponding grade container
                                 switch (faculty.gradeLevel) {
+                                    case 'KINDER':
+                                        document.getElementById('kinderList').appendChild(listItem);
+                                        break;
                                     case 'Grade 1':
                                         document.getElementById('grade1List').appendChild(listItem);
                                         break;

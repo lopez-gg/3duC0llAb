@@ -71,6 +71,7 @@ unset($_SESSION['success_message']);
         <link rel="stylesheet" href="../../src/css/tasks.css">
         <link href="../../src/css/action_nav.css" rel="stylesheet">
         <link rel="stylesheet" href="../../src/css/message.css">
+        <link rel="stylesheet" href="../../src/css/dashb.css">
     </head>
     <body>
         <?php include '../nav-sidebar-temp.php'?>

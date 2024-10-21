@@ -17,50 +17,44 @@ if (!isset($_SESSION['user_id'])) {
     $grade = $_SESSION['grade'];
 
     if (is_numeric($grade) && $grade >= 1 && $grade <= 6) {
-        $gradetodisplay = 'Forum forGrade ' . intval($grade);
+        $gradetodisplay = 'ForumGrade ' . intval($grade);
     } elseif (strtolower($grade) === 'sned' || strtolower($grade) === 'kinder') {
         $gradetodisplay = strtoupper($grade);
     } else {
         $gradetodisplay = 'Unknown Grade';
-        $_SESSION['Failed to fetch space data. Please try again.']; 
+        $_SESSION['error_message'] = 'Failed to fetch space data. Please try again.';
         header('Location: dashboard.php');
+        exit;
     }
 }
 
 // Set default values for the variables
 $csrf_token = $_SESSION['csrf_token'];
 $currentDateTime = date('l, d/m/Y h:i:s A'); 
-// Pagination settings
 $limit = 50; // Posts per page
-$page = $_GET['page'] ?? 1;
-$offset = ($page - 1) * $limit;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 
-// Fetching tasks per grade
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $config['base_url'] . "/src/processes/fetch_forum_posts.php?grade=" . urlencode($grade) . "&limit=" . $limit . "&page=" . $page);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-$posts_json = curl_exec($ch);
-if (curl_errno($ch)) {
-    echo 'Error:' . curl_error($ch);
-}
-curl_close($ch);
-$response = json_decode($posts_json, true);
+// Fetch forum posts using the new fetch_forum_posts function
+require_once __DIR__ . '/../../src/processes/fetch_general_forum_posts.php';
+$forumPostsData = fetch_forum_posts($grade, $limit, $page);
 
-if (isset($response['error'])) {
-    echo "<p>Error: " . htmlspecialchars($response['error']) . "</p>";
+if (isset($forumPostsData['error'])) {
+    echo "<p>Error: " . htmlspecialchars($forumPostsData['error']) . "</p>";
     $posts = [];
     $totalPages = 1;
 } else {
-    $posts = $response['posts'];
-    $totalPages = $response['totalPages'];
+    $posts = $forumPostsData['posts'];
+    $totalPages = $forumPostsData['totalPages'];
 }
 
+// Display success or verification messages if any
 $successTitle = isset($_SESSION['success_title']) ? $_SESSION['success_title'] : null;
 $successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
 $verificationMessage = isset($_SESSION['verification_message']) ? $_SESSION['verification_message'] : null;
 include '../display_mod.php';
 unset($_SESSION['success_message']);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
