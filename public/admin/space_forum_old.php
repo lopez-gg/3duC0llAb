@@ -13,15 +13,13 @@ check_access('ADMIN');
 if (!isset($_SESSION['user_id'])) {
     header('Location: ../login.php');
     exit;
-}else {
-    
-    $forum = isset($_GET['grade']) ? trim($_GET['grade']) : '';
-    $_SESSION['grade'] = $forum;
+} else {
+    $grade = $_SESSION['grade'];
 
-    if (is_numeric($forum) && $forum >= 1 && $forum <= 6) {
-        $gradetodisplay = 'Grade ' . intval($forum) . ' Forum';
-    } elseif (strtolower($forum) === 'sned' || strtolower($forum) === 'kinder') {
-        $gradetodisplay = strtoupper($forum) . ' Forum';
+    if (is_numeric($grade) && $grade >= 1 && $grade <= 6) {
+        $gradetodisplay = 'Grade ' . intval($grade) . ' Forum';
+    } elseif (strtolower($grade) === 'sned' || strtolower($grade) === 'kinder') {
+        $gradetodisplay = strtoupper($grade);
     } else {
         $gradetodisplay = 'Unknown Grade';
         $_SESSION['error_message'] = 'Failed to fetch space data. Please try again.';
@@ -33,23 +31,25 @@ if (!isset($_SESSION['user_id'])) {
 // Set default values for the variables
 $csrf_token = $_SESSION['csrf_token'];
 $currentDateTime = date('l, d/m/Y h:i:s A'); 
-// Pagination settings
-
-$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 50;
+$limit = 50; // Posts per page
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 50; 
 
-require_once __DIR__ . '/../../src/processes/fetch_sforum_posts.php';
-$forumPostsData = fetch_forum_posts($forum, $limit, $page);
+
+// Fetch forum posts using the new fetch_forum_posts function
+require_once __DIR__ . '/../../src/processes/fetch_forum_posts.php';
+$forumPostsData = fetch_forum_posts($grade, $limit, $page);
 
 if (isset($forumPostsData['error'])) {
     echo "<p>Error: " . htmlspecialchars($forumPostsData['error']) . "</p>";
-    exit;
+    $posts = [];
+    $totalPages = 1;
+} else {
+    $posts = $forumPostsData['posts'];
+    $totalPages = $forumPostsData['totalPages'];
 }
 
-$posts = $forumPostsData['posts'] ?? [];
-$totalPages = $forumPostsData['totalPages'] ?? 1;
-
-
+// Display success or verification messages if any
 $successTitle = isset($_SESSION['success_title']) ? $_SESSION['success_title'] : null;
 $successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
 $verificationMessage = isset($_SESSION['verification_message']) ? $_SESSION['verification_message'] : null;
@@ -57,39 +57,28 @@ include '../display_mod.php';
 unset($_SESSION['success_message']);
 ?>
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($gradetodisplay) ?></title>
+    <title>Forum for Grade <?= htmlspecialchars($grade) ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.1/font/bootstrap-icons.min.css" rel="stylesheet">
     <link href="../../src/css/gen.css" rel="stylesheet">
     <link href="../../src/css/forum_post.css" rel="stylesheet">
     <link rel="stylesheet" href="../../src/css/message.css">
     
-    <style>
-        /* Styling for the card header and content */
-        .card-header {
-            background-color: #f8f9fa;
-        }
-        .card-body p {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-    </style>
 </head>
 <body>
     <?php include '../nav-sidebar-temp.php'?>
-
         <div class="content" id="content">
             <div class="container">
-            <h1><?= htmlspecialchars($gradetodisplay) ?></h1>
+                <h2 class="mb-4">Forum for Grade <?= htmlspecialchars($grade)  ?></h2>
 
                 <div class="mb-4 text-end">
-
-                    <a href="new_post.php?grade=general" class="btn btn-primary">Create New Post</a>
+                    <a href="new_post.php?grade=<?= urlencode($grade) ?>" class="btn btn-primary">Create New Post</a>
                 </div>
 
                 <?php if (count($posts) > 0): ?>
@@ -101,7 +90,7 @@ unset($_SESSION['success_message']);
                                     <small class="text-muted">by <?= htmlspecialchars($post['username']) ?> on <?= $post['created_at'] ?></small>
                                 </div>
                                 <div>
-                                    <a href="post_view.php?grade=<?=$forum?>&id=<?= $post['id'] ?>" class="btn btn-sm btn-outline-secondary">See full post</a>
+                                    <a href="post_view.php?grade=<?php echo $grade?>&id=<?= $post['id'] ?>" class="btn btn-sm btn-outline-secondary">See full post</a>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -109,10 +98,7 @@ unset($_SESSION['success_message']);
                                     <?= strlen($post['content']) > 200 ? substr(htmlspecialchars($post['content']), 0, 200) . '...' : htmlspecialchars($post['content']) ?>
                                 </p>
                                 <p><small><?= $post['reply_count'] ?> Replies</small></p>
-                                <a href="post_view.php?grade=<?=$forum?>&id=<?= $post['id'] ?>" class="btn btn-sm btn-outline-primary">Comment</a>
-
-                                <!-- Edit and Delete buttons -->
-                                
+                                <a href="post_view.php?grade=<?=$grade?>&id=<?= $post['id'] ?>" class="btn btn-sm btn-outline-primary">Comment</a>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -123,17 +109,16 @@ unset($_SESSION['success_message']);
                         <ul class="pagination justify-content-center">
                             <?php for ($i = 1; $i <= $totalPages; $i++): ?>
                                 <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
-                                    <a class="page-link" href="space_forum.php?grade=<?= urlencode($forum) ?>&page=<?= $i ?>"><?= $i ?></a>
+                                    <a class="page-link" href="space_forum.php?grade=<?= urlencode($grade) ?>&page=<?= $i ?>"><?= $i ?></a>
                                 </li>
                             <?php endfor; ?>
                         </ul>
                     </nav>
                 <?php else: ?>
-                    <p class="text-center">No posts found for this forum.</p>
+                    <p class="text-center">No posts found for this grade.</p>
                 <?php endif; ?>
             </div>
         </div>
-        
     </div>
 
     <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
@@ -157,11 +142,6 @@ unset($_SESSION['success_message']);
                     $('#successModal').modal('hide');
                 }, 4500);
             <?php endif; ?>
-        });
-                
-        $(document).on('click', '.delete-button', function() {
-            var formId = $(this).data('form-id');
-            confirmDeleteModal(formId, 'Confirm Deletion', 'Are you sure you want to delete this post?', 'Delete');
         });
     </script>
 </body>

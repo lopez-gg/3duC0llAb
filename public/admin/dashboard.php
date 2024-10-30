@@ -34,6 +34,7 @@ $successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_messa
 $verificationMessage = isset($_SESSION['verification_message']) ? $_SESSION['verification_message'] : null;
 include '../display_mod.php';
 unset($_SESSION['success_message']);
+unset($_SESSION['grade']);
 
 ?>
 

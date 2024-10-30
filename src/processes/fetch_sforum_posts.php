@@ -2,6 +2,20 @@
 
 require_once __DIR__ . '/../config/db_config.php'; // Database config
 
+// $postsData = fetch_forum_posts($forum, $limit, $page);
+// if (isset($postsData['posts'])) {
+//     foreach ($postsData['posts'] as $post) {
+//         echo 'grade: ' . $post['grade']. '<br>';
+//         echo 'Title: ' . $post['title'] . '<br>';
+//         echo 'Content: ' . $post['content'] . '<br>';
+//         echo 'Reply Count: ' . $post['reply_count'] . '<br>';
+//         echo '<hr>'; // Add a separator for clarity
+//     }
+// } else {
+//     echo "Error: " . $postsData['error']; 
+// }
+
+
 function fetch_forum_posts($forum, $limit = 50, $page = 1) {
     global $pdo;
 
@@ -12,7 +26,8 @@ function fetch_forum_posts($forum, $limit = 50, $page = 1) {
         // Prepare SQL to fetch posts along with username and reply count
         $query = "
             SELECT fp.id, fp.title, fp.content, fp.created_at, u.username, 
-                   (SELECT COUNT(*) FROM forum_replies WHERE post_id = fp.id) AS reply_count 
+                   (SELECT COUNT(*) FROM forum_replies WHERE post_id = fp.id) AS reply_count, 
+                    (SELECT COUNT(*) FROM forum_posts WHERE grade = :forum) AS fetched_posts 
             FROM forum_posts fp
             JOIN users u ON fp.user_id = u.id
             WHERE fp.grade = :forum
