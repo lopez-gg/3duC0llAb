@@ -1,8 +1,8 @@
 <?php
+require_once __DIR__ . '/../../src/config/session_config.php';
+require_once __DIR__ . '/../../src/config/access_control.php';
+require_once __DIR__ . '/../../src/config/db_config.php';
 require_once __DIR__ . '/../../src/config/config.php';
-require_once __DIR__ . '/../../src/config/access_control.php'; 
-require_once __DIR__ . '/../../src/config/session_config.php'; 
-require_once __DIR__ . '/../../src/config/db_config.php'; 
 require_once __DIR__ . '/../../src/processes/check_upcoming_events.php'; 
 
 // Check if the user is admin
@@ -12,168 +12,474 @@ check_access('ADMIN');
 if (!isset($_SESSION['user_id'])) {
     header('Location: ../login.php');
     exit;
+} else {
+    $userID = $_SESSION['user_id'];
 }
 
-$grade = isset($_GET['grade']) ? trim($_GET['grade']) : '';
-$sortOrder = isset($_GET['order']) ? $_GET['order'] : 'desc'; // Default sort order
-$searchKeyword = isset($_GET['search']) ? trim($_GET['search']) : '';
 
-// Set default values for the variables
-$currentDateTime = date('l, d/m/Y h:i:s A'); 
-$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1; // Initialize $currentPage
-$itemsPerPage = $data['itemsPerPage'] ?? 10; 
-$index = ($currentPage - 1) * $itemsPerPage + 1; 
+$my_space = 'my_space';
 
-$params = [
-    'grade' => $grade,
-    'order' => $sortOrder,
-    'search' => $searchKeyword,
-    'page' => $currentPage
-];
+// Handle Pagination Variables
+$currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1; 
+$itemsPerPage = 10; 
+$index = ($currentPage - 1) * $itemsPerPage + 1;
+$order = isset($_GET['order']) ? $_GET['order'] : 'desc';
+$progress = isset($_GET['progress']) ? $_GET['progress'] : '';
+$search = isset($_GET['search']) ? $_GET['search'] : '';
 
-// Build the query string
-$queryString = http_build_query($params);
+// Fetch tasks from internal function
+require_once __DIR__ . '/../../src/processes/a/fetch_archived_tasks.php';
+$tasksData = fetch_del_tasks($userID, $order, $progress, $search, $currentPage, $itemsPerPage);
 
-// Fetch archived tasks
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $config['base_url'] . "/src/processes/a/fetch_archived_tasks.php?" . $queryString);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-$tasks_json = curl_exec($ch);
-if (curl_errno($ch)) {
-    echo 'Error:' . curl_error($ch);
-}
-curl_close($ch);
 
-$tasks = json_decode($tasks_json, true);
-
-if (isset($tasks['error'])) {
-    echo "<p>Error: " . htmlspecialchars($tasks['error']) . "</p>";
+if (isset($tasksData['error'])) {
+    echo "<p>Error: " . htmlspecialchars($tasksData['error']) . "</p>";
+    exit;
 }
 
-$totalPages = $tasks['totalPages'] ?? 1; // Default to 1 if not set
+$tasks = $tasksData['tasks'] ?? [];
+$totalPages = $tasksData['totalPages'] ?? 1;
 
-$successMessage = isset($_SESSION['success_message']) ? $_SESSION['success_message'] : null;
+
+$successTitle = isset($_SESSION['success_title']) ? $_SESSION['success_title'] : null;
+$successMessage = $_SESSION['success_message'] ?? null;
 include '../display_mod.php';
 unset($_SESSION['success_message']);
 ?>
 
 <!DOCTYPE html>
 <html>
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Archived Tasks</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../../src/css/gen.css" rel="stylesheet">
-    <link rel="stylesheet" href="../../src/css/message.css">
-</head>
-<body>
-    <?php include '../nav-sidebar-temp.php'?>
-        <div class="content" id="content">
-            <section class="main-sec" id="sec-one">
-                <h2>Archived Tasks</h2>
-            </section>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>My Space</title>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+        <link href="../../src/css/gen.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../src/css/tasks.css">
+        <link href="../../src/css/action_nav.css" rel="stylesheet">
+        <link rel="stylesheet" href="../../src/css/message.css">
+    </head>
+    <body>
+        <?php include '../nav-sidebar-temp.php'?>
+            <div class="content" id="content">
+                <section class='main-sec' id='sec-one'>
+                    <h2>My Personal Tasks</h2>
+                </section>
 
-            <section class="main-sec" id="sec-two">
-                <form method="GET" class="mb-3">
-                    <div class="input-group">
-                        <input type="text" name="search" class="form-control" placeholder="Search tasks" value="<?php echo htmlspecialchars($searchKeyword); ?>">
-                        <button class="btn btn-primary" type="submit">Search</button>
+                <hr>
+                <section class="actions-section">
+                    <div class="right-section-actions">
+                        <div class="rs-a">
+                            <button class="btn-sort dropdown-toggle" id="sortIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Sort order">
+                                <i class="bi bi-funnel"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="sortIcon">
+                                <a class="dropdown-item sort-option" data-order="asc">Ascending</a>
+                                <a class="dropdown-item sort-option" data-order="desc">Descending</a>
+                            </div>
+                        </div>
+                        <div class="rs-a">
+                            <button class="btn-filter dropdown-toggle" id="filterIcon" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Filter tasks">
+                                <i class="bi bi-filter"></i>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="filterIcon">
+                                <a class="dropdown-item filter-option" data-progress="">All</a>
+                                <a class="dropdown-item filter-option" data-progress="pending">Pending</a>
+                                <a class="dropdown-item filter-option" data-progress="in_progress">In Progress</a>
+                                <a class="dropdown-item filter-option" data-progress="completed">Completed</a>
+                            </div>
+                        </div>
+                        <div class="rs-a">
+                            <button class="btn-filter dropdown-toggle" id="filterIconTaskType" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Filter tasks">
+                                <i class="bi bi-filter"></i>Task type
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="filterIconTaskType">
+                                <a class="dropdown-item filter-option-ttype" data-taskType="">All</a>
+                                <a class="dropdown-item filter-option-ttype" data-taskType="assigned">Assigned Tasks</a>
+                                <a class="dropdown-item filter-option-ttype" data-taskType="private">Personal Tasks</a>
+                            </div>
+                        </div>
                     </div>
-                </form>
+                    <div class="left-section-actions">
+                        <div class="ls-a">
+                        <div class="search-bar">
+                            <input type="text" class="searchBox" id="taskSearch" placeholder="Search tasks..." value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
+                            <button id="searchButton"><i class="bi bi-search"></i></button>
+                        </div>
+                        </div>
+                        <div class="ls-a">
+                        <div class="btn-add">
+                            <a href="add_task.php?_personal" id="taskEdit" title="Add new personal task"><i class="bi bi-plus-circle"></i></a>
+                        </div>
+                        </div>
+                    </div>
+                </section>
+                <hr>
+                <div class="task-list-container">
 
-                <div class="sort-dropdown mb-3">
-                    <button class="btn btn-secondary dropdown-toggle" id="sortIcon" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Sort order">
-                        <i class="bi bi-funnel"></i> Sort
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="sortIcon">
-                        <li><a class="dropdown-item sort-option" data-order="asc">Ascending</a></li>
-                        <li><a class="dropdown-item sort-option" data-order="desc">Descending</a></li>
-                    </ul>
-                </div>
-            </section>
-
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Title</th>
-                        <th>Assigned By</th>
-                        <th>Assigned To</th>
-                        <th>Grade</th>
-                        <th>Progress</th>
-                        <th>Status</th>
-                        <th>Created At</th>
-                        <th>Due Date</th>
-                        <th>Completed At</th>
-                        <th>Deleted At</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($tasks['tasks'])): ?>
-                        <tr>
-                            <td colspan="11">No archived tasks found.</td>
-                        </tr>
+                    <!-- Legend Button with Unique ID and Menu -->
+                    <div class="legend-con" style="display: flex; position: relative; flex-direction: row-reverse;">
+                        <button class="btn legendBtn" id="legend" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Filter tasks">
+                            <i class="bi bi-patch-question"></i>
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="legend" >
+                            <ul class="legend-list-group" style="max-width:300px; list-style:none; padding:10px; margin:0;">
+                                <li class="legend-list-group-item">
+                                    <span class="badge" style="background-color: white; border: 1px solid gray;">&nbsp;&nbsp;</span> - Normal
+                                </li>
+                                <li class="legend-list-group-item">
+                                    <span class="badge" style="background-color: yellow;">&nbsp;&nbsp;</span> - Urgent
+                                </li>
+                                <li class="legend-list-group-item">
+                                    <span class="badge" style="background-color: orange;">&nbsp;&nbsp;</span> - Important
+                                </li>
+                                <li class="legend-list-group-item">
+                                    <span class="badge" style="background-color: red;">&nbsp;&nbsp;</span> - Urgent and Important
+                                </li>  
+                            </ul>
+                        </div>
+                    </div>
+                    <?php if (empty($tasks)): ?>
+                        <div>No personal tasks found.</div>
                     <?php else: ?>
-                        <?php foreach ($tasks['tasks'] as $task): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($task['id'] ?? ''); ?></td>
-                                <td><?php echo htmlspecialchars($task['title'] ?? ''); ?></td>
-                                <td><?php echo htmlspecialchars($task['assignedBy'] ?? ''); ?></td>
-                                <td><?php echo htmlspecialchars($task['assignedTo'] ?? ''); ?></td>
-                                <td><?php echo htmlspecialchars($task['grade'] ?? ''); ?></td>
-                                <td><?php echo htmlspecialchars($task['progress'] ?? ''); ?></td>
-                                <td><?php echo htmlspecialchars($task['status'] ?? ''); ?></td>
-                                <td><?php echo htmlspecialchars($task['created_at'] ?? ''); ?></td>
-                                <td><?php echo htmlspecialchars($task['due_date'] ?? ''); ?></td>
-                                <td><?php echo htmlspecialchars($task['completed_at'] ?? ''); ?></td>
-                                <td><?php echo htmlspecialchars($task['deleted_at'] ?? ''); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
+                        <div class="task-grid">
+                            <?php foreach ($tasks as $task): ?>
+                                <?php if($task['taskType'] === 'private') {?>
+                                    <div class="task-card">
+                                        <div class="r1">
+                                            <?php $color = isset($task['tag']) ? getUrgencyColor($task['tag']) : 'gray'; ?>
+                                            <?php $task_type = isset($task['taskType']) ? getTaskType($task['taskType']) : '';?>
+                                            <div class="urgency-circle" style="background-color: <?= htmlspecialchars($color) ?>" title="<?= htmlspecialchars($task['tag'] ?? '') ?>"></div>
+                                            <div class="task-title"><?= htmlspecialchars($task['title'] ?? 'Untitled Task') ?></div>
+                                            <div class="task-lock"><i class="<?php echo htmlspecialchars($task_type)?>" title="<?php echo htmlspecialchars($task['taskType'])?>"></i></div>
+                                            <div class="edit-button">
+                                                <a href="update_my_task.php?id=<?= $task['id'] ?>" title="Edit task"><i class="bi bi-pencil-square"></i></a>
+                                            </div>
+                                        </div>
+
+                                        <div class="r2">
+                                            <div class="task-label">Due Date</div>
+                                            <div class="task-due-date" title="Due date"><?= $task['due_date'] ? date('F j', strtotime($task['due_date'])) : 'None' ?></div>
+                                            <div class="task-due-time" title="Due time"><?= $task['due_time'] ? date('h:i A', strtotime($task['due_time'])) : 'None' ?></div>
+                                        </div>
+
+                                        <div class="r3">
+                                            <div class="task-label">Progress</div>
+                                            <div class="task-data progress-input">
+                                                <form action="update_task_progress.php" class="task-upd-f" method="post"> 
+                                                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">   
+                                                    <select class="task-data-select" data-task-id="<?= $task['id'] ?>" >
+                                                            <option value="<?= htmlspecialchars($task['progress'], ENT_QUOTES, 'UTF-8') ?>" selected>
+                                                                <?= htmlspecialchars($task['progress'], ENT_QUOTES, 'UTF-8') ?>
+                                                            </option>
+                                                            <option value="pending" <?= $task['progress'] == 'pending' ? 'selected' : '' ?>>Pending</option>
+                                                            <option value="in_progress" <?= $task['progress'] == 'in_progress' ? 'selected' : '' ?>>In Progress</option>
+                                                            <option value="completed" <?= $task['progress'] == 'completed' ? 'selected' : '' ?>>Completed</option>      
+                                                    </select>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                        <div class="r4">
+                                            <div class="task-label-r4">Description</div>
+                                            <div class="task-data"><?= htmlspecialchars($task['description'] ?? 'None') ?></div>
+                                        </div>
+
+                                        <div class="p-task-action-con">
+                                            <div class="task-action-delete">
+                                                <form action="../../src/processes/a/delete_my_tasks.php" method="POST" id="delete-button">
+                                                    <input type="hidden" name="id" value="<?= htmlspecialchars($task['id'] ?? '');?>">
+                                                    <button type="button" title="Delete task" class="btn delete-button" data-form-id="delete-button" style="display: inline;" onclick="confirmDeleteModal()">
+                                                        <i class="bi bi-trash3"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                            <div class="task-action-reminder">
+                                                <form action="../../src/processes/remind_me.php" method="POST">
+                                                    <input type="hidden" name="id" value="<?= htmlspecialchars($task['id'] ?? '');?>">
+                                                    <input type="hidden" name="rtype" value="<?= htmlspecialchars($task['taskType'] ?? '');?>">
+                                                    <input type="hidden" name="utyp" value="am">
+                                                    <button type="button" title="Set reminder for this task" class="btn" style="display: inline;" 
+                                                        data-bs-toggle="modal" data-bs-target="#setReminderModal"
+                                                        data-task-title="<?= htmlspecialchars($task['title'] ?? ''); ?>"
+                                                        data-task-due="<?= htmlspecialchars($task['due_date'] ?? ''); ?>"
+                                                        data-task-id="<?= htmlspecialchars($task['id'] ?? ''); ?>"
+                                                        data-task-rtype="<?= htmlspecialchars($task['taskType'] ?? ''); ?>"
+                                                        data-task-utyp="am"
+                                                        data-task-rtypetask="task">
+                                                            <i class="bi bi-bell"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php } else if ($task['taskType'] === 'assigned') {?>
+                                    <div class="task-card">
+
+                                        <div class="r1">
+                                            <?php $color = isset($task['tag']) ? getUrgencyColor($task['tag']) : 'gray';?>
+                                            <?php $task_type = isset($task['taskType']) ? getTaskType($task['taskType']) : '';?>
+                                            <div class="urgency-circle" style="background-color: <?php echo htmlspecialchars($color) ?? 'None'; ?>" title="<?php echo htmlspecialchars($task['tag'] ?? '')?>"></div>
+                                            <div class="task-title"><?php echo htmlspecialchars($task['title'] ?? 'Untitled Task'); ?></div>
+                                            <div class="task-lock"><i class="<?php echo htmlspecialchars($task_type)?>" title="<?php echo htmlspecialchars($task['taskType'])?>"></i></div>
+                                            <div class="edit-button">
+                                                <a href="update_tasks.php?grade=<?=$grade?>&id=<?=$task['id'] ?>"><i class="bi bi-pencil-square"></i></a>
+                                            </div>
+                                        </div>
+
+                                        <div class="r2">
+                                            <div class="task-label">Due Date</div>
+                                            <div class="task-due-date" title="Due date">
+                                                <?php echo $task['due_date'] ? date('F j', strtotime($task['due_date'])) : 'None'; ?>
+                                            </div>
+                                            <div class="task-due-time" title="Due time">
+                                                <?php echo $task['due_time'] ? date('h:i A', strtotime($task['due_time'])) : 'None'; ?>
+                                            </div>
+                                        </div>
+
+                                        <div class="r3">
+                                            <div class="task-label">Progress</div>
+                                            <div class="task-data progress-input">
+                                                <form action="update_task_progress.php" class="task-upd-f" method="post"> 
+                                                    <input type="hidden" name="grade" value="<?= $task['grade']?>">   
+                                                    <select class="task-data-select" data-task-id="<?= $task['id'] ?>" >
+                                                            <option value="<?= htmlspecialchars($task['progress'], ENT_QUOTES, 'UTF-8') ?>" selected>
+                                                                <?= htmlspecialchars($task['progress'], ENT_QUOTES, 'UTF-8') ?>
+                                                            </option>
+                                                            <option value="pending" <?= $task['progress'] == 'pending' ? 'selected' : '' ?>>Pending</option>
+                                                            <option value="in_progress" <?= $task['progress'] == 'in_progress' ? 'selected' : '' ?>>In Progress</option>
+                                                            <option value="completed" <?= $task['progress'] == 'completed' ? 'selected' : '' ?>>Completed</option>      
+                                                    </select>
+                                                </form>
+                                            </div>
+                                        </div>
+
+                                        <div class="r3">
+                                            <div class="task-label">Assigned To</div>
+                                            <div class="task-data"><?php echo htmlspecialchars($task['assigned_username'] ?? ''); ?></div>
+                                        </div>
+
+                                        <div class="r3">
+                                            <div class="task-label">Assigned by</div>
+                                            <div class="task-data"><?php echo htmlspecialchars($task['assigned_by_username'])?></div>
+                                        </div>
+
+                                        <div class="r3">
+                                            <div class="task-label">Space</div>
+                                            <?php 
+                                                if (htmlspecialchars($task['grade']) === 'SNED' || htmlspecialchars($task['grade']) === 'KINDER') {
+                                                    $spaceToDisplay = 'SNED';
+                                                }else {
+                                                    $spaceToDisplay = 'Grade ' . htmlspecialchars($task['grade']);
+                                                }
+                                            ?>
+                                            <div class="task-data"><?php echo $spaceToDisplay?></div>
+                                        </div>
+
+                                        <div class="r4">
+                                            <div class="task-label-r4">Description</div>
+                                            <div class="task-data"><?php echo htmlspecialchars($task['description'] ?? 'None');?></div>
+                                        </div>
+
+                                        <div class="p-task-action-con">
+                                            <div class="task-action-reminder">
+                                                <form action="../../src/processes/remind_me.php" method="POST">
+                                                    <input type="hidden" name="id" value="<?= htmlspecialchars($task['id'] ?? '');?>">
+                                                    <input type="hidden" name="rtype" value="<?= htmlspecialchars($task['taskType'] ?? '');?>">
+                                                    <input type="hidden" name="utyp" value="am">
+                                                    <button type="button" title="Set reminder for this task" class="btn" style="display: inline;" 
+                                                        data-bs-toggle="modal" data-bs-target="#setReminderModal"
+                                                        data-task-title="<?= htmlspecialchars($task['title'] ?? ''); ?>"
+                                                        data-task-due="<?= htmlspecialchars($task['due_date'] ?? ''); ?>"
+                                                        data-task-id="<?= htmlspecialchars($task['id'] ?? ''); ?>"
+                                                        data-task-rtype="<?= htmlspecialchars($task['taskType'] ?? ''); ?>"
+                                                        data-task-utyp="am"
+                                                        data-task-rtypetask="task">
+                                                            <i class="bi bi-bell"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php    }
+                            endforeach; ?>
+
+                            <div class="btn-add-cont">
+                                <div class="btn-add-bottom">
+                                    <a href="add_task.php?_personal" title="Add new personal task"><i class="bi bi-plus-circle"></i></a>
+                                </div>
+                            </div>
+
+                        </div>
                     <?php endif; ?>
-                </tbody>
-            </table>
+                </div>
 
-            <nav aria-label="Task pagination">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item <?php if ($currentPage <= 1) echo 'disabled'; ?>">
-                        <a class="page-link" href="?page=<?php echo $currentPage - 1; ?>&<?php echo $queryString; ?>" aria-label="Previous">
-                            <span aria-hidden="true">&laquo;</span>
-                        </a>
-                    </li>
-                    <?php for ($page = 1; $page <= $totalPages; $page++): ?>
-                        <li class="page-item <?php if ($page == $currentPage) echo 'active'; ?>">
-                            <a class="page-link" href="?page=<?php echo $page; ?>&<?php echo $queryString; ?>"><?php echo $page; ?></a>
-                        </li>
-                    <?php endfor; ?>
-                    <li class="page-item <?php if ($currentPage >= $totalPages) echo 'disabled'; ?>">
-                        <a class="page-link" href="?page=<?php echo $currentPage + 1; ?>&<?php echo $queryString; ?>" aria-label="Next">
-                            <span aria-hidden="true">&raquo;</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+                <section class="main-sec" id="page-nav">
+                    <nav aria-label="Task pagination">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item <?= $currentPage <= 1 ? 'disabled' : '' ?>">
+                                <a class="page-link" href="?page=<?= $currentPage - 1 ?>" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo;</span>
+                                </a>
+                            </li>
+                            <?php for ($page = 1; $page <= $totalPages; $page++): ?>
+                                <li class="page-item <?= $page == $currentPage ? 'active' : '' ?>">
+                                    <a class="page-link" href="?page=<?= $page ?>"><?= $page ?></a>
+                                </li>
+                            <?php endfor; ?>
+                            <li class="page-item <?= $currentPage >= $totalPages ? 'disabled' : '' ?>">
+                                <a class="page-link" href="?page=<?= $currentPage + 1 ?>" aria-label="Next">
+                                    <span aria-hidden="true">&raquo;</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </section>
+
+            </div>
         </div>
-    </div>
 
-    <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
-    <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+        <script src='https://code.jquery.com/jquery-3.5.1.min.js'></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.1/umd/popper.min.js"></script>
+        <script src='https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+        
+        <script src='../../src/js/datetime.js'></script>
+        <script src='../../src/js/notification.js'></script>
+        <script src='../../src/js/toggleSidebar.js'></script>
+        <script src='../../src/js/message.js'></script>
+        <script src='../../src/js/verify.js'></script>
+        <script src='../../src/js/reminder.js'></script>
 
-    
-    <script src='../../src/js/message.js'></script>
-    
-    <script>
-        $(document).ready(function() {
-            $('.sort-option').on('click', function() {
-                var order = $(this).data('order');
-                var url = new URL(window.location.href);
-                url.searchParams.set('order', order);
-                window.location.href = url.href;
+        <script>
+            $(window).on('load', function() {
+                <?php if ($successMessage): ?>
+                    $('#successModal').modal('show');
+                    setTimeout(function() {
+                        $('#successModal').modal('hide');
+                    }, 4500);
+                <?php endif; ?>
+            });
+
+            $(document).on('click', '.delete-button', function() {
+                var formId = $(this).data('form-id');
+                confirmDeleteModal(formId, 'Confirm Deletion', 'Are you sure you want to delete this task?', 'Delete');
+             });
+
+            $(document).ready(function () {
+            // Handle sorting
+            $('.sort-option').on('click', function () {
+                const order = $(this).data('order');
+                const progress = "<?php echo isset($_GET['progress']) ? urlencode($_GET['progress']) : ''; ?>"; 
+                const params = {
+                    order: order,
+                    progress: progress,
+                    page: "<?php echo $currentPage; ?>"
+                };
+                const queryString = $.param(params);
+                window.location.href = `my_space.php?${queryString}`;
+            });
+
+            // Handle filtering
+            $('.filter-option').on('click', function () {
+                const progress = $(this).data('progress');
+                const order = "<?php echo isset($_GET['order']) ? urlencode($_GET['order']) : 'desc'; ?>";
+                const params = {
+                    order: order,
+                    progress: progress,
+                    page: "<?php echo $currentPage; ?>"
+                };
+                const queryString = $.param(params);
+                window.location.href = `my_space.php?${queryString}`;
             });
         });
-    </script>
-</body>
+
+        // Handle filtering
+        $('.filter-option-ttype').on('click', function () {
+                const taskType = $(this).data('taskType');
+                const order = "<?php echo isset($_GET['order']) ? urlencode($_GET['order']) : 'desc'; ?>";
+                const params = {
+                    order: order,
+                    taskType: taskType,
+                    page: "<?php echo $currentPage; ?>"
+                };
+                const queryString = $.param(params);
+                window.location.href = `my_space.php?${queryString}`;
+            });
+
+
+          // Handle searching
+        $('#searchButton').on('click', function () {
+            const searchQuery = $('#taskSearch').val();
+            const order = "<?php echo isset($_GET['order']) ? urlencode($_GET['order']) : 'desc'; ?>";
+            const progress = "<?php echo isset($_GET['progress']) ? urlencode($_GET['progress']) : ''; ?>";
+            const params = {
+                order: order,
+                progress: progress,
+                search: searchQuery,
+                page: "<?php echo $currentPage; ?>"
+            };
+            const queryString = $.param(params);
+            window.location.href = `my_space.php?${queryString}`;
+        });
+        
+        // Handle "Enter" key in search input
+        $('#taskSearch').on('keypress', function (e) {
+            if (e.which == 13) {
+                $('#searchButton').click();
+            }
+        });
+
+        $(document).ready(function() {
+            <?php if ($successMessage): ?>
+                $('#successModal').modal('show');
+                setTimeout(function() {
+                    $('#successModal').modal('hide');
+                }, 4500);
+            <?php endif; ?>
+        });
+
+        $(document).ready(function () {
+            $('.task-data-select').on('change', function () {
+                const taskId = $(this).data('task-id');
+                const newProgress = $(this).val();
+                const csrfToken = '<?= $_SESSION['csrf_token'] ?>'; // Assuming CSRF token is set in session
+
+                $.ajax({
+                    url: '../../src/processes/update_task_progress.php',
+                    type: 'POST',
+                    data: {
+                        id: taskId,
+                        progress: newProgress,
+                        csrf_token: csrfToken // Include the CSRF token
+                    },
+                    success: function (response) {
+                        let jsonResponse = JSON.parse(response);
+                        if (jsonResponse.success) {
+                            $('#successModal .modal-body').text(jsonResponse.message);
+                    
+                            $('#successModal').modal('show');
+                            setTimeout(function() {
+                                $('#successModal').modal('hide');
+                            }, 4500);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        let jsonResponse = JSON.parse(response);
+                        if (jsonResponse.error) {
+                            $('#successModal .modal-body').text(jsonResponse.message);
+                    
+                            $('#successModal').modal('show');
+                            setTimeout(function() {
+                                $('#successModal').modal('hide');
+                            }, 4500);
+                        }
+                    }
+                });
+            });
+        });
+
+        </script>
+    </body>
 </html>
