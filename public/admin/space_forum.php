@@ -89,7 +89,7 @@ unset($_SESSION['success_message']);
 
                 <div class="mb-4 text-end">
 
-                    <a href="new_post.php?grade=general" class="btn btn-primary">Create New Post</a>
+                    <a href="new_post.php?grade=<?= $forum ?>" class="btn btn-primary">Create New Post</a>
                 </div>
 
                 <?php if (count($posts) > 0): ?>

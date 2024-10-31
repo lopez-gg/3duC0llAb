@@ -11,7 +11,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $grade = isset($_POST['grade']) ? trim($_POST['grade']) : '';
+    $grade = isset($_POST['grade']) ? trim($_POST['grade']) : $_SESSION['grade'];
     $title = isset($_POST['title']) ? trim($_POST['title']) : '';
     $content = isset($_POST['content']) ? trim($_POST['content']) : '';
     $user_id = $_SESSION['user_id'];
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Prepare notification messages
             if ($grade === 'general') {
                 // For general posts, notify all users
-                $notifContent = "A new topic has been posted in the general forum: " . htmlspecialchars($title);
+                $notifContent = "A new topic has been posted in the General Forum: " . htmlspecialchars($title);
                 $userId = null; // Leave user_id blank for general posts
 
                 // Insert notification for all users
@@ -46,13 +46,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute();
             } else {
                 // For specific grade posts, fetch user IDs and notify them
-                $query = "SELECT id FROM users WHERE grade = :grade";
+                $query = "SELECT id FROM users WHERE gradeLevel = :grade";
                 $stmt = $pdo->prepare($query);
                 $stmt->bindParam(':grade', $grade, PDO::PARAM_STR);
                 $stmt->execute();
                 $userIds = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-                $notifContent = "A new topic has been posted for grade " . htmlspecialchars($grade) . ": " . htmlspecialchars($title);
+                $notifContent = "A new topic has been posted for Grade " . htmlspecialchars($grade) . ": " . htmlspecialchars($title);
 
                 // Insert notification for each user in the grade
                 foreach ($userIds as $userId) {
@@ -65,6 +65,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
 
+            if ($grade === 'KINDER' || $grade === 'general'){
+                $gradeval = strtoupper($grade) . ' Forum';
+            }else {
+                $gradeval = 'Grade ' . $grade . ' Forum';
+            }
+            $activity_message = '[ADDED] Post: "' . $title . '" in ' . $gradeval;
+            add_activity_history($user_id, $postId, $activity_message);
+
             // Set a success message in the session and redirect to the forum page
             $_SESSION['success_title'] = 'Success';
             $_SESSION['success_message'] = 'Topic posted successfully!';
@@ -76,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
              exit;
         } catch (PDOException $e) {
             // Log the error and redirect with an error message
-            error_log('Database Error: ' . $e->getMessage(), 3, 'db_errors.log');
+            log_error('Error adding events: ' . $e->getMessage(), 'db_errors.txt');
             $_SESSION['success_title'] = 'Failed';
             $_SESSION['success_message'] = 'Failed to post forum topic. Please try again.';
             if ($grade === 'general') {

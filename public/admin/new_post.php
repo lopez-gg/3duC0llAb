@@ -23,11 +23,6 @@ if (!isset($_SESSION['user_id'])) {
         } else {
             $gradetodisplay = 'Unknown Grade'; 
         }
-        
-    } elseif(isset($_GET['forum'])){
-        $forum = isset($_GET['forum']) ? trim($_GET['forum']) : '';
-        $grade = $forum;
-        $gradetodisplay = 'PSCS General';
     }
 }
 

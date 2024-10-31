@@ -4,6 +4,7 @@ require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../config/session_config.php';
 
 $events = isset($_POST['events']) ? $_POST['events'] : [];
+$userID = $_SESSION['user_id'];
 
 try {
     $pdo->beginTransaction();
@@ -28,6 +29,23 @@ try {
     }
 
     $pdo->commit();
+
+    
+    // if($pdo->commit()){
+    //     $events_sql = 'SELECT id FROM events WHERE added_at = NOW(YYYY-MMMM-DD) AND year_range =' . $sy;
+    //     $events_stmt = $pdo->prepare($events_sql);
+    //     $events_stmt->execute();
+    //     $events = $events_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    //     return [
+    //         'subject_id' => $events
+    //     ];
+
+    //     $activity_message = '[ADDED] New event/s for SY ' . $sy;
+
+    //     add_activity_history($userID, $subject_id[], $activity_message);
+    // }
+    
 
     $_SESSION['success_message'] = "Events added successfully!";
     header("Location: ../../../public/admin/manage_events.php?");
