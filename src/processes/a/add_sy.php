@@ -13,17 +13,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare("SELECT sy_id FROM sy WHERE year_range = ?");
             $stmt->execute([$yearRange]);
             $existingRecord = $stmt->fetch(PDO::FETCH_ASSOC);
-            $sy_id = $stmt->fetch(PDO::FETCH_COLUMN);
 
             if ($existingRecord) {
                 // echo "Year range already exists. Using the existing record.";
             } else {
+
                 // If the record does not exist, insert the new year range
                 $stmt = $pdo->prepare("INSERT INTO sy (year_range) VALUES (?)");
                 $stmt->execute([$yearRange]);
 
+                $stmt = $pdo->prepare("SELECT sy_id FROM sy WHERE year_range = ?");
+                $stmt->execute([$yearRange]);
+                $existingRecord = $stmt->fetch(PDO::FETCH_ASSOC);
+                $syId = $existingRecord['sy_id'];
+
                 $activity_message = '[ADDED] New SY Calendar: "' . $yearRange . '"';
-                add_activity_history($userID, $sy_id, $activity_message);
+                add_activity_history($userID, $syId, $activity_message);
             }
         } catch (PDOException $e) {
             // Handle error

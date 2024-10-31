@@ -13,12 +13,23 @@ $middlename = $_POST['middlename'];
 $lastname = $_POST['lastname'];
 $gradeLevel = $_POST['gradeLevel'];
 $section = $_POST['section'];
-$password = password_hash($_POST['password'], PASSWORD_BCRYPT); // Hash the password
+$password = password_hash($_POST['password'], PASSWORD_BCRYPT); 
+$userID = $_SESSION['user_id'];
 
 try {
     // Prepare and execute the SQL statement
     $stmt = $pdo->prepare("INSERT INTO users (username, firstname, middlename, lastname, gradeLevel, section, password) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $stmt->execute([$username, $firstname, $middlename, $lastname, $gradeLevel, $section, $password]);
+
+    $query = "SELECT id FROM users WHERE username = :username AND gradeLevel = :grade";
+    $stmt = $pdo->prepare($query);
+    $stmt->bindParam(':username', $username, PDO::PARAM_STR);
+    $stmt->bindParam(':grade', $gradeLevel, PDO::PARAM_STR);
+    $registeredID = $stmt->execute();
+
+    $activity_message = '[ADDED] New faculty member: "' . $firstname . ' ' . $middlename . ' ' . $lastname . '" in ' . $gradeLevel;
+    add_activity_history($userID, $registeredID, $activity_message);
+
     echo $_SESSION['success_message'] = "New user registered successfully";
     header("Location: ../../../public/admin/add_user.php");
     exit;

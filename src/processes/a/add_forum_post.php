@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             }
 
-            if ($grade === 'KINDER' || $grade === 'general'){
+            if ($grade === 'KINDER' || $grade === 'general' || $grade === 'SNED'){
                 $gradeval = strtoupper($grade) . ' Forum';
             }else {
                 $gradeval = 'Grade ' . $grade . ' Forum';
