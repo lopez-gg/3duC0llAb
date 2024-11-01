@@ -25,7 +25,8 @@ $stmt->execute();
 $registeredID = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($registeredID){
-    $_SESSION['success_message'] = 'This faculty member hes already been registered.';
+    echo $_SESSION['success_title'] = 'Existing record';
+    $_SESSION['success_message'] = 'This faculty member has already been previously registered.';
     header('Location: ../../../public/admin/add_user.php');
 }else{
     try {

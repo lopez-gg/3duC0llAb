@@ -85,6 +85,7 @@ function filterFaculty() {
 
 $(document).on('click', '.verifyDeactivationButton', function() {
     var facultyId = $(this).data('faculty-id');
+    var facultyUname = $(this).data('faculty-username');
     
     // Open modal and set the confirmation message for deactivation
     $('#verificationMessage').text('Are you sure you want to deactivate this account?');
@@ -106,8 +107,14 @@ $(document).on('click', '.verifyDeactivationButton', function() {
         idInput.name = 'faculty_id';
         idInput.value = facultyId;
 
+        const fUname = document.createElement('input');
+        fUname.type = 'hidden';
+        fUname.name = 'faculty_username';
+        fUname.value = facultyUname;
+
         form.appendChild(actionInput);
         form.appendChild(idInput);
+        form.appendChild(fUname);
         document.body.appendChild(form);
         form.submit();
         
@@ -118,6 +125,7 @@ $(document).on('click', '.verifyDeactivationButton', function() {
 
 $(document).on('click', '.verifyActivationButton', function() {
     var facultyId = $(this).data('faculty-id');
+    var facultyUname = $(this).data('faculty-username');
     
     // Open modal and set the confirmation message for activation
     $('#verificationMessage').text('Are you sure you want to activate this account?');
@@ -139,8 +147,14 @@ $(document).on('click', '.verifyActivationButton', function() {
         idInput.name = 'faculty_id';
         idInput.value = facultyId;
 
+        const fUname = document.createElement('input');
+        fUname.type = 'hidden';
+        fUname.name = 'faculty_username';
+        fUname.value = facultyUname;
+
         form.appendChild(actionInput);
         form.appendChild(idInput);
+        form.appendChild(fUname);
         document.body.appendChild(form);
         form.submit();
         

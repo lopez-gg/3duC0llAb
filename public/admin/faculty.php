@@ -68,14 +68,15 @@ if ($isAjax) {
         $output .= '<td>';
         $output .= '<form method="POST" action="../../src/processes/a/faculty_actions.php" style="display:inline;">';
         $output .= '<input type="hidden" name="faculty_id" value="' . $faculty['id'] . '">';
+        $output .= '<input type="hidden" name="faculty_username" value="' . $faculty['username'] . '">';
         $output .= '<button type="submit" name="action" value="edit" class="btn btn-warning btn-sm">Edit</button>';
         $output .= '</form>';
         if ($faculty['status'] != 'deactivated') {
             // Show "Deactivate" if the faculty member is active
-            $output .= '<button type="button" class="btn btn-danger btn-sm verifyDeactivationButton" data-faculty-id="' . $faculty['id'] . '">Deactivate</button>';
+            $output .= '<button type="button" class="btn btn-danger btn-sm verifyDeactivationButton" data-faculty-id="' . $faculty['id']  . '" data-faculty-username="' . $faculty['username']. '">Deactivate</button>';
         } elseif ($faculty['status'] === 'deactivated') {
             // Show "Activate" if the faculty member is deactivated
-            $output .= '<button type="button" class="btn btn-success btn-sm verifyActivationButton" data-faculty-id="' . $faculty['id'] . '">Activate</button>';
+            $output .= '<button type="button" class="btn btn-success btn-sm verifyActivationButton" data-faculty-id="' . $faculty['id'] .  '" data-faculty-username="' . $faculty['username']. '">Activate</button>';
         } echo '</td>';
         $output .= '</td>';
         $output .= '</tr>';
@@ -174,15 +175,16 @@ unset($_SESSION['success_message']);
                                 echo '<td>';
                                 echo '<form method="POST" action="../../src/processes/a/faculty_actions.php" style="display:inline;">';
                                 echo '<input type="hidden" name="faculty_id" value="' . $faculty['id'] . '">';
+                                echo '<input type="hidden" name="faculty_username" value="' . $faculty['username'] . '">';
                                 echo '<button type="submit" name="action" value="edit" class="btn btn-outline-warning btn-sm">Edit</button>';
                                 echo '</form>';
                                 
                                 if ($faculty['status'] != 'deactivated') {
                                     // Show "Deactivate" if the faculty member is active
-                                    echo '<button type="button" class="btn btn-outline-danger btn-sm verifyDeactivationButton" data-faculty-id="' . $faculty['id'] . '">Deactivate</button>';
+                                    echo '<button type="button" class="btn btn-outline-danger btn-sm verifyDeactivationButton" data-faculty-id="' . $faculty['id'] .  '" data-faculty-username="' . $faculty['username']. '">Deactivate</button>';
                                 } elseif ($faculty['status'] === 'deactivated') {
                                     // Show "Activate" if the faculty member is deactivated
-                                    echo '<button type="button" class="btn btn-outline-success btn-sm verifyActivationButton" data-faculty-id="' . $faculty['id'] . '">Activate</button>';
+                                    echo '<button type="button" class="btn btn-outline-success btn-sm verifyActivationButton" data-faculty-id="' . $faculty['id'] .  '" data-faculty-username="' . $faculty['username']. '">Activate</button>';
                                 } echo '</td>';
                                 
                                 echo '</tr>';
